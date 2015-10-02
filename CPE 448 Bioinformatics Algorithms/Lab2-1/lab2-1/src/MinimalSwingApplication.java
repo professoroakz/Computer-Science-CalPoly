@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 
 /** 
  Simple harness for testing GUI code.
@@ -40,6 +42,10 @@ public final class MinimalSwingApplication {
     panel.add(new JLabel("Calculate GC content!"));
     JButton ok = new JButton("Calculate!");
     ok.addActionListener(new ShowDialog(aFrame));
+    
+    JTextField textField = new JTextField();
+   
+    
     panel.add(ok);
     aFrame.getContentPane().add(panel);      
   }
