@@ -1,5 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -40,14 +42,34 @@ public final class MinimalSwingApplication {
   private void buildContent(JFrame aFrame){
     JPanel panel = new JPanel();
     panel.add(new JLabel("Calculate GC content!"));
+    
+    final JTextField windowSize = new JTextField("Insert window size");
+    windowSize.setHorizontalAlignment(JTextField.CENTER);
+    windowSize.addMouseListener(new MouseAdapter(){
+        @Override
+        public void mouseClicked(MouseEvent e){
+            windowSize.setText("");
+        }
+    });
+    
+
+    final JTextField stepSize = new JTextField("Insert step size");
+    stepSize.setHorizontalAlignment(JTextField.CENTER);
+    stepSize.addMouseListener(new MouseAdapter(){
+        @Override
+        public void mouseClicked(MouseEvent e){
+            stepSize.setText("");
+        }
+    });
+    
+    panel.add(windowSize);
+    panel.add(stepSize);
+    
     JButton ok = new JButton("Calculate!");
     ok.addActionListener(new ShowDialog(aFrame));
-    
-    JTextField textField = new JTextField();
-   
-    
     panel.add(ok);
-    aFrame.getContentPane().add(panel);      
+    
+    aFrame.getContentPane().add(panel);
   }
   
   private static final class ShowDialog implements ActionListener {
