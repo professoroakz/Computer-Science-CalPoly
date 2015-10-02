@@ -7,10 +7,24 @@ import java.util.Scanner;
 public class GCCounter {
 	
 	public static void main(String args[]) {
-		File file = new File(args[0]);
+		File file;
+		Scanner input = new Scanner(System.in);
 		String seq = "";
+		
 		int gcCount = 0;
 		int nCount = 0;
+		int windowSize;
+		int stepSize;
+		
+		System.out.println("Input the full file name for the test file. "
+				+ "Example: test.FASTA or test.txt");
+		file = new File(input.nextLine());
+		
+		System.out.println("Input the window size for this test.");
+		windowSize = input.nextInt();
+		
+		System.out.println("Input the step size for this test.");
+		stepSize = input.nextInt();
 		
 		try {
 			Scanner scan = new Scanner(file);
