@@ -11,16 +11,11 @@ import javax.swing.JTextField;
 import javax.swing.JFileChooser;
 import java.io.File;
 
-/** 
- Simple harness for testing GUI code.
- 
- <P>To use this class, edit the code to suit your needs.  
-*/
-public final class MinimalSwingApplication {
+public final class GCCounterView {
   private File file;
 	
   public static void main(String... aArgs){
-    MinimalSwingApplication app = new MinimalSwingApplication();
+	  GCCounterView app = new GCCounterView();
     app.buildAndDisplayGui();
   }
   
@@ -60,9 +55,9 @@ public final class MinimalSwingApplication {
     panel.add(windowSize);
     panel.add(stepSize);
     
-    JButton btnFile = new JButton("Select Excel File");
+    JButton btnFile = new JButton("Select test file");
     btnFile.addActionListener(new ActionListener() {
-        final JFrame frame = new JFrame("Hello");
+        final JFrame frame = new JFrame("Select file");
         //Handle open button action.
         public void actionPerformed(ActionEvent e) {
             final JFileChooser fc = new JFileChooser(); 
