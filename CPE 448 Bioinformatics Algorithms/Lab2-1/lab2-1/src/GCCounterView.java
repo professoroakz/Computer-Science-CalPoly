@@ -19,7 +19,6 @@ public final class GCCounterView {
     app.buildAndDisplayGui();
   }
   
-  // PRIVATE
 
   private void buildAndDisplayGui(){
     JFrame frame = new JFrame("~the gui~"); 
@@ -28,7 +27,6 @@ public final class GCCounterView {
     frame.pack();
     frame.setVisible(true);
   }
-  
   
   private void buildContent(JFrame aFrame){
     final JPanel panel = new JPanel();
@@ -55,6 +53,10 @@ public final class GCCounterView {
     panel.add(windowSize);
     panel.add(stepSize);
     
+    final JTextField chosenFileTextField = new JTextField("Selected file");
+    panel.add(chosenFileTextField);
+   
+    
     JButton btnFile = new JButton("Select test file");
     btnFile.addActionListener(new ActionListener() {
         final JFrame frame = new JFrame("Select file");
@@ -65,7 +67,8 @@ public final class GCCounterView {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 file = fc.getSelectedFile();
                 //This is where a real application would open the file.
-                System.out.println("File: " + file.getName() + ".");    
+                System.out.println("File: " + file.getName() + ".");
+                chosenFileTextField.setText(file.getName());
             } else {
                 System.out.println("Open command cancelled by user.");
             }
@@ -79,10 +82,6 @@ public final class GCCounterView {
     panel.add(ok);
     
     aFrame.getContentPane().add(panel);
-  }
-  
-  public void chosenFile(){
-	  System.out.println("lol");
   }
   
   private static final class ShowDialog implements ActionListener {
