@@ -8,7 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-
+import javax.swing.JFileChooser;
+import java.io.File;
 
 /** 
  Simple harness for testing GUI code.
@@ -16,14 +17,8 @@ import javax.swing.JTextField;
  <P>To use this class, edit the code to suit your needs.  
 */
 public final class MinimalSwingApplication {
-  
-  /** 
-   Build and display minimal GUI.
-   
-   <P>The GUI has a label and an OK button.
-   The OK button launches a simple message dialog.
-   No menu is included.
-  */
+  private File file;
+	
   public static void main(String... aArgs){
     MinimalSwingApplication app = new MinimalSwingApplication();
     app.buildAndDisplayGui();
@@ -39,8 +34,9 @@ public final class MinimalSwingApplication {
     frame.setVisible(true);
   }
   
+  
   private void buildContent(JFrame aFrame){
-    JPanel panel = new JPanel();
+    final JPanel panel = new JPanel();
     panel.add(new JLabel("Calculate GC content!"));
     
     final JTextField windowSize = new JTextField("Insert window size");
@@ -51,7 +47,6 @@ public final class MinimalSwingApplication {
             windowSize.setText("");
         }
     });
-    
 
     final JTextField stepSize = new JTextField("Insert step size");
     stepSize.setHorizontalAlignment(JTextField.CENTER);
@@ -65,11 +60,34 @@ public final class MinimalSwingApplication {
     panel.add(windowSize);
     panel.add(stepSize);
     
+    JButton btnFile = new JButton("Select Excel File");
+    btnFile.addActionListener(new ActionListener() {
+        final JFrame frame = new JFrame("Hello");
+        //Handle open button action.
+        public void actionPerformed(ActionEvent e) {
+            final JFileChooser fc = new JFileChooser(); 
+            int returnVal = fc.showOpenDialog(frame);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                file = fc.getSelectedFile();
+                //This is where a real application would open the file.
+                System.out.println("File: " + file.getName() + ".");    
+            } else {
+                System.out.println("Open command cancelled by user.");
+            }
+            System.out.println(returnVal);
+        }
+    });
+    panel.add(btnFile);
+    
     JButton ok = new JButton("Calculate!");
     ok.addActionListener(new ShowDialog(aFrame));
     panel.add(ok);
     
     aFrame.getContentPane().add(panel);
+  }
+  
+  public void chosenFile(){
+	  System.out.println("lol");
   }
   
   private static final class ShowDialog implements ActionListener {
