@@ -32,9 +32,11 @@ public class GCCounter {
 		int gcCount;
 		int nCount;
 		
-		public GCCounter() {
+		public GCCounter(int window, int step) {
 			gcCount = 0;
 			nCount = 0;
+			windowSize = window;
+			stepSize = step;
 		}
 		 
 		public void readFile(String fileName){
@@ -77,5 +79,6 @@ public class GCCounter {
 			String formatted = df.format(((double)gcCount / (seq.length() - nCount) * 100));
 			
 			System.out.println(formatted + "%");
+			System.out.println("Congratulations! Your file is successfully downloaded to 'output.txt'");
 		}
 }

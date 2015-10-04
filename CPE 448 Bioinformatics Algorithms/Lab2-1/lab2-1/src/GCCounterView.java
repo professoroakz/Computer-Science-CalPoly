@@ -13,6 +13,8 @@ import java.io.File;
 
 public final class GCCounterView {
   private File file;
+  private int windowSize;
+  private int scrollSize;
 	
   public static void main(String... aArgs){
 	  GCCounterView app = new GCCounterView();
@@ -80,12 +82,26 @@ public final class GCCounterView {
     JButton ok = new JButton("Calculate!");
     ok.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            GCCounter counter = new GCCounter();
-            counter.readFile(file.getName());
-            counter.readGCCount();
+            int window = -1;
+            int step = -1;
+            try {
+                window = Integer.parseInt(windowSize.getText());
+                step = Integer.parseInt(stepSize.getText());
+            }
+            catch(NumberFormatException ex) {
+                System.out.println("Either WindowSize or StepSize (or both) is not a number.");
+            }
+
+            if(window != -1 && step != -1) {            
+                System.out.println("window: " + window + " : step: " + step);
+
+                GCCounter counter = new GCCounter(1,1);
+                counter.readFile(file.getName());
+                counter.readGCCount();
+            }
         }
     });
-    ok.addActionListener(new ShowDialog(aFrame));
+    // ok.addActionListener(new ShowDialog(aFrame));
     panel.add(ok);
     
     aFrame.getContentPane().add(panel);
