@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.Scanner;
+import java.io.PrintWriter;
+import java.io.Writer;
 
 
 /* TODO:
@@ -19,24 +21,29 @@ import java.util.Scanner;
 public class GCCounter {
 
 		File file;
-		Scanner input = new Scanner(System.in);
+		Scanner scan;
+		Writer writer;
+
 		String seq = "";
 		
 		int windowSize;
 		int stepSize;
+
+		int gcCount;
+		int nCount;
 		
-		public GCCounter(){
-			int gcCount = 0;
-			int nCount = 0;
+		public GCCounter() {
+			gcCount = 0;
+			nCount = 0;
 		}
-		
-		public void readFile(){
+		 
+		public void readFile(String fileName){
 			//System.out.println("Input the full file name for the test file. "
 				//	+ "Example: test.FASTA or test.txt");
-			file = new File(input.nextLine());
+			file = new File(fileName);
 			
 			try {
-				Scanner scan = new Scanner(file);
+				scan = new Scanner(file);
 				scan.nextLine();
 				while(scan.hasNextLine()) {
 					seq += scan.nextLine();				
@@ -47,7 +54,14 @@ public class GCCounter {
 			}
 		}
 		
-		public void readGCCount(){
+		public void readGCCount() {
+
+			try {
+				writer = new PrintWriter("output.txt");
+			}
+			catch(FileNotFoundException e) {
+				System.out.println("Error when writing to output.txt");
+			}
 	
 			for(int i = 0; i < seq.length(); i++) {
 				if(seq.charAt(i) == 'G' || seq.charAt(i) == 'C' || 
@@ -64,6 +78,4 @@ public class GCCounter {
 			
 			System.out.println(formatted + "%");
 		}
-		
-	}
 }

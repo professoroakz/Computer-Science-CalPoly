@@ -57,7 +57,7 @@ public final class GCCounterView {
     panel.add(chosenFileTextField);
    
     
-    JButton btnFile = new JButton("Select test file");
+    JButton btnFile = new JButton("Select FASTA file");
     btnFile.addActionListener(new ActionListener() {
         final JFrame frame = new JFrame("Select file");
         //Handle open button action.
@@ -78,6 +78,13 @@ public final class GCCounterView {
     panel.add(btnFile);
     
     JButton ok = new JButton("Calculate!");
+    ok.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            GCCounter counter = new GCCounter();
+            counter.readFile(file.getName());
+            counter.readGCCount();
+        }
+    });
     ok.addActionListener(new ShowDialog(aFrame));
     panel.add(ok);
     
@@ -90,7 +97,7 @@ public final class GCCounterView {
     }
     
     @Override public void actionPerformed(ActionEvent aEvent) {
-      JOptionPane.showMessageDialog(fFrame, "Success! The file is outputed as out.txt");
+      JOptionPane.showMessageDialog(fFrame, "Success! The file is outputed as output.txt");
     }
     private JFrame fFrame;
   }
