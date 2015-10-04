@@ -26,8 +26,8 @@ public class GCCounter {
 
 		String seq = "";
 		
-		int windowSize;
-		int stepSize;
+		int windowSize = -1;
+		int stepSize = -1;
 
 		int gcCount;
 		int nCount;
@@ -64,6 +64,9 @@ public class GCCounter {
 			catch(FileNotFoundException e) {
 				System.out.println("Error when writing to output.txt");
 			}
+
+			System.out.println("window: " + windowSize + " : step: " + stepSize);
+
 	
 			for(int i = 0; i < seq.length(); i++) {
 				if(seq.charAt(i) == 'G' || seq.charAt(i) == 'C' || 

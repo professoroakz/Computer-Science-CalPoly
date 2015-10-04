@@ -95,7 +95,7 @@ public final class GCCounterView {
             if(window != -1 && step != -1) {            
                 System.out.println("window: " + window + " : step: " + step);
 
-                GCCounter counter = new GCCounter(1,1);
+                GCCounter counter = new GCCounter(window, step);
                 counter.readFile(file.getName());
                 counter.readGCCount();
             }
