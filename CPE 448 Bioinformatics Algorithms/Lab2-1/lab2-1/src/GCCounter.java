@@ -93,6 +93,59 @@ public class GCCounter {
 		public void readRollingGCCount() {
 			writer.println("Window Size: " + windowSize + ",Step Size: " + stepSize);  // Output the window and step sizes
 			writer.println("Nucleotide Position,%GC");							// Output the column headers
+
+			int fullSeqLength = seq.length();
+			int currentLocation = 0;
+			int currentEndLocation = windowSize;
+			String currentSequence;// = seq.substring(currentLocation, currentEndLocation);
+			DecimalFormat df = new DecimalFormat("#.#");
+
+			while(currentEndLocation <= fullSeqLength - 1) {
+				gcCount = 0;
+				nCount = 0;
+				currentSequence = seq.substring(currentLocation, currentEndLocation);
+
+				for(int i = 0; i < currentSequence.length(); i++) {
+					if(currentSequence.charAt(i) == 'G' || currentSequence.charAt(i) == 'C' ||
+						currentSequence.charAt(i) == 'g' || currentSequence.charAt(i) == 'c') {
+						gcCount++;
+					}
+					if(currentSequence.charAt(i) == 'N' || currentSequence.charAt(i) == 'n') {
+						nCount++;
+					}
+				}
+
+				String formatted = df.format(((double)gcCount / (currentSequence.length() - nCount) * 100));
+
+				writer.println((currentLocation + 1) + "," + formatted);			// Output the nucleotide position and %GC
+																		// Keep it 1-start as Requirements need
+
+				currentLocation += stepSize;
+				currentEndLocation += stepSize;
+			}
+
+			// check if there is still a partial sequence to compute
+			if(currentLocation <= fullSeqLength - 1) {
+				gcCount = 0;
+				nCount = 0;
+				currentSequence = seq.substring(currentLocation);
+
+				for(int i = 0; i < currentSequence.length(); i++) {
+					if(currentSequence.charAt(i) == 'G' || currentSequence.charAt(i) == 'C' ||
+						currentSequence.charAt(i) == 'g' || currentSequence.charAt(i) == 'c') {
+						gcCount++;
+					}
+					if(currentSequence.charAt(i) == 'N' || currentSequence.charAt(i) == 'n') {
+						nCount++;
+					}
+				}
+
+				// use separate String variable in case the while-loop is never entered
+				String formattedPartial = df.format(((double)gcCount / (currentSequence.length() - nCount) * 100));
+
+				writer.println((currentLocation + 1) + "," + formattedPartial);
+			}
+
 			
 			writer.flush();
 			System.out.println("Congratulations! Your file is successfully downloaded to 'output.txt'");
