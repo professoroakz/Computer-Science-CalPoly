@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.io.PrintWriter;
-import java.io.Writer;
+// import java.io.Writer;
 
 
 /* TODO:
@@ -22,7 +22,7 @@ public class GCCounter {
 
 		File file;
 		Scanner scan;
-		Writer writer;
+		PrintWriter writer;
 
 		String seq = "";
 		
@@ -56,13 +56,14 @@ public class GCCounter {
 			}
 		}
 		
-		public void readGCCount() {
+		public boolean readBasicGCCount() {
 
 			try {
 				writer = new PrintWriter("output.txt");
 			}
 			catch(FileNotFoundException e) {
 				System.out.println("Error when writing to output.txt");
+				return false; // there was an error, so don't do anything more
 			}
 
 			System.out.println("window: " + windowSize + " : step: " + stepSize);
@@ -78,10 +79,28 @@ public class GCCounter {
 				}
 			}
 			
+			writer.println("# of N's present: " + nCount); // Output the total number of N's
+
 			DecimalFormat df = new DecimalFormat("#.#");
 			String formatted = df.format(((double)gcCount / (seq.length() - nCount) * 100));
 			
-			System.out.println(formatted + "%");
+			// System.out.println(formatted + "%");
+			writer.println("%GC overall: " + formatted + "%"); // Output the overall GC %
+
+			return true; // the basic GC succeeds
+		}
+
+		public void readRollingGCCount() {
+			writer.println("Window Size: " + windowSize + ",Step Size: " + stepSize);  // Output the window and step sizes
+			writer.println("Nucleotide Position,%GC");							// Output the column headers
+			
+			writer.flush();
 			System.out.println("Congratulations! Your file is successfully downloaded to 'output.txt'");
+			try {
+				writer.close();
+			}
+			catch(Exception e) {
+				// don't do anything. we just want to close this.
+			}
 		}
 }
