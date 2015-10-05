@@ -5,19 +5,6 @@ import java.util.Scanner;
 import java.io.PrintWriter;
 // import java.io.Writer;
 
-
-/* TODO:
- * I think the GUI class has to be the mother class and the 
- * child has to be the model as in the GC-count file
- * I'm not sure if I would have time to take a look tonight. 
- * but I can look at whatever's there tomorrow
- * So we basically create a constructor for the child class and 
- * instansiate it and use the methods we need
- * GCCount.calcGC(inputfile) or something
- * And that's an action listener for "Calculate" button
- * GCCount.calcGC(windowsize, framesize, inputfile) or something
- *  */
-
 public class GCCounter {
 
 		File file;
@@ -40,10 +27,7 @@ public class GCCounter {
 		}
 		 
 		public void readFile(String fileName){
-			//System.out.println("Input the full file name for the test file. "
-				//	+ "Example: test.FASTA or test.txt");
 			file = new File(fileName);
-			
 			try {
 				scan = new Scanner(file);
 				scan.nextLine();
@@ -146,7 +130,6 @@ public class GCCounter {
 				writer.println((currentLocation + 1) + "," + formattedPartial);
 			}
 
-			
 			writer.flush();
 			System.out.println("Congratulations! Your file is successfully downloaded to 'output.txt'");
 			try {

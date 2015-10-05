@@ -71,6 +71,9 @@ public final class GCCounterView {
                 //This is where a real application would open the file.
                 System.out.println("File: " + file.getName() + ".");
                 chosenFileTextField.setText(file.getName());
+                // open file 
+                
+                
             } else {
                 System.out.println("Open command cancelled by user.");
             }
