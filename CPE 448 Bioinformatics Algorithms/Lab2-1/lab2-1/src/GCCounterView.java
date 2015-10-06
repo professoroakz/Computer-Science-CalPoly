@@ -15,9 +15,9 @@ public final class GCCounterView {
   private File file;
   private int windowSize;
   private int scrollSize;
-	
+     
   public static void main(String... aArgs){
-	  GCCounterView app = new GCCounterView();
+    GCCounterView app = new GCCounterView();
     app.buildAndDisplayGui();
   }
   
@@ -69,7 +69,7 @@ public final class GCCounterView {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 file = fc.getSelectedFile();
                 //This is where a real application would open the file.
-                System.out.println("File: " + file.getName() + ".");
+                // System.out.println("File: " + file.getName() + ".");
                 chosenFileTextField.setText(file.getName());
                 // open file 
                 
@@ -96,7 +96,7 @@ public final class GCCounterView {
             }
 
             if(window != -1 && step != -1) {            
-                System.out.println("window: " + window + " : step: " + step);
+                // System.out.println("window: " + window + " : step: " + step);
 
                 GCCounter counter = new GCCounter(window, step);
                 counter.readFile(file.getName());

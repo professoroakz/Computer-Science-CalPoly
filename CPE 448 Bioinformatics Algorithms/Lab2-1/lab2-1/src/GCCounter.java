@@ -3,140 +3,127 @@ import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.io.PrintWriter;
-// import java.io.Writer;
 
 public class GCCounter {
 
-		File file;
-		Scanner scan;
-		PrintWriter writer;
+          File file;
+          Scanner scan;
+          PrintWriter writer;
 
-		String seq = "";
-		
-		int windowSize = -1;
-		int stepSize = -1;
+          String seq = "";
+          
+          int windowSize = -1;
+          int stepSize = -1;
 
-		int gcCount;
-		int nCount;
-		
-		public GCCounter(int window, int step) {
-			gcCount = 0;
-			nCount = 0;
-			windowSize = window;
-			stepSize = step;
-		}
-		 
-		public void readFile(String fileName){
-			file = new File(fileName);
-			try {
-				scan = new Scanner(file);
-				scan.nextLine();
-				while(scan.hasNextLine()) {
-					seq += scan.nextLine();				
-				}
-			}
-			catch(FileNotFoundException e) {
-				System.out.println("File " + " is missing.");
-			}
-		}
-		
-		public boolean readBasicGCCount() {
+          int gcCount;
+          int nCount;
+          
+          public GCCounter(int window, int step) {
+               gcCount = 0;
+               nCount = 0;
+               windowSize = window;
+               stepSize = step;
+          }
+           
+          public void readFile(String fileName){
+               file = new File(fileName);
+               try {
+                    scan = new Scanner(file);
+                    scan.nextLine();
+                    while(scan.hasNextLine()) {
+                         seq += scan.nextLine();                 
+                    }
+               }
+               catch(FileNotFoundException e) {
+                    System.out.println("File " + " is missing.");
+               }
+          }
+          
+          public boolean readBasicGCCount() {
 
-			try {
-				writer = new PrintWriter("output.txt");
-			}
-			catch(FileNotFoundException e) {
-				System.out.println("Error when writing to output.txt");
-				return false; // there was an error, so don't do anything more
-			}
+               try {
+                    writer = new PrintWriter("output.txt");
+               }
+               catch(FileNotFoundException e) {
+                    System.out.println("Error when writing to output.txt");
+                    return false; // there was an error, so don't do anything more
+               }
+     
+               for(int i = 0; i < seq.length(); i++) {
+                    checkChar(seq.charAt(i));
+               }
+               
+               writer.println("# of N's present: " + nCount); // Output the total number of N's
 
-			System.out.println("window: " + windowSize + " : step: " + stepSize);
+               DecimalFormat df = new DecimalFormat("#.#");
+               String formatted = df.format(((double)gcCount / (seq.length() - nCount) * 100));
+               
+               writer.println("%GC overall: " + formatted + "%"); // Output the overall GC %
 
-	
-			for(int i = 0; i < seq.length(); i++) {
-				if(seq.charAt(i) == 'G' || seq.charAt(i) == 'C' || 
-						seq.charAt(i) == 'g' || seq.charAt(i) == 'c') {
-					gcCount++;
-				}
-				if(seq.charAt(i) == 'n' || seq.charAt(i) == 'N') {
-					nCount++;
-				}
-			}
-			
-			writer.println("# of N's present: " + nCount); // Output the total number of N's
+               return true; // the basic GC succeeds
+          }
 
-			DecimalFormat df = new DecimalFormat("#.#");
-			String formatted = df.format(((double)gcCount / (seq.length() - nCount) * 100));
-			
-			// System.out.println(formatted + "%");
-			writer.println("%GC overall: " + formatted + "%"); // Output the overall GC %
+          public void readRollingGCCount() {
+               writer.println("Window Size: " + windowSize + ",Step Size: " + stepSize);  // Output the window and step sizes
+               writer.println("Nucleotide Position,%GC");                                 // Output the column headers
 
-			return true; // the basic GC succeeds
-		}
+               int fullSeqLength = seq.length();
+               int currentLocation = 0;
+               int currentEndLocation = windowSize;
+               String currentSequence;// = seq.substring(currentLocation, currentEndLocation);
+               DecimalFormat df = new DecimalFormat("#.#");
 
-		public void readRollingGCCount() {
-			writer.println("Window Size: " + windowSize + ",Step Size: " + stepSize);  // Output the window and step sizes
-			writer.println("Nucleotide Position,%GC");							// Output the column headers
+               while(currentEndLocation <= fullSeqLength - 1) {
+                    gcCount = 0;
+                    nCount = 0;
+                    currentSequence = seq.substring(currentLocation, currentEndLocation);
 
-			int fullSeqLength = seq.length();
-			int currentLocation = 0;
-			int currentEndLocation = windowSize;
-			String currentSequence;// = seq.substring(currentLocation, currentEndLocation);
-			DecimalFormat df = new DecimalFormat("#.#");
+                    for(int i = 0; i < currentSequence.length(); i++) {
+                         checkChar(currentSequence.charAt(i));
+                    }
 
-			while(currentEndLocation <= fullSeqLength - 1) {
-				gcCount = 0;
-				nCount = 0;
-				currentSequence = seq.substring(currentLocation, currentEndLocation);
+                    String formatted = df.format(((double)gcCount / (currentSequence.length() - nCount) * 100));
 
-				for(int i = 0; i < currentSequence.length(); i++) {
-					if(currentSequence.charAt(i) == 'G' || currentSequence.charAt(i) == 'C' ||
-						currentSequence.charAt(i) == 'g' || currentSequence.charAt(i) == 'c') {
-						gcCount++;
-					}
-					if(currentSequence.charAt(i) == 'N' || currentSequence.charAt(i) == 'n') {
-						nCount++;
-					}
-				}
+                    writer.println((currentLocation + 1) + "," + formatted);              // Output the nucleotide position and %GC
+                                                                                          // Keep it 1-start as Requirements need
 
-				String formatted = df.format(((double)gcCount / (currentSequence.length() - nCount) * 100));
+                    currentLocation += stepSize;
+                    currentEndLocation += stepSize;
+               }
 
-				writer.println((currentLocation + 1) + "," + formatted);			// Output the nucleotide position and %GC
-																		// Keep it 1-start as Requirements need
+               // check if there is still a partial sequence to compute
+               if(currentLocation <= fullSeqLength - 1) {
+                    gcCount = 0;
+                    nCount = 0;
+                    currentSequence = seq.substring(currentLocation);
 
-				currentLocation += stepSize;
-				currentEndLocation += stepSize;
-			}
+                    for(int i = 0; i < currentSequence.length(); i++) {
+                         checkChar(currentSequence.charAt(i));
+                    }
 
-			// check if there is still a partial sequence to compute
-			if(currentLocation <= fullSeqLength - 1) {
-				gcCount = 0;
-				nCount = 0;
-				currentSequence = seq.substring(currentLocation);
+                    // use separate String variable in case the while-loop is never entered
+                    String formattedPartial = df.format(((double)gcCount / (currentSequence.length() - nCount) * 100));
 
-				for(int i = 0; i < currentSequence.length(); i++) {
-					if(currentSequence.charAt(i) == 'G' || currentSequence.charAt(i) == 'C' ||
-						currentSequence.charAt(i) == 'g' || currentSequence.charAt(i) == 'c') {
-						gcCount++;
-					}
-					if(currentSequence.charAt(i) == 'N' || currentSequence.charAt(i) == 'n') {
-						nCount++;
-					}
-				}
+                    writer.println((currentLocation + 1) + "," + formattedPartial);       // Output the nucleotide position and %GC
+                                                                                          // Keep it 1-start as Requirements need
+               }
 
-				// use separate String variable in case the while-loop is never entered
-				String formattedPartial = df.format(((double)gcCount / (currentSequence.length() - nCount) * 100));
+               writer.flush();
+               System.out.println("Congratulations! Your file is successfully downloaded to 'output.txt'");
+               try {
+                    writer.close();
+               }
+               catch(Exception e) {
+                    // don't do anything. We just want to close this.
+               }
+          }
 
-				writer.println((currentLocation + 1) + "," + formattedPartial);
-			}
-
-			writer.flush();
-			System.out.println("Congratulations! Your file is successfully downloaded to 'output.txt'");
-			try {
-				writer.close();
-			}
-			catch(Exception e) {
-				// don't do anything. we just want to close this.
-			}
-		}
+          private void checkChar(char currentChar) {
+               if(currentChar == 'G' || currentChar == 'C' || currentChar == 'g' || currentChar == 'c') {
+                    gcCount++;
+               }
+               else if(currentChar == 'n' || currentChar == 'N') {
+                    nCount++;
+               }
+          }
 }
