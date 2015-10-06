@@ -99,7 +99,7 @@ public final class GCCounterView {
                 // System.out.println("window: " + window + " : step: " + step);
 
                 GCCounter counter = new GCCounter(window, step);
-                counter.readFile(file.getName());
+                counter.readFile(file);
                 // if the readBasicCount function succeeds, then actually do more
                 if(counter.readBasicGCCount()) {
                     counter.readRollingGCCount();

@@ -24,7 +24,26 @@ public class GCCounter {
                windowSize = window;
                stepSize = step;
           }
+
+          public void readFile(File file) {
+               this.file = file;
+
+               try {
+                    scan = new Scanner(this.file);
+                    scan.nextLine();
+                    while(scan.hasNextLine()) {
+                         seq += scan.nextLine();
+                    }
+               }
+               catch(FileNotFoundException e) {
+                    System.out.println("File " + file.getName() + " is missing.");
+               }
+          }
            
+          /*
+           * @deprecated Replaced by #readFile(File file).
+           */
+          @Deprecated
           public void readFile(String fileName){
                file = new File(fileName);
                try {
