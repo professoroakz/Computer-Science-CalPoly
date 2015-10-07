@@ -68,8 +68,20 @@ public class GCCounter {
                     return false; // there was an error, so don't do anything more
                }
      
-               for(int i = 0; i < seq.length(); i++) {
-                    checkChar(seq.charAt(i));
+               try {
+                    for(int i = 0; i < seq.length(); i++) {
+                         checkChar(seq.charAt(i));
+                    }
+               }
+               catch(Exception e) {
+                    System.out.println("Invalid input. Please try another file.");
+                    try {
+                         writer.close();
+                    }
+                    catch(Exception ex) {
+                         // do nothing
+                    }
+                    return false;
                }
                
                writer.println("# of N's present: " + nCount); // Output the total number of N's
@@ -97,10 +109,14 @@ public class GCCounter {
                     nCount = 0;
                     currentSequence = seq.substring(currentLocation, currentEndLocation);
 
-                    for(int i = 0; i < currentSequence.length(); i++) {
-                         checkChar(currentSequence.charAt(i));
+                    try {
+                         for(int i = 0; i < currentSequence.length(); i++) {
+                              checkChar(currentSequence.charAt(i));
+                         }
                     }
-
+                    catch(Exception e) {
+                         // do nothing
+                    }
                     String formatted = df.format(((double)gcCount / (currentSequence.length() - nCount) * 100));
 
                     writer.println((currentLocation + 1) + "," + formatted);              // Output the nucleotide position and %GC
@@ -116,8 +132,13 @@ public class GCCounter {
                     nCount = 0;
                     currentSequence = seq.substring(currentLocation);
 
-                    for(int i = 0; i < currentSequence.length(); i++) {
-                         checkChar(currentSequence.charAt(i));
+                    try {
+                         for(int i = 0; i < currentSequence.length(); i++) {
+                              checkChar(currentSequence.charAt(i));
+                         }
+                    }
+                    catch(Exception e) {
+                         // do nothing
                     }
 
                     // use separate String variable in case the while-loop is never entered
@@ -137,13 +158,15 @@ public class GCCounter {
                }
           }
 
-          private void checkChar(char currentChar) {
+          private void checkChar(char currentChar) throws Exception {
                if(currentChar == 'G' || currentChar == 'C' || currentChar == 'g' || currentChar == 'c') {
                     gcCount++;
                }
                else if(currentChar == 'n' || currentChar == 'N') {
                     nCount++;
                }
-               // if(currentChar != 'A' && )
+               else if(currentChar != 'A' && currentChar != 'a' && currentChar != 'T' && currentChar != 't') {
+                    throw new Exception();
+               }
           }
 }
