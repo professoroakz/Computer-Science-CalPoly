@@ -144,5 +144,6 @@ public class GCCounter {
                else if(currentChar == 'n' || currentChar == 'N') {
                     nCount++;
                }
+               // if(currentChar != 'A' && )
           }
 }

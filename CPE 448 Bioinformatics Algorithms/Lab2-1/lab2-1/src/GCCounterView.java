@@ -18,7 +18,7 @@ public final class GCCounterView {
      
   public static void main(String... aArgs){
     GCCounterView app = new GCCounterView();
-    app.buildAndDisplayGui();
+    app.buildAndDisplayGui(); 
   }
   
 
