@@ -1,0 +1,4 @@
+# of N's present: 0
+%GC overall: �%
+Window Size: 3,Step Size: 2
+Nucleotide Position,%GC
