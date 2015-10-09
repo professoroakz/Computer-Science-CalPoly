@@ -13,8 +13,6 @@ import java.io.File;
 
 public final class GCCounterView {
   private File file;
-  private int windowSize;
-  private int scrollSize;
      
   public static void main(String... aArgs){
     GCCounterView app = new GCCounterView();
@@ -32,36 +30,14 @@ public final class GCCounterView {
   
   private void buildContent(JFrame aFrame){
     final JPanel panel = new JPanel();
-    panel.add(new JLabel("Calculate GC content!"));
+    panel.add(new JLabel("Calculate Gene Density!"));
     
-    final JTextField windowSize = new JTextField("Insert window size");
-    windowSize.setHorizontalAlignment(JTextField.CENTER);
-    windowSize.addMouseListener(new MouseAdapter(){
-        @Override
-        public void mouseClicked(MouseEvent e){
-            windowSize.setText("");
-        }
-    });
-
-    final JTextField stepSize = new JTextField("Insert step size");
-    stepSize.setHorizontalAlignment(JTextField.CENTER);
-    stepSize.addMouseListener(new MouseAdapter(){
-        @Override
-        public void mouseClicked(MouseEvent e){
-            stepSize.setText("");
-        }
-    });
+    final JTextField selectedFastaFile = new JTextField("Selected FASTA file");
+    panel.add(selectedFastaFile);
     
-    panel.add(windowSize);
-    panel.add(stepSize);
-    
-    final JTextField chosenFileTextField = new JTextField("Selected file");
-    panel.add(chosenFileTextField);
-   
-    
-    JButton btnFile = new JButton("Select FASTA file");
-    btnFile.addActionListener(new ActionListener() {
-        final JFrame frame = new JFrame("Select file");
+    JButton fastaFileButton = new JButton("Select FASTA file");
+    fastaFileButton.addActionListener(new ActionListener() {
+        final JFrame frame = new JFrame("Select FASTA file");
         //Handle open button action.
         public void actionPerformed(ActionEvent e) {
             final JFileChooser fc = new JFileChooser(); 
@@ -70,7 +46,7 @@ public final class GCCounterView {
                 file = fc.getSelectedFile();
                 //This is where a real application would open the file.
                 // System.out.println("File: " + file.getName() + ".");
-                chosenFileTextField.setText(file.getName());
+                selectedFastaFile.setText(file.getName());
                 // open file 
                 
                 
@@ -80,33 +56,36 @@ public final class GCCounterView {
             System.out.println(returnVal);
         }
     });
-    panel.add(btnFile);
+    panel.add(fastaFileButton);
+
+    final JTextField selectedGTFFile = new JTextField("Selected GTF file");
+    panel.add(selectedGTFFile);
+   
     
-    JButton ok = new JButton("Calculate!");
-    ok.addActionListener(new ActionListener() {
+    JButton gtfFileButton = new JButton("Select GTF file");
+    gtfFileButton.addActionListener(new ActionListener() {
+        final JFrame frame = new JFrame("Select GTF file");
+        //Handle open button action.
         public void actionPerformed(ActionEvent e) {
-            int window = -1;
-            int step = -1;
-            try {
-                window = Integer.parseInt(windowSize.getText());
-                step = Integer.parseInt(stepSize.getText());
+            final JFileChooser fc = new JFileChooser(); 
+            int returnVal = fc.showOpenDialog(frame);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                file = fc.getSelectedFile();
+                //This is where a real application would open the file.
+                // System.out.println("File: " + file.getName() + ".");
+                selectedGTFFile.setText(file.getName());
+                // open file 
+                
+                
+            } else {
+                System.out.println("Open command cancelled by user.");
             }
-            catch(NumberFormatException ex) {
-                System.out.println("Either WindowSize or StepSize (or both) is not a number.");
-            }
-
-            if(window != -1 && step != -1) {            
-                // System.out.println("window: " + window + " : step: " + step);
-
-                GCCounter counter = new GCCounter(window, step);
-                counter.readFile(file);
-                // if the readBasicCount function succeeds, then actually do more
-                if(counter.readBasicGCCount()) {
-                    counter.readRollingGCCount();
-                }
-            }
+            System.out.println(returnVal);
         }
     });
+    panel.add(gtfFileButton);
+    
+    JButton ok = new JButton("Calculate!");
     // ok.addActionListener(new ShowDialog(aFrame));
     panel.add(ok);
     
