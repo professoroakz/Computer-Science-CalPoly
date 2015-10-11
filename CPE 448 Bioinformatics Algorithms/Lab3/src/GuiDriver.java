@@ -38,41 +38,16 @@ public final class GuiDriver {
   private void buildContent(JFrame aFrame){
     final JPanel panel = new JPanel();
 
-    // panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    Box header = Box.createHorizontalBox();
+    Box headerBox = Box.createHorizontalBox();
 
-    // panel.add(new JLabel("Calculate GC content!"));
-    header.add(new JLabel("DNA Decoder"));
-
-    // final JTextField windowSize = new JTextField("Insert window size");
-    // windowSize.setHorizontalAlignment(JTextField.CENTER);
-    // windowSize.addMouseListener(new MouseAdapter(){
-    //     @Override
-    //     public void mouseClicked(MouseEvent e){
-    //         windowSize.setText("");
-    //     }
-    // });
-
-    // final JTextField stepSize = new JTextField("Insert step size");
-    // stepSize.setHorizontalAlignment(JTextField.CENTER);
-    // stepSize.addMouseListener(new MouseAdapter(){
-    //     @Override
-    //     public void mouseClicked(MouseEvent e){
-    //         stepSize.setText("");
-    //     }
-    // });
-    
-    // panel.add(windowSize);
-
-    // // panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-    // panel.add(stepSize);
+    headerBox.add(new JLabel("DNA Decoder"));
 
     Box fastaBox = Box.createHorizontalBox();
     
     fastaBox.add(new JLabel("FASTA file: "));
 
     final JTextField chosenFastaTextField = new JTextField("Selected FASTA file");
-    // panel.add(chosenFileTextField);
+    chosenFastaTextField.setHorizontalAlignment(JTextField.CENTER);
     fastaBox.add(chosenFastaTextField);
     fastaBox.add(Box.createRigidArea(new Dimension(5,0)));
     
@@ -94,10 +69,8 @@ public final class GuiDriver {
             } else {
                 System.out.println("Open command cancelled by user.");
             }
-            // System.out.println(returnVal);
         }
     });
-    // panel.add(btnFile);
     fastaBox.add(fastaBtnFile);
 
     Box gffBox = Box.createHorizontalBox();
@@ -105,6 +78,7 @@ public final class GuiDriver {
     gffBox.add(new JLabel("GFF file: "));
 
     final JTextField chosenGffTextField = new JTextField("Selected GFF file");
+    chosenGffTextField.setHorizontalAlignment(JTextField.CENTER);
     gffBox.add(chosenGffTextField);
     gffBox.add(Box.createRigidArea(new Dimension(5,0)));
 
@@ -127,43 +101,52 @@ public final class GuiDriver {
 
     gffBox.add(gffBtnFile);
 
+    Box outputFileBox = Box.createHorizontalBox();
+    outputFileBox.add(new JLabel("Output file: "));
+
+
+    final JTextField outputFileTextField = new JTextField("Enter desired output file name.");
+    outputFileTextField.setHorizontalAlignment(JTextField.CENTER);
+    outputFileTextField.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            outputFileTextField.setText("");
+        }
+    });
+
+    outputFileBox.add(outputFileTextField);
+
+
     Box calculate = Box.createHorizontalBox();
     
     JButton ok = new JButton("Calculate!");
     ok.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-            // int window = -1;
-            // int step = -1;
-            // try {
-            //     window = Integer.parseInt(windowSize.getText());
-            //     step = Integer.parseInt(stepSize.getText());
-            // }
-            // catch(NumberFormatException ex) {
-            //     System.out.println("Either WindowSize or StepSize (or both) is not a number.");
-            // }
+            String outputText = outputFileTextField.getText();
+            if(validateOutputFileName(outputText)) {
+                DNADecoder decoder = new DNADecoder();
 
-            // if(window != -1 && step != -1) {            
-                // System.out.println("window: " + window + " : step: " + step);
-
-                GCCounter counter = new GCCounter();
-                counter.readFiles(fastaFile, gffFile);
-                // if the readBasicCount function succeeds, then actually do more
-                if(counter.readBasicGCCount()) {
-                    counter.readRollingGCCount();
+                // if a file opens incorrectly, don't do more
+                if(decoder.readFiles(fastaFile, gffFile)) {
+                    // do code stuff
                 }
-            // }
+            }
+            else {
+                System.out.println("The output file " + outputText + " is invalid. It cannot contain spaces or \\ / : * ? \" < > |");
+            }
         }
     });
-    // ok.addActionListener(new ShowDialog(aFrame));
-    // panel.add(ok);
+
     calculate.add(ok);
 
     Box allPieces = Box.createVerticalBox();
-    allPieces.add(header);
+    allPieces.add(headerBox);
     allPieces.add(Box.createRigidArea(new Dimension(0,3)));
     allPieces.add(fastaBox);
     allPieces.add(Box.createRigidArea(new Dimension(0,3)));
     allPieces.add(gffBox);
+    allPieces.add(Box.createRigidArea(new Dimension(0,3)));
+    allPieces.add(outputFileBox);
     allPieces.add(Box.createRigidArea(new Dimension(0,3)));
     allPieces.add(calculate);
     panel.add(allPieces);
@@ -180,6 +163,23 @@ public final class GuiDriver {
       JOptionPane.showMessageDialog(fFrame, "Success! The file is outputed as output.txt");
     }
     private JFrame fFrame;
+  }
+
+  private boolean validateOutputFileName(String outputFile) {
+    boolean valid = true;
+
+    if(outputFile.trim().length() > 0) {
+        if(outputFile.indexOf(" ") != -1 || outputFile.indexOf("\\") != -1 || outputFile.indexOf("/") != -1 || outputFile.indexOf(":") != -1 ||
+            outputFile.indexOf("*") != -1 || outputFile.indexOf("?") != -1 || outputFile.indexOf("\"") != -1 || outputFile.indexOf("<") != -1 ||
+            outputFile.indexOf(">") != -1 || outputFile.indexOf("|") != -1) {
+            valid = false;
+        }
+    }
+    else {
+        valid = false;
+    }
+
+    return valid;
   }
 }
  
