@@ -18,25 +18,25 @@ public class GCCounter {
           int gcCount;
           int nCount;
           
-          public GCCounter(int window, int step) {
+          public GCCounter(/*int window, int step*/) {
                gcCount = 0;
                nCount = 0;
-               windowSize = window;
-               stepSize = step;
+               // windowSize = window;
+               // stepSize = step;
           }
 
-          public void readFile(File file) {
-               this.file = file;
+          public void readFiles(File fastaFile, File gffFile) {
+               file = fastaFile;
 
                try {
-                    scan = new Scanner(this.file);
+                    scan = new Scanner(file);
                     scan.nextLine();
                     while(scan.hasNextLine()) {
                          seq += scan.nextLine();
                     }
                }
                catch(FileNotFoundException e) {
-                    System.out.println("File " + file.getName() + " is missing.");
+                    System.out.println("File " + fastaFile.getName() + " is missing.");
                }
           }
            
