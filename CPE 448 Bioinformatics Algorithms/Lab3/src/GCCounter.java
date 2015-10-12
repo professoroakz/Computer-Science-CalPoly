@@ -11,13 +11,13 @@ public class GCCounter {
           PrintWriter writer;
 
           String seq = "";
-          
+
           int windowSize = -1;
           int stepSize = -1;
 
           int gcCount;
           int nCount;
-          
+
           public GCCounter(/*int window, int step*/) {
                gcCount = 0;
                nCount = 0;
@@ -39,7 +39,7 @@ public class GCCounter {
                     System.out.println("File " + fastaFile.getName() + " is missing.");
                }
           }
-           
+
           /*
            * @deprecated Replaced by #readFile(File file).
            */
@@ -50,14 +50,14 @@ public class GCCounter {
                     scan = new Scanner(file);
                     scan.nextLine();
                     while(scan.hasNextLine()) {
-                         seq += scan.nextLine();                 
+                         seq += scan.nextLine();
                     }
                }
                catch(FileNotFoundException e) {
                     System.out.println("File " + " is missing.");
                }
           }
-          
+
           public boolean readBasicGCCount() {
 
                try {
@@ -67,7 +67,7 @@ public class GCCounter {
                     System.out.println("Error when writing to output.txt");
                     return false; // there was an error, so don't do anything more
                }
-     
+
                try {
                     for(int i = 0; i < seq.length(); i++) {
                          checkChar(seq.charAt(i));
@@ -83,12 +83,12 @@ public class GCCounter {
                     }
                     return false;
                }
-               
+
                writer.println("# of N's present: " + nCount); // Output the total number of N's
 
                DecimalFormat df = new DecimalFormat("#.#");
                String formatted = df.format(((double)gcCount / (seq.length() - nCount) * 100));
-               
+
                writer.println("%GC overall: " + formatted + "%"); // Output the overall GC %
 
                return true; // the basic GC succeeds

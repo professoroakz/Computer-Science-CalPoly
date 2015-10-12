@@ -13,11 +13,10 @@ public class DNADecoder {
           PrintWriter writer;
 
           String seq = "";
-          
 
           int gcCount;
           int nCount;
-          
+
           public DNADecoder() {
                gcCount = 0;
                nCount = 0;
@@ -51,7 +50,7 @@ public class DNADecoder {
                return true;
 
           }
-          
+
           public boolean readBasicGCCount() {
 
                try {
@@ -61,7 +60,7 @@ public class DNADecoder {
                     System.out.println("Error when writing to output.txt");
                     return false; // there was an error, so don't do anything more
                }
-     
+
                try {
                     for(int i = 0; i < seq.length(); i++) {
                          // checkChar(seq.charAt(i));
@@ -77,12 +76,12 @@ public class DNADecoder {
                     }
                     return false;
                }
-               
+
                writer.println("# of N's present: " + nCount); // Output the total number of N's
 
                DecimalFormat df = new DecimalFormat("#.#");
                String formatted = df.format(((double)gcCount / (seq.length() - nCount) * 100));
-               
+
                writer.println("%GC overall: " + formatted + "%"); // Output the overall GC %
 
                return true; // the basic GC succeeds

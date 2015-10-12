@@ -43,13 +43,12 @@ public final class GCCounterView {
             final JFileChooser fc = new JFileChooser(); 
             int returnVal = fc.showOpenDialog(frame);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
+            	if (returnVal == JFileChooser.APPROVE_OPTION) {
                 file = fc.getSelectedFile();
                 //This is where a real application would open the file.
                 // System.out.println("File: " + file.getName() + ".");
                 selectedFastaFile.setText(file.getName());
                 // open file 
-                
-                
             } else {
                 System.out.println("Open command cancelled by user.");
             }
@@ -61,7 +60,6 @@ public final class GCCounterView {
     final JTextField selectedGTFFile = new JTextField("Selected GTF file");
     panel.add(selectedGTFFile);
    
-    
     JButton gtfFileButton = new JButton("Select GTF file");
     gtfFileButton.addActionListener(new ActionListener() {
         final JFrame frame = new JFrame("Select GTF file");
