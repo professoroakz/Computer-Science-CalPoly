@@ -28,7 +28,7 @@ public class Gene {
      }
 
      public int getIntronSize() {
-          return geneSize - exonSize;
+          return getGeneSize() - exonSize;
      }
 
      public int getExonSize() {
@@ -44,7 +44,7 @@ public class Gene {
      }
 
      public void incrementExonSize(int nextIncrement) {
-          exonSize += exonSize;
+          exonSize += nextIncrement;
      }
 
      public void setLowestNucleotide(int value) {

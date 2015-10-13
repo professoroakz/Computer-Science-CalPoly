@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.Scanner;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.text.DecimalFormat;
 
 public class DNADecoder {
 
@@ -134,6 +135,7 @@ public class DNADecoder {
                               geneLinePieces = gffLine.split("\t");
                               currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length - 1]);
                               gene.setGeneId(currentGeneId);
+                              checkFeature(geneLinePieces);
                          }
                          else {
                               // otherwise, we finished the file, so don't worry, we'll pop out completely
@@ -146,7 +148,7 @@ public class DNADecoder {
                }
 
                // start doing math things and printing here
-
+               doMathAndOutputs();
 
                try {
                     writer.close();
@@ -156,6 +158,55 @@ public class DNADecoder {
                     // don't do anything
                }
 
+          }
+
+          private void doMathAndOutputs() {
+               int geneNum = 1;
+               for(Gene g : genes) {
+                    // Gene number
+                    writer.print("Gene " + geneNum + ",");
+                    // Gene size
+                    writer.print(g.getGeneSize() + " nucleotides,");
+                    // CDS size
+                    writer.print(g.getCodingSequenceSize() + " nucleotides,");
+                    // Intron size
+                    writer.print(g.getIntronSize() + " nucleotides,");
+                    // Exon size
+                    writer.print(g.getExonSize() + " nucleotides,");
+                    // CDS / Gene Size ration
+                    writer.print(getCDSToGeneSizeRatio(g) + ",");
+                    // Relative Gene Coverage
+                    writer.print(getRelativeGeneCoverage(g) + "%,");
+                    // Gene Density
+                    writer.println(getGeneDensity(g));
+                    geneNum++;
+               }
+          }
+
+          private String getCDSToGeneSizeRatio(Gene g) {
+               int cds = g.getCodingSequenceSize();
+               int geneSize = g.getGeneSize();
+
+               DecimalFormat df = new DecimalFormat("#.#");
+
+               return df.format((double)cds / geneSize);
+          }
+
+          private String getRelativeGeneCoverage(Gene g) {
+               int numGenes = genes.size();
+               double avgGeneSize = (double)g.getGeneSize() / numGenes;
+
+               DecimalFormat df = new DecimalFormat("#.#");
+
+               return df.format(avgGeneSize / seq.length());
+          }
+
+          private String getGeneDensity(Gene g) {
+               int numGenes = genes.size();
+
+               DecimalFormat df = new DecimalFormat("#.#");
+
+               return df.format(((double)numGenes / seq.length()) * 1000);
           }
 
           private boolean isVariantOfGene(String id) {
@@ -187,9 +238,11 @@ public class DNADecoder {
                     gene.setLowestNucleotide(start);
                }
                else if(feature.contains("CDS")) {
+                    // System.out.println("end: " + end + " - start: " + start);
                     gene.incrementCodingSequenceSize(end - start + 1);
                }
                else if(feature.contains("exon")) {
+                    // System.out.println("end: " + end + " - start: " + start);
                     gene.incrementExonSize(end - start + 1);
                }
                // otherwise it's a start_codon
