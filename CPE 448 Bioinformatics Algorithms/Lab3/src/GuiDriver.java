@@ -124,10 +124,11 @@ public final class GuiDriver {
         public void actionPerformed(ActionEvent e) {
             String outputText = outputFileTextField.getText();
             if(validateOutputFileName(outputText)) {
-                DNADecoder decoder = new DNADecoder();
+                DNADecoder decoder = new DNADecoder(outputText + ".txt");
                 // if a file opens incorrectly, don't do more
                 if(decoder.readFiles(fastaFile, gffFile)) {
                     // do code stuff
+                    decoder.decodeDNA();
                 }
             }
             else {
