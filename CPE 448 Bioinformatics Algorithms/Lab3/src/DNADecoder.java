@@ -107,39 +107,54 @@ public class DNADecoder {
                          genes.add(gene);
                          addedCurrentGene = true;
 
-                         // need to loop until the actual next gene
-                         while(gffScanner.hasNextLine()) {
-                              gffLine = gffScanner.nextLine();
-                              geneLinePieces = gffLine.split("\t");
-
-                              // we need to check if we are on a new gene, or a variant of another one
-                              if(!gffLine.contains(currentGeneId.substring(0, currentGeneId.length() - 1))) {
-                                   currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length - 1]);
-                                   // check if we're looking at a variant of an existant gene
-                                   if(!isVariantOfGene(currentGeneId)) {
-                                        // System.out.println(currentGeneId);
-                                        break;
-                                   }
-                                   else {
-                                        // this is a variant of a gene we have already processed
-                                        // so we want to keep going again
-                                   }
-                              }
-                         }
-
-                         // check if we failed while-condition, or broke out
-                         if(gffScanner.hasNextLine()) {
+                         currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length - 1]);
+                         // if this isn't a variant, we are on a new Gene
+                         if(!isVariantOfGene(currentGeneId)) {
                               gene = new Gene();
                               addedCurrentGene = false;
-                              gffLine = gffScanner.nextLine();
-                              geneLinePieces = gffLine.split("\t");
-                              currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length - 1]);
                               gene.setGeneId(currentGeneId);
                               checkFeature(geneLinePieces);
                          }
+                         // otherwise, it is a variant, and we want to ignore until we find one that isn't
                          else {
-                              // otherwise, we finished the file, so don't worry, we'll pop out completely
+                              // need to loop until the actual next gene
+                              while(gffScanner.hasNextLine()) {
+                                   gffLine = gffScanner.nextLine();
+                                   geneLinePieces = gffLine.split("\t");
+
+                                   // we need to check if we are on a new gene, or a variant of another one
+                                   if(!gffLine.contains(currentGeneId.substring(0, currentGeneId.length() - 1))) {
+                                        currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length - 1]);
+                                        // check if we're looking at a variant of an existant gene
+                                        if(!isVariantOfGene(currentGeneId)) {
+                                             // System.out.println(currentGeneId);
+                                             break;
+                                        }
+                                        else {
+                                             // this is a variant of a gene we have already processed
+                                             // so we want to keep going again
+                                        }
+                                   }
+                              }
+
+                              // check if we failed while-condition, or broke out
+                              if(gffScanner.hasNextLine()) {
+                                   gene = new Gene();
+                                   addedCurrentGene = false;
+                                   // need to check the first line
+                                   checkFeature(geneLinePieces);
+                                   gffLine = gffScanner.nextLine();
+                                   geneLinePieces = gffLine.split("\t");
+                                   currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length - 1]);
+                                   // then get the second line before continuing
+                                   gene.setGeneId(currentGeneId);
+                                   checkFeature(geneLinePieces);
+                              }
+                              else {
+                                   // otherwise, we finished the file, so don't worry, we'll pop out completely
+                              }
                          }
+                         
                     }
                }
 
@@ -163,6 +178,8 @@ public class DNADecoder {
           private void doMathAndOutputs() {
                int geneNum = 1;
                for(Gene g : genes) {
+                    if(geneNum == 9) System.out.println(g.getGeneId() + " - " + g.getCodingSequenceSize());
+
                     // Gene number
                     writer.print("Gene " + geneNum + ",");
                     // Gene size
@@ -198,7 +215,7 @@ public class DNADecoder {
 
                DecimalFormat df = new DecimalFormat("#.#");
 
-               return df.format(avgGeneSize / seq.length());
+               return df.format((double)avgGeneSize / seq.length());
           }
 
           private String getGeneDensity(Gene g) {
@@ -235,7 +252,13 @@ public class DNADecoder {
                int end = Integer.parseInt(pieces[4]);
 
                if(feature.contains("stop")) {
-                    gene.setLowestNucleotide(start);
+                    // if this gene is showing 'stop' last
+                    if(gene.getLowestNucleotide() == -1) {
+                         gene.setLowestNucleotide(start);
+                    }
+                    else {
+                         gene.setHighestNucleotide(end);
+                    }
                }
                else if(feature.contains("CDS")) {
                     // System.out.println("end: " + end + " - start: " + start);
@@ -247,7 +270,13 @@ public class DNADecoder {
                }
                // otherwise it's a start_codon
                else {
-                    gene.setHighestNucleotide(end);
+                    // if this gene is showing 'start' first
+                    if(gene.getLowestNucleotide() == -1) {
+                         gene.setLowestNucleotide(start);
+                    }
+                    else {
+                         gene.setHighestNucleotide(end);                         
+                    }
                }
           }
 }

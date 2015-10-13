@@ -7,8 +7,8 @@ public class Gene {
 
      private String geneId;
 
-     private int lowestNucleotide;
-     private int highestNucleotide;
+     private int lowestNucleotide = -1;
+     private int highestNucleotide = -1;
 
      public Gene() {
           geneSize = 0;
@@ -61,5 +61,13 @@ public class Gene {
 
      public void setGeneId(String id) {
           geneId = id;
+     }
+
+     public int getHighestNucleotide() {
+          return highestNucleotide;
+     }
+
+     public int getLowestNucleotide() {
+          return lowestNucleotide;
      }
 }
