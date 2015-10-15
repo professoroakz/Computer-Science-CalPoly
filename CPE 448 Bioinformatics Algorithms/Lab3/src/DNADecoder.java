@@ -178,7 +178,7 @@ public class DNADecoder {
           private void doMathAndOutputs() {
                int geneNum = 1;
                for(Gene g : genes) {
-                    if(geneNum == 9) System.out.println(g.getGeneId() + " - " + g.getCodingSequenceSize());
+                    // if(geneNum == 9) System.out.println(g.getGeneId() + " - " + g.getCodingSequenceSize());
 
                     // Gene number
                     writer.print("Gene " + geneNum + ",");
@@ -190,12 +190,12 @@ public class DNADecoder {
                     writer.print(g.getIntronSize() + " nucleotides,");
                     // Exon size
                     writer.print(g.getExonSize() + " nucleotides,");
-                    // CDS / Gene Size ration
+                    // CDS / Gene Size ratio
                     writer.print(getCDSToGeneSizeRatio(g) + ",");
                     // Relative Gene Coverage
-                    writer.print(getRelativeGeneCoverage(g) + "%,");
+                    writer.print(getRelativeGeneCoverage() + "%,");
                     // Gene Density
-                    writer.println(getGeneDensity(g));
+                    writer.println(getGeneDensity());
                     geneNum++;
                }
           }
@@ -209,21 +209,32 @@ public class DNADecoder {
                return df.format((double)cds / geneSize);
           }
 
-          private String getRelativeGeneCoverage(Gene g) {
+          private String getRelativeGeneCoverage() {
                int numGenes = genes.size();
-               double avgGeneSize = (double)g.getGeneSize() / numGenes;
+               double avgGeneSize;
+               double retNum;
 
-               DecimalFormat df = new DecimalFormat("#.#");
+               int geneNucleotides = 0;
 
-               return df.format((double)avgGeneSize / seq.length());
+               for(Gene g : genes) {
+                    geneNucleotides += g.getGeneSize();
+               }
+
+               avgGeneSize = (double)geneNucleotides / numGenes;
+
+               retNum = avgGeneSize / seq.length();
+
+               return String.format("%.4f", (float)retNum);
           }
 
-          private String getGeneDensity(Gene g) {
+          private String getGeneDensity() {
                int numGenes = genes.size();
 
                DecimalFormat df = new DecimalFormat("#.#");
 
-               return df.format(((double)numGenes / seq.length()) * 1000);
+               return df.format((double)numGenes / ((double)seq.length() / 10000));
+
+               // return df.format(((double)numGenes / seq.length()) * 10000);
           }
 
           private boolean isVariantOfGene(String id) {
