@@ -3,14 +3,15 @@ import java.util.HashMap;
 public class SuffixTree {
 
 public Node root;
+public char[] DNASequence;
 
-    public SuffixTree(){
+    public SuffixTree(String s){
         root = new Node(null, -1, -1);
-        Inputfile input = new inputFile();
+        DNASequence = s.toCharArray();
     }
 
     public void constructTree() {
-
+        //root.nodeMap.put();
     }
 
     private enum DNAAlphabet {
