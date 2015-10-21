@@ -15,9 +15,37 @@ public final List<Character> DNAAlphabet = new ArrayList<Character>('A', 'C', 'G
         Node currentParent = root;
         int currentEndPosition = DNASequence.length;
         char[] specialCaseChar;
+        Node currentNode;
+        Node currentInternalNode;
+        // Child for a potential branch for the current node
+        Node currentParentChild;
+        int delta;
 
         for(int currentStartPosition = 0; currentStartPosition < currentEndPosition; currentStartPosition++) {
-            Node currentNode = new Node(currentParent, currentStartPosition, currentEndPosition);
+            // If the letter already is existent as a child node
+            if(currentParentChild = currentParent.nodeMap.get(DNASequence[currentStartPosition])) {
+                delta = 1;
+                while(DNASequence[currentParentChild.getStartIndex() + delta] == DNASequence[currentStartPosition + delta]) {
+                    delta++;
+                }
+
+                currentInternalNode = new Node(
+                    currentParent,
+                    currentParentChild.getStartIndex(),
+                    currentParentChild.getStartIndex() + delta - 1);
+
+                currentParent.nodeMap.put(DNASequence[currentStartPosition]);
+
+                currentParentChild.setStartIndex(currentParentChild.getStartIndex() + delta);
+
+                currentParentChild.parent = currentInternalNode;
+
+                currentInternalNode.nodeMap.put(DNASequence[currentParentChild.getStartIndex()]);
+
+            } else {
+                currentNode = new Node(currentParent, currentStartPosition, currentEndPosition);
+                currentParent.nodeMap.put(DNASequence[currentStartPosition], currentNode);
+            }
 
             if(DNAAlphabet.contains(DNASequence[currentStartPosition])) {
                 root.nodeMap.put(DNASequence[currentStartPosition], currentNode);
