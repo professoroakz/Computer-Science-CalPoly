@@ -124,7 +124,11 @@ public final class GuiDriver {
         public void actionPerformed(ActionEvent e) {
             String outputText = outputFileTextField.getText();
             if(validateOutputFileName(outputText)) {
-                
+                Controller controller = new Controller(outputText + ".txt");
+                if(controller.readFiles(queryFile, subjectFile)) {
+                    // actually do some shit
+                    System.out.println("We in dis bois.");
+                }
             }
             else {
                 System.out.println("The output file " + outputText + " is invalid. It cannot contain spaces or \\ / : * ? \" < > |");
