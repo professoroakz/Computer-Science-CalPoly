@@ -127,7 +127,7 @@ public final class GuiDriver {
                 Controller controller = new Controller(outputText + ".txt");
                 if(controller.readFiles(queryFile, subjectFile)) {
                     // actually do some shit
-                    System.out.println("We in dis bois.");
+                    // System.out.println("We in dis bois.");
                 }
             }
             else {

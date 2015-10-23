@@ -1,14 +1,17 @@
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 public class SuffixTree {
 
 public Node root;
 public char[] DNASequence;
-public final List<Character> DNAAlphabet = new ArrayList<Character>('A', 'C', 'G', 'T', '$');
+public final List<Character> DNAAlphabet = new ArrayList<Character>();
 
     public SuffixTree(String s){
         root = new Node(null, -1, -1);
         DNASequence = s.toCharArray();
+        DNAAlphabet.add('A');
     }
 
     public void constructTree() {
@@ -22,8 +25,9 @@ public final List<Character> DNAAlphabet = new ArrayList<Character>('A', 'C', 'G
         int delta;
 
         for(int currentStartPosition = 0; currentStartPosition < currentEndPosition; currentStartPosition++) {
+            currentParentChild = currentParent.nodeMap.get(DNASequence[currentStartPosition]);
             // If the letter already is existent as a child node
-            if(currentParentChild = currentParent.nodeMap.get(DNASequence[currentStartPosition])) {
+            if(currentParentChild != null) {
                 delta = 1;
                 while(DNASequence[currentParentChild.getStartIndex() + delta] == DNASequence[currentStartPosition + delta]) {
                     delta++;
@@ -34,30 +38,30 @@ public final List<Character> DNAAlphabet = new ArrayList<Character>('A', 'C', 'G
                     currentParentChild.getStartIndex(),
                     currentParentChild.getStartIndex() + delta - 1);
 
-                currentParent.nodeMap.put(DNASequence[currentStartPosition]);
+                currentParent.nodeMap.put(DNASequence[currentStartPosition], currentInternalNode);
 
                 currentParentChild.setStartIndex(currentParentChild.getStartIndex() + delta);
 
                 currentParentChild.parent = currentInternalNode;
 
-                currentInternalNode.nodeMap.put(DNASequence[currentParentChild.getStartIndex()]);
+                currentInternalNode.nodeMap.put(DNASequence[currentParentChild.getStartIndex()], currentParentChild);
 
             } else {
                 currentNode = new Node(currentParent, currentStartPosition, currentEndPosition);
                 currentParent.nodeMap.put(DNASequence[currentStartPosition], currentNode);
             }
 
-            if(DNAAlphabet.contains(DNASequence[currentStartPosition])) {
-                root.nodeMap.put(DNASequence[currentStartPosition], currentNode);
-            } else {
-                try {
-                    specialCaseChar = specialCharacters(DNASequence[currentStartPosition]);
+            // if(DNAAlphabet.contains(DNASequence[currentStartPosition])) {
+            //     root.nodeMap.put(DNASequence[currentStartPosition], currentNode);
+            // } else {
+            //     try {
+            //         specialCaseChar = specialCharacters(DNASequence[currentStartPosition]);
 
-                } catch(IllegalArgumentException e) {
-                    System.out.println("Illegal char found in seq at pos: " + currentStartPosition);
-                    System.exit(0);
-                }
-            }
+            //     } catch(IllegalArgumentException e) {
+            //         System.out.println("Illegal char found in seq at pos: " + currentStartPosition);
+            //         System.exit(0);
+            //     }
+            // }
         }
 
     }

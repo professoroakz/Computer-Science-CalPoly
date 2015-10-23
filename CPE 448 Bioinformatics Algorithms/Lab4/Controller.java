@@ -47,6 +47,23 @@ public class Controller {
           }
           return true;
      }
+
+     public String reverseCompliment(String sequence) {
+          StringBuilder retSequence = new StringBuilder();
+
+          for(int i = sequence.length() - 1; i >= 0; i++) {
+               switch(sequence.charAt(i)) {
+               case 'A': retSequence.append('T');
+                         break;
+               case 'T': retSequence.append('A');
+                         break;
+               case 'G': retSequence.append('C');
+                         break;
+               case 'C': retSequence.append('G');
+               }
+          }
+          return retSequence.toString();
+     }
 }
 
 
