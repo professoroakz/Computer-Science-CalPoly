@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class SuffixTree {
 
-public Node root;
-public char[] DNASequence;
-public final List<Character> DNAAlphabet = new ArrayList<Character>();
+    public Node root;
+    public char[] DNASequence;
+    public final List<Character> DNAAlphabet = new ArrayList<Character>();
 
-    public SuffixTree(String s){
+    public SuffixTree(String s) {
         root = new Node(null, -1, -1);
         DNASequence = s.toCharArray();
         DNAAlphabet.add('A');
@@ -24,19 +24,39 @@ public final List<Character> DNAAlphabet = new ArrayList<Character>();
         Node currentParentChild;
         int delta;
 
-        for(int currentStartPosition = 0; currentStartPosition < currentEndPosition; currentStartPosition++) {
+        // Case 1: Any of A C G T is non existent, create node with root as
+        // parent
+        // Case 2: A C G T is existent, create internal node
+        // Case 3: A C G T is existent, internal node is existent
+
+        for (int currentStartPosition = 0; currentStartPosition < currentEndPosition; currentStartPosition++) {
             currentParentChild = currentParent.nodeMap.get(DNASequence[currentStartPosition]);
             // If the letter already is existent as a child node
-            if(currentParentChild != null) {
-                delta = 1;
-                while(DNASequence[currentParentChild.getStartIndex() + delta] == DNASequence[currentStartPosition + delta]) {
-                    delta++;
+            if (currentParentChild != null) {
+                while(currentParentChild.getInternalNodeStatus()) {
+                    currentParent = currentParentChild;
+                    if(currentParentChild = currentParent.nodeMap.get(DNASequence[currentStartPosition])){
+                        break;
+                    }
+
+                    // update child indexes
+                    // change intervals for all the children
+
+                    currentParentChild.setStartIndex(getStartIndex() - );
                 }
 
-                currentInternalNode = new Node(
-                    currentParent,
-                    currentParentChild.getStartIndex(),
-                    currentParentChild.getStartIndex() + delta - 1);
+                delta = 1;
+                if(currentParentChild != null) {
+                    while (DNASequence[currentParentChild.getStartIndex() + delta] == DNASequence[currentStartPosition
+                        + delta]) {
+                        delta++;
+                }
+                    }
+
+                currentInternalNode = new Node(currentParent, // Parent
+                        currentParentChild.getStartIndex(), // start position
+                        currentParentChild.getStartIndex() + delta - 1); // end
+                                                                            // position
 
                 currentParent.nodeMap.put(DNASequence[currentStartPosition], currentInternalNode);
 
@@ -46,21 +66,32 @@ public final List<Character> DNAAlphabet = new ArrayList<Character>();
 
                 currentInternalNode.nodeMap.put(DNASequence[currentParentChild.getStartIndex()], currentParentChild);
 
+                Node nodeToInsert =
+                new Node(currentInternalNode,
+                        currentStartPosition + delta,
+                        currentEndPosition));
+
+                currentInternalNode.nodeMap.put(DNASequence[currentStartPosition], nodeToInsert);
+                currentParent = root;
             } else {
+                // Case 1
                 currentNode = new Node(currentParent, currentStartPosition, currentEndPosition);
                 currentParent.nodeMap.put(DNASequence[currentStartPosition], currentNode);
+                currentParent = root;
             }
 
             // if(DNAAlphabet.contains(DNASequence[currentStartPosition])) {
-            //     root.nodeMap.put(DNASequence[currentStartPosition], currentNode);
+            // root.nodeMap.put(DNASequence[currentStartPosition], currentNode);
             // } else {
-            //     try {
-            //         specialCaseChar = specialCharacters(DNASequence[currentStartPosition]);
+            // try {
+            // specialCaseChar =
+            // specialCharacters(DNASequence[currentStartPosition]);
 
-            //     } catch(IllegalArgumentException e) {
-            //         System.out.println("Illegal char found in seq at pos: " + currentStartPosition);
-            //         System.exit(0);
-            //     }
+            // } catch(IllegalArgumentException e) {
+            // System.out.println("Illegal char found in seq at pos: " +
+            // currentStartPosition);
+            // System.exit(0);
+            // }
             // }
         }
 
@@ -68,14 +99,33 @@ public final List<Character> DNAAlphabet = new ArrayList<Character>();
 
     public char[] specialCharacters(char c) throws IllegalArgumentException {
         char[] retChar = new char[2];
-        switch(c) {
-            case 'W': retChar[0] = 'A'; retChar[1] = 'T'; break;
-            case 'M': retChar[0] = 'A'; retChar[1] = 'C'; break;
-            case 'S': retChar[0] = 'C'; retChar[1] = 'G'; break;
-            case 'K': retChar[0] = 'G'; retChar[1] = 'T'; break;
-            case 'R': retChar[0] = 'A'; retChar[1] = 'G'; break;
-            case 'Y': retChar[0] = 'C'; retChar[1] = 'T'; break;
-            default: throw new IllegalArgumentException("Something strange happend");
+        switch (c) {
+        case 'W':
+            retChar[0] = 'A';
+            retChar[1] = 'T';
+            break;
+        case 'M':
+            retChar[0] = 'A';
+            retChar[1] = 'C';
+            break;
+        case 'S':
+            retChar[0] = 'C';
+            retChar[1] = 'G';
+            break;
+        case 'K':
+            retChar[0] = 'G';
+            retChar[1] = 'T';
+            break;
+        case 'R':
+            retChar[0] = 'A';
+            retChar[1] = 'G';
+            break;
+        case 'Y':
+            retChar[0] = 'C';
+            retChar[1] = 'T';
+            break;
+        default:
+            throw new IllegalArgumentException("Something strange happend");
         }
 
         return retChar;
@@ -84,8 +134,11 @@ public final List<Character> DNAAlphabet = new ArrayList<Character>();
     /* Leaf node */
     private class Node {
         private Node parent;
+        private boolean isInternalNode;
+        private int insertedOrder;
         private int startIndex;
         private int endIndex;
+
         public HashMap<Character, Node> nodeMap = new HashMap<Character, Node>();
 
         private Node(Node parent, int startIndex, int endIndex) {
@@ -94,27 +147,43 @@ public final List<Character> DNAAlphabet = new ArrayList<Character>();
             this.endIndex = endIndex;
         }
 
-        public void setStartIndex(int index){
+        public void setInsertedOrder(int insertedOrder) {
+            this.insertedOrder = insertedOrder;
+        }
+
+        public boolean getInsertedOrder() {
+            return insertedOrder;
+        }
+
+        public void setInternalNodeStatus(boolean internalNodeStatus) {
+            this.isInternalNode = internalNodeStatus;
+        }
+
+        public boolean getInternalNodeStatus() {
+            return isInternalNode;
+        }
+
+        public void setStartIndex(int index) {
             this.startIndex = index;
         }
 
-        public int getStartIndex(){
+        public int getStartIndex() {
             return startIndex;
         }
 
-        public void setEndIndex(int index){
+        public void setEndIndex(int index) {
             this.startIndex = index;
         }
 
-        public int getEndIndex(){
+        public int getEndIndex() {
             return endIndex;
         }
 
-        public void setParent(Node newParent){
+        public void setParent(Node newParent) {
             this.parent = newParent;
         }
 
-        public Node getParent(){
+        public Node getParent() {
             return parent;
         }
     }
