@@ -7,13 +7,15 @@ public class SuffixTree {
     public Node root;
     public char[] DNASequence;
     public final List<Character> DNAAlphabet = new ArrayList<Character>();
+    public Node curParent, curInternalNode, curParentChild;
+    public int startPos, delta, endPos;
 
     public SuffixTree(String s) {
         root = new Node(null, -1, -1);
         DNASequence = s.toCharArray();
         DNAAlphabet.add('A');
     }
-
+    
     public void constructTree() {
         Node currentParent = root;
         int currentEndPosition = DNASequence.length;
@@ -97,6 +99,24 @@ public class SuffixTree {
 
     }
 
+    //traverseTree takes a given suffix, given through 2 ints, and then traverses an existing 
+    //suffix tree to the correct spot in the tree for inserting a leaf node and/or internal node.
+    //performs traversal only.
+    public void traverseTree(int start) {
+    	curParent = root;
+    	endPos = DNASequence.length;
+    	curParentChild = curParent.nodeMap.get(DNASequence[start]); //may assign null
+    	delta = 0;
+    	
+    	if(curParentChild == null)
+    		return;
+    	while() {
+    	
+    		while(DNASequence[curParentChild.getStartIndex() + delta] == DNASequence[start + delta])
+    			delta++;
+    	}
+    }
+    
     public char[] specialCharacters(char c) throws IllegalArgumentException {
         char[] retChar = new char[2];
         switch (c) {
@@ -131,7 +151,8 @@ public class SuffixTree {
         return retChar;
     }
 
-    /* Leaf node */
+    /* Leaf node or internal node */
+    //If a leaf node, it can never have children. If an internal node it can l=only have at most 5 children.
     private class Node {
         private Node parent;
         private boolean isInternalNode;
