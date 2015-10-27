@@ -105,15 +105,25 @@ public class SuffixTree {
     public void traverseTree(int start) {
     	curParent = root;
     	endPos = DNASequence.length;
-    	curParentChild = curParent.nodeMap.get(DNASequence[start]); //may assign null
+		curParentChild = curParent.nodeMap.get(DNASequence[start]); //may assign null
     	delta = 0;
     	
-    	if(curParentChild == null)
-    		return;
-    	while() {
-    	
-    		while(DNASequence[curParentChild.getStartIndex() + delta] == DNASequence[start + delta])
+    	while(curParentChild != null) {
+    		while(DNASequence[curParentChild.getStartIndex() + delta] == DNASequence[start + delta]) {
+    			if(curParentChild.getStartIndex() + delta > curParentChild.getEndIndex()) {
+    				start += delta;
+    				break;
+    			}
     			delta++;
+    		}
+    		if(curParentChild.isInternalNode == true) {
+    			curParent = curParentChild;
+    			curParentChild = curParent.nodeMap.get(DNASequence[start + delta]); //may assign null
+    			start += delta;
+    			delta = 0;
+    		}
+    		else
+    			break;
     	}
     }
     
