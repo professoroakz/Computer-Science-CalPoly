@@ -24,7 +24,7 @@ public final class GuiDriver {
   public static void main(String... aArgs){
 	  //////////////////////////////////////////////// testing for traverseTree() method
 	  SuffixTree s = new SuffixTree("AAGAAGAAG$");
-	  s.traverseTree(4);
+	  s.traverseTree(5);
 	  ///////////////////////////////////////////////
     GuiDriver app = new GuiDriver();
     app.buildAndDisplayGui();
