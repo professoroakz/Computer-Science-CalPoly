@@ -12,20 +12,27 @@ public class SuffixTree {
 
     public SuffixTree(String s) {
         root = new Node(null, -1, -1);
+        root.setInsertedOrder(0);
         /////////////////////////////////////////testing for traverseTree() method
-        Node N1, N2, N3, N4, N5;
+        Node N1, N2, N3, N4, N5, N6;
         N1 = new Node(root, 1, 1);
         N1.setInternalNodeStatus(true);
         root.nodeMap.put('A', N1);
-        N2 = new Node(N1, 2, 10);
-        N2.setInsertedOrder(1);
+        N2 = new Node(N1, 2, 6);
+        N2.setInternalNodeStatus(true);
         N1.nodeMap.put('A', N2);
-        N3 = new Node(N1, 3, 10);
-        N3.setInsertedOrder(2);
-        N1.nodeMap.put('G', N3);
-        N4 = new Node(root, 3, 10);
-        N4.setInsertedOrder(3);
-        root.nodeMap.put('G', N4);
+        N3 = new Node(N2, 7, 10);
+        N3.setInsertedOrder(1);
+        N2.nodeMap.put('A', N3);
+        N4 = new Node(N1, 3, 10);
+        N4.setInsertedOrder(2);
+        N1.nodeMap.put('G', N4);
+        N5 = new Node(root, 3, 10);
+        N5.setInsertedOrder(3);
+        root.nodeMap.put('G', N5);
+        N6 = new Node(N2, 10, 10);
+        N6.setInsertedOrder(4);
+        N2.nodeMap.put('$', N6);
         /////////////////////////////////////////
         DNASequence = s.toCharArray();
         DNAAlphabet.add('A');
@@ -131,9 +138,8 @@ public class SuffixTree {
     //traverseTree takes a given suffix, given through 2 ints, and then traverses an existing
     //suffix tree to the correct spot in the tree for inserting a leaf node and/or internal node.
     //performs traversal only.
-    public void traverseTree(int start) {
-        if(root == null || start < 1) throw new IllegalArgumentException("Invalid input");
 
+    public void traverseTree(int start) {
     	curParent = root;
     	endPos = DNASequence.length;
 		curParentChild = curParent.nodeMap.get(DNASequence[start-1]); //may assign null
@@ -144,7 +150,8 @@ public class SuffixTree {
     		while(DNASequence[curParentChild.getStartIndex() + delta - 1] == DNASequence[start + delta - 1]) {
     			System.out.println(delta);
     			if(curParentChild.getStartIndex() + delta > curParentChild.getEndIndex()) {
-    				start += delta;
+    				//start += delta;
+    				System.out.println("delta oversteps child bounds");
     				break;
     			}
     			delta++;
@@ -161,7 +168,7 @@ public class SuffixTree {
                 break;
             }
     	}
-    	System.out.println("Delta: " + delta + " , curParent: " + curParent.getInsertedOrder());
+    	System.out.println("Delta: " + delta + " , curParent: " + curParent.getInsertedOrder() + ", curParentChild: " + curParentChild.getInsertedOrder());
     }
 
     public char[] specialCharacters(char c) throws IllegalArgumentException {
@@ -213,7 +220,7 @@ public class SuffixTree {
             this.parent = parent;
             this.startIndex = startIndex;
             this.endIndex = endIndex;
-            this.insertedOrder = 0;
+            this.insertedOrder = -1;
             this.isInternalNode = false;
         }
 

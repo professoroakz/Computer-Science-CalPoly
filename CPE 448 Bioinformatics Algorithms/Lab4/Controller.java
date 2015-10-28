@@ -14,8 +14,12 @@ public class Controller {
      PrintWriter writer;
      String outputFilename;
 
+     ArrayList<String> queries;
+     String subjectSequence = "";
+
      public Controller(String output) {
           outputFilename = output;
+          queries = new ArrayList<String>();
      }
 
      public boolean readFiles(File query, File subject) {
@@ -45,13 +49,202 @@ public class Controller {
                System.out.println("Error when creating " + outputFilename);
                return false;
           }
+
+          subjectScanner.nextLine();
+          while(subjectScanner.hasNextLine()) {
+               subjectSequence += subjectScanner.nextLine().toUpperCase();
+          }
+
           return true;
+     }
+
+     public boolean loadQueries() {
+          String currentQuery = "";
+          boolean hasMoreQueries = false;
+          boolean currentQueryAdded = false;
+          String line;
+
+          try {
+               line = queryScanner.nextLine().toUpperCase(); // scan the first line with >
+          } catch(Exception e) {
+               System.out.println("Query file is empty. Please fix and run again.");
+               closeOutputFile(false);
+               return false;
+          }
+
+          if(line.charAt(0) != '>') {
+               System.out.println("Queries incorrectly separated. Please fix and run again.");
+               closeOutputFile(false);
+               return false;
+          }
+
+          do {
+               while(queryScanner.hasNextLine()) {
+                    hasMoreQueries = false;
+                    line = queryScanner.nextLine().toUpperCase();
+
+                    if(line.trim().length() == 0) {
+                         System.out.println("Empty line found in QueryFile " + queryFile.getName() + ". Please fix and run again.");
+                         closeOutputFile(false);
+                         return false;
+                    }
+
+                    if(line.charAt(0) == '>') {
+                         if(!currentQueryAdded) {
+                              addExtraSequences(currentQuery);
+                         } else {
+                              System.out.println("Queries incorrectly separated. Please fix and run again.");
+                              closeOutputFile(false);
+                              return false;
+                         }
+                         currentQueryAdded = true;
+                         currentQuery = "";
+                         // we have reached the end of this query, but we have another
+                         hasMoreQueries = true;
+                         break;
+                    } else {
+                         currentQuery += line;
+                         currentQueryAdded = false;
+                    }
+                    
+               }
+          } while(hasMoreQueries && queryScanner.hasNextLine());
+
+          // need to add the last query, but only if the last line of the file was a query
+          if(!currentQueryAdded) {
+               addExtraSequences(currentQuery);
+          }
+
+          return true;
+     }
+
+     public void run() {
+          int startPosition;
+          SuffixTree suffixTree = new SuffixTree(subjectSequence);
+          // build the tree here!
+
+          writer.println("Query Found,Nucleotide Start,Nucleotide End");
+
+          for(String query : queries) {
+               startPosition = /*THIS NEEDS TO BE THE RETURN FROM TRAVERSING THE TREE*/0;
+               writer.print(query + ",");
+               writer.print(startPosition + ",");
+               writer.println((startPosition + query.length() /* - 1 */));
+          }
+
+          closeOutputFile(true);
+     }
+
+     private void closeOutputFile(boolean isGoodExit) {
+          try {
+               writer.close();
+               if(isGoodExit) {
+                    System.out.println("Congratulations! Your file is successfully downloaded to '" + outputFilename + "'");
+               }
+          } catch(Exception e) {
+               // do nothing, we want to close the file
+          }
+     }
+
+     /*
+      * Adds the extra sequences for wild cards and reverse compliments
+      * for a given string.
+      */
+     private void addExtraSequences(String query) {
+          // wild cards, then reverse compliments
+          int numWildCards = 0;
+          StringBuilder wild1 = new StringBuilder();
+          StringBuilder wild2 = new StringBuilder();
+          StringBuilder wild3 = new StringBuilder();
+          StringBuilder wild4 = new StringBuilder();
+
+          for(int i = 0; i < query.length(); i++) {
+               switch(query.charAt(i)) {
+                    case 'W': if(numWildCards == 0) {
+                                   wild1.append('A'); wild2.append('T'); wild3.append('A'); wild4.append('T');
+                              } else {
+                                   wild1.append('T'); wild2.append('T'); wild3.append('A'); wild4.append('A');
+                              }
+                              numWildCards++;
+                              break;
+
+                    case 'S': if(numWildCards == 0) {
+                                   wild1.append('C'); wild2.append('G'); wild3.append('C'); wild4.append('G');
+                              } else {
+                                   wild1.append('G'); wild2.append('G'); wild3.append('C'); wild4.append('C');
+                              }
+                              numWildCards++;
+                              break;
+
+                    case 'M': if(numWildCards == 0) {
+                                   wild1.append('A'); wild2.append('C'); wild3.append('A'); wild4.append('C');
+                              } else {
+                                   wild1.append('C'); wild2.append('C'); wild3.append('A'); wild4.append('A');
+                              }
+                              numWildCards++;
+                              break;
+
+                    case 'K': if(numWildCards == 0) {
+                                   wild1.append('G'); wild2.append('T'); wild3.append('G'); wild4.append('T');
+                              } else {
+                                   wild1.append('T'); wild2.append('T'); wild3.append('G'); wild4.append('G');
+                              }
+                              numWildCards++;
+                              break;
+                              
+                    case 'R': if(numWildCards == 0) {
+                                   wild1.append('A'); wild2.append('G'); wild3.append('A'); wild4.append('G');
+                              } else {
+                                   wild1.append('G'); wild2.append('G'); wild3.append('A'); wild4.append('A');
+                              }
+                              numWildCards++;
+                              break;
+                              
+                    case 'Y': if(numWildCards == 0) {
+                                   wild1.append('C'); wild2.append('T'); wild3.append('C'); wild4.append('T');
+                              } else {
+                                   wild1.append('T'); wild2.append('T'); wild3.append('C'); wild4.append('C');
+                              }
+                              numWildCards++;
+                              break;
+
+                    case 'A': wild1.append('A'); wild2.append('A'); wild3.append('A'); wild4.append('A'); break;
+                    case 'T': wild1.append('T'); wild2.append('T'); wild3.append('T'); wild4.append('T'); break;
+                    case 'C': wild1.append('C'); wild2.append('C'); wild3.append('C'); wild4.append('C'); break;
+                    case 'G': wild1.append('G'); wild2.append('G'); wild3.append('G'); wild4.append('G'); break;
+                    default: System.out.println("Invalid character found in a query: " + query + ". Please fix and run again.");
+                             System.exit(0);
+               }
+          }
+
+          if(numWildCards == 0) {
+               queries.add(query);
+               queries.add(reverseCompliment(query));
+          } else if(numWildCards == 1) {
+               queries.add(wild1.toString());
+               queries.add(wild2.toString());
+               queries.add(reverseCompliment(wild1.toString()));
+               queries.add(reverseCompliment(wild2.toString()));
+          } else if(numWildCards == 2) {
+               queries.add(wild1.toString());
+               queries.add(wild2.toString());
+               queries.add(wild3.toString());
+               queries.add(wild4.toString());
+               queries.add(reverseCompliment(wild1.toString()));
+               queries.add(reverseCompliment(wild2.toString()));
+               queries.add(reverseCompliment(wild3.toString()));
+               queries.add(reverseCompliment(wild4.toString()));
+          } else {
+               System.out.println("Too many degenerate nucleotides in query: " + query + ". Please fix and run again.");
+               System.exit(0);
+          }
      }
 
      public String reverseCompliment(String sequence) {
           StringBuilder retSequence = new StringBuilder();
 
-          for(int i = sequence.length() - 1; i >= 0; i++) {
+          for(int i = sequence.length() - 1; i >= 0; i--) {
+               // System.out.println("index: " + i + " - charAt: " + sequence.charAt(i));
                switch(sequence.charAt(i)) {
                case 'A': retSequence.append('T');
                          break;
@@ -65,247 +258,3 @@ public class Controller {
           return retSequence.toString();
      }
 }
-
-
-
-/*public class DNADecoder {
-          String seq = "";
-
-          int gcCount;
-          int nCount;
-
-          public boolean readFiles(File fastaFile, File gffFile) {
-
-               fastaScanner.nextLine(); // Scan the first line, but we don't care about it
-               while(fastaScanner.hasNextLine()) {
-                    seq += fastaScanner.nextLine();
-               }
-
-               return true;
-
-          }
-
-          public void decodeDNA() {
-               boolean addedCurrentGene = false;
-
-               String gffLine;
-               String geneLinePieces[];
-               String currentGeneAttribute;
-               String currentGeneId;
-
-               writer.println("Gene #,Gene size,CDS size,Intron size,Exon size,Ratio of CDS/Gene size,Relative Gene Coverage,Gene Density");
-
-               gene = new Gene();
-
-               gffLine = gffScanner.nextLine();
-               // split up the line by the tab-deliminations
-               geneLinePieces = gffLine.split("\t");
-               // System.out.println(geneLinePieces[geneLinePieces.length - 1]);
-
-               checkFeature(geneLinePieces);
-
-               currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length -1]);
-               gene.setGeneId(currentGeneId);
-               // System.out.println(currentGeneId);
-               // System.out.println(currentGeneId.substring(0, currentGeneId.length() - 1));
-               
-               while(gffScanner.hasNextLine()) {
-                    gffLine = gffScanner.nextLine();
-                    geneLinePieces = gffLine.split("\t");
-
-                    // check if we are still looking at the current gene-variant
-                    if(gffLine.contains(currentGeneId)) {
-                         checkFeature(geneLinePieces);
-                    }
-                    // otherwise, we're either on a new gene, or new gene-variant
-                    else {
-                         // now that the current gene ended,
-                         // we need to add it to our genes
-                         genes.add(gene);
-                         addedCurrentGene = true;
-
-                         currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length - 1]);
-                         // if this isn't a variant, we are on a new Gene
-                         if(!isVariantOfGene(currentGeneId)) {
-                              gene = new Gene();
-                              addedCurrentGene = false;
-                              gene.setGeneId(currentGeneId);
-                              checkFeature(geneLinePieces);
-                         }
-                         // otherwise, it is a variant, and we want to ignore until we find one that isn't
-                         else {
-                              // need to loop until the actual next gene
-                              while(gffScanner.hasNextLine()) {
-                                   gffLine = gffScanner.nextLine();
-                                   geneLinePieces = gffLine.split("\t");
-
-                                   // we need to check if we are on a new gene, or a variant of another one
-                                   if(!gffLine.contains(currentGeneId.substring(0, currentGeneId.length() - 1))) {
-                                        currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length - 1]);
-                                        // check if we're looking at a variant of an existant gene
-                                        if(!isVariantOfGene(currentGeneId)) {
-                                             // System.out.println(currentGeneId);
-                                             break;
-                                        }
-                                        else {
-                                             // this is a variant of a gene we have already processed
-                                             // so we want to keep going again
-                                        }
-                                   }
-                              }
-
-                              // check if we failed while-condition, or broke out
-                              if(gffScanner.hasNextLine()) {
-                                   gene = new Gene();
-                                   addedCurrentGene = false;
-                                   // need to check the first line
-                                   checkFeature(geneLinePieces);
-                                   gffLine = gffScanner.nextLine();
-                                   geneLinePieces = gffLine.split("\t");
-                                   currentGeneId = findNewGeneId(geneLinePieces[geneLinePieces.length - 1]);
-                                   // then get the second line before continuing
-                                   gene.setGeneId(currentGeneId);
-                                   checkFeature(geneLinePieces);
-                              }
-                              else {
-                                   // otherwise, we finished the file, so don't worry, we'll pop out completely
-                              }
-                         }
-                         
-                    }
-               }
-
-               if(!addedCurrentGene) {
-                    genes.add(gene);
-               }
-
-               // start doing math things and printing here
-               doMathAndOutputs();
-
-               try {
-                    writer.close();
-                    System.out.println("Congratulations! Your file is successfully downloaded to '" + outputFilename + "'");
-               }
-               catch(Exception e) {
-                    // don't do anything
-               }
-
-          }
-
-          private void doMathAndOutputs() {
-               int geneNum = 1;
-               for(Gene g : genes) {
-                    // if(geneNum == 9) System.out.println(g.getGeneId() + " - " + g.getCodingSequenceSize());
-
-                    // Gene number
-                    writer.print("Gene " + geneNum + ",");
-                    // Gene size
-                    writer.print(g.getGeneSize() + " nucleotides,");
-                    // CDS size
-                    writer.print(g.getCodingSequenceSize() + " nucleotides,");
-                    // Intron size
-                    writer.print(g.getIntronSize() + " nucleotides,");
-                    // Exon size
-                    writer.print(g.getExonSize() + " nucleotides,");
-                    // CDS / Gene Size ratio
-                    writer.print(getCDSToGeneSizeRatio(g) + ",");
-                    // Relative Gene Coverage
-                    writer.print(getRelativeGeneCoverage() + "%,");
-                    // Gene Density
-                    writer.println(getGeneDensity());
-                    geneNum++;
-               }
-          }
-
-          private String getCDSToGeneSizeRatio(Gene g) {
-               int cds = g.getCodingSequenceSize();
-               int geneSize = g.getGeneSize();
-
-               DecimalFormat df = new DecimalFormat("#.#");
-
-               return df.format((double)cds / geneSize);
-          }
-
-          private String getRelativeGeneCoverage() {
-               int numGenes = genes.size();
-               double avgGeneSize;
-               double retNum;
-
-               int geneNucleotides = 0;
-
-               for(Gene g : genes) {
-                    geneNucleotides += g.getGeneSize();
-               }
-
-               avgGeneSize = (double)geneNucleotides / numGenes;
-
-               retNum = avgGeneSize / seq.length();
-
-               return String.format("%.4f", (float)retNum);
-          }
-
-          private String getGeneDensity() {
-               int numGenes = genes.size();
-
-               DecimalFormat df = new DecimalFormat("#.#");
-
-               return df.format((double)numGenes / ((double)seq.length() / 10000));
-
-               // return df.format(((double)numGenes / seq.length()) * 10000);
-          }
-
-          private boolean isVariantOfGene(String id) {
-               // do this to be able to check variants
-               id = id.substring(0, id.length() - 1);
-
-               for(Gene g : genes) {
-                    if(g.getGeneId().contains(id)) {
-                         return true;
-                    }
-               }
-
-               return false;
-          }
-
-          private String findNewGeneId(String attribute) {
-               // bring the start of the string to the correct location for the actual geneId
-               attribute = attribute.substring(attribute.indexOf(" ") + 3);
-
-               return attribute.substring(0, attribute.indexOf("\""));
-          }
-
-          private void checkFeature(String[] pieces) {
-               String feature = pieces[2];
-               int start = Integer.parseInt(pieces[3]);
-               int end = Integer.parseInt(pieces[4]);
-
-               if(feature.contains("stop")) {
-                    // if this gene is showing 'stop' last
-                    if(gene.getLowestNucleotide() == -1) {
-                         gene.setLowestNucleotide(start);
-                    }
-                    else {
-                         gene.setHighestNucleotide(end);
-                    }
-               }
-               else if(feature.contains("CDS")) {
-                    // System.out.println("end: " + end + " - start: " + start);
-                    gene.incrementCodingSequenceSize(end - start + 1);
-               }
-               else if(feature.contains("exon")) {
-                    // System.out.println("end: " + end + " - start: " + start);
-                    gene.incrementExonSize(end - start + 1);
-               }
-               // otherwise it's a start_codon
-               else {
-                    // if this gene is showing 'start' first
-                    if(gene.getLowestNucleotide() == -1) {
-                         gene.setLowestNucleotide(start);
-                    }
-                    else {
-                         gene.setHighestNucleotide(end);                         
-                    }
-               }
-          }
-}
-*/
