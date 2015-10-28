@@ -52,14 +52,15 @@ public class SuffixTree {
             if (currentParentChild != null) {
                 while(currentParentChild.getInternalNodeStatus()) {
                     currentParent = currentParentChild;
-                    if(currentParentChild = currentParent.nodeMap.get(DNASequence[currentStartPosition])){
+                    currentParentChild = currentParent.nodeMap.get(DNASequence[currentStartPosition]);
+                    if(currentParentChild != null){
                         break;
                     }
 
                     // update child indexes
                     // change intervals for all the children
 
-                    currentParentChild.setStartIndex(getStartIndex() - );
+             //       currentParentChild.setStartIndex(getStartIndex() - );
                 }
 
                 delta = 1;
@@ -86,7 +87,7 @@ public class SuffixTree {
                 Node nodeToInsert =
                 new Node(currentInternalNode,
                         currentStartPosition + delta,
-                        currentEndPosition));
+                        currentEndPosition);
 
                 currentInternalNode.nodeMap.put(DNASequence[currentStartPosition], nodeToInsert);
                 currentParent = root;
