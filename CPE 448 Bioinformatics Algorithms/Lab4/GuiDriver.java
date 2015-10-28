@@ -23,8 +23,8 @@ public final class GuiDriver {
 
   public static void main(String... aArgs){
 	  //////////////////////////////////////////////// testing for traverseTree() method
-	  SuffixTree s = new SuffixTree("AAGAAGAAG$");
-	  s.traverseTree(5);
+	  //SuffixTree s = new SuffixTree("AAGAAGAAG$");
+	  //s.traverseTree(4);
 	  ///////////////////////////////////////////////
     GuiDriver app = new GuiDriver();
     app.buildAndDisplayGui();
@@ -129,9 +129,8 @@ public final class GuiDriver {
             String outputText = outputFileTextField.getText();
             if(validateOutputFileName(outputText)) {
                 Controller controller = new Controller(outputText + ".txt");
-                if(controller.readFiles(queryFile, subjectFile) && controller.loadQueries()) {
+                if(controller.readFiles(queryFile, subjectFile)) {
                     // actually do some shit
-                    controller.run();
                     // System.out.println("We in dis bois.");
                 }
             }
