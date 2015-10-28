@@ -30,7 +30,7 @@ public class SuffixTree {
         DNASequence = s.toCharArray();
         DNAAlphabet.add('A');
     }
-    
+
     public void constructTree() {
         Node currentParent = root;
         int currentEndPosition = DNASequence.length;
@@ -115,15 +115,30 @@ public class SuffixTree {
 
     }
 
-    //traverseTree takes a given suffix, given through 2 ints, and then traverses an existing 
+    public void insertNode() {
+        if(root == null) throw new IllegalArgumentException("Root cannot be null!");
+
+        Node currentParent = root;
+        int currentEndPosition = DNASequence.length;
+        char[] specialCaseChar;
+        Node currentNode;
+        Node currentInternalNode;
+
+        for (int currentStartPosition = 0; currentStartPosition < currentEndPosition; currentStartPosition++) {
+
+    }
+
+    //traverseTree takes a given suffix, given through 2 ints, and then traverses an existing
     //suffix tree to the correct spot in the tree for inserting a leaf node and/or internal node.
     //performs traversal only.
     public void traverseTree(int start) {
+        if(root == null || start < 1) throw new IllegalArgumentException("Invalid input");
+
     	curParent = root;
     	endPos = DNASequence.length;
 		curParentChild = curParent.nodeMap.get(DNASequence[start-1]); //may assign null
     	delta = 0;
-    	
+
     	while(curParentChild != null) {
     		System.out.println("child is not null");
     		while(DNASequence[curParentChild.getStartIndex() + delta - 1] == DNASequence[start + delta - 1]) {
@@ -134,6 +149,7 @@ public class SuffixTree {
     			}
     			delta++;
     		}
+
     		if(curParentChild.isInternalNode == true) {
     			System.out.println("child is internal node");
     			curParent = curParentChild;
@@ -141,12 +157,13 @@ public class SuffixTree {
     			start += delta;
     			delta = 0;
     		}
-    		else
-    			break;
+    		else {
+                break;
+            }
     	}
     	System.out.println("Delta: " + delta + " , curParent: " + curParent.getInsertedOrder());
     }
-    
+
     public char[] specialCharacters(char c) throws IllegalArgumentException {
         char[] retChar = new char[2];
         switch (c) {
