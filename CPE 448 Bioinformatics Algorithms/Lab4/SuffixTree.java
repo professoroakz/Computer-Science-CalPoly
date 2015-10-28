@@ -12,6 +12,21 @@ public class SuffixTree {
 
     public SuffixTree(String s) {
         root = new Node(null, -1, -1);
+        /////////////////////////////////////////testing for traverseTree() method
+        Node N1, N2, N3, N4, N5;
+        N1 = new Node(root, 1, 1);
+        N1.setInternalNodeStatus(true);
+        root.nodeMap.put('A', N1);
+        N2 = new Node(N1, 2, 10);
+        N2.setInsertedOrder(1);
+        N1.nodeMap.put('A', N2);
+        N3 = new Node(N1, 3, 10);
+        N3.setInsertedOrder(2);
+        N1.nodeMap.put('G', N3);
+        N4 = new Node(root, 3, 10);
+        N4.setInsertedOrder(3);
+        root.nodeMap.put('G', N4);
+        /////////////////////////////////////////
         DNASequence = s.toCharArray();
         DNAAlphabet.add('A');
     }
@@ -105,11 +120,13 @@ public class SuffixTree {
     public void traverseTree(int start) {
     	curParent = root;
     	endPos = DNASequence.length;
-		curParentChild = curParent.nodeMap.get(DNASequence[start]); //may assign null
+		curParentChild = curParent.nodeMap.get(DNASequence[start-1]); //may assign null
     	delta = 0;
     	
     	while(curParentChild != null) {
-    		while(DNASequence[curParentChild.getStartIndex() + delta] == DNASequence[start + delta]) {
+    		System.out.println("child is not null");
+    		while(DNASequence[curParentChild.getStartIndex() + delta - 1] == DNASequence[start + delta - 1]) {
+    			System.out.println(delta);
     			if(curParentChild.getStartIndex() + delta > curParentChild.getEndIndex()) {
     				start += delta;
     				break;
@@ -117,14 +134,16 @@ public class SuffixTree {
     			delta++;
     		}
     		if(curParentChild.isInternalNode == true) {
+    			System.out.println("child is internal node");
     			curParent = curParentChild;
-    			curParentChild = curParent.nodeMap.get(DNASequence[start + delta]); //may assign null
+    			curParentChild = curParent.nodeMap.get(DNASequence[start + delta - 1]); //may assign null
     			start += delta;
     			delta = 0;
     		}
     		else
     			break;
     	}
+    	System.out.println("Delta: " + delta + " , curParent: " + curParent.getInsertedOrder());
     }
     
     public char[] specialCharacters(char c) throws IllegalArgumentException {
@@ -176,13 +195,15 @@ public class SuffixTree {
             this.parent = parent;
             this.startIndex = startIndex;
             this.endIndex = endIndex;
+            this.insertedOrder = 0;
+            this.isInternalNode = false;
         }
 
         public void setInsertedOrder(int insertedOrder) {
             this.insertedOrder = insertedOrder;
         }
 
-        public boolean getInsertedOrder() {
+        public int getInsertedOrder() {
             return insertedOrder;
         }
 
