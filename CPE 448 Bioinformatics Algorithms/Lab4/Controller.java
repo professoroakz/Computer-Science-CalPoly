@@ -127,10 +127,10 @@ public class Controller {
           writer.println("Query Found,Nucleotide Start,Nucleotide End");
 
           for(String query : queries) {
-               startPosition = /*THIS NEEDS TO BE THE RETURN FROM TRAVERSING THE TREE*/0;
+               startPosition = /*THIS NEEDS TO BE THE RETURN FROM TRAVERSING THE TREE*/0; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!
                writer.print(query + ",");
                writer.print(startPosition + ",");
-               writer.println((startPosition + query.length() /* - 1 */));
+               writer.println((startPosition + query.length() - 1)); // this is to get the position of the end nucleotide
           }
 
           closeOutputFile(true);
@@ -214,6 +214,7 @@ public class Controller {
                     case 'C': wild1.append('C'); wild2.append('C'); wild3.append('C'); wild4.append('C'); break;
                     case 'G': wild1.append('G'); wild2.append('G'); wild3.append('G'); wild4.append('G'); break;
                     default: System.out.println("Invalid character found in a query: " + query + ". Please fix and run again.");
+                             closeOutputFile(false);
                              System.exit(0);
                }
           }
@@ -237,6 +238,7 @@ public class Controller {
                queries.add(reverseCompliment(wild4.toString()));
           } else {
                System.out.println("Too many degenerate nucleotides in query: " + query + ". Please fix and run again.");
+               closeOutputFile(false);
                System.exit(0);
           }
      }
