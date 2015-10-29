@@ -23,6 +23,7 @@ public class SuffixTree {
     	
     	endPos = DNASequence.length;
     	for(startPos = 0; startPos < endPos; startPos++) {
+    		System.out.println( (startPos + 1)+ " rounds of construct called!!!!");
     		traverseTree(startPos);
     		insertNode();
     		insertRank++;
