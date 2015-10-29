@@ -13,10 +13,10 @@ public class SuffixTree {
 
     public SuffixTree(String s) {
         root = new Node(null, -1, -1);
-        root.setInsertedOrder(0);
+        root.setInsertedOrder(-2);
         DNASequence = s.toCharArray();
         DNAAlphabet.add('A');
-        insertRank = 1;
+        insertRank = 0;
     }
 
     public void constructTree() {
@@ -87,7 +87,7 @@ public class SuffixTree {
     			suffixMatchCount++;
     			delta++;
     		}
-    		if(curParentChild.isInternalNode == true && delta > curParentChild.getEndIndex()) {
+    		if(curParentChild.isInternalNode == true && curParentChild.getStartIndex() + delta > curParentChild.getEndIndex()) {
     			System.out.println("child is internal node");
     			curParent = curParentChild;
     			curParentChild = curParent.nodeMap.get(DNASequence[start + delta]); //may assign null

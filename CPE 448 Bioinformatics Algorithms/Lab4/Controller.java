@@ -122,12 +122,9 @@ public class Controller {
           int startPosition;
           int[] startPositions/*;*/ = {0}; // REMOVE THIS DECLARATION LATER! IT IS USELESS
           SuffixTree suffixTree = new SuffixTree(subjectSequence + "$");
-          // build the tree here!//////////////////////////////////////////////////////////////////////////////////
-          /////////////////////TESTING////////////////////////////////////////////////////////////////////////
-          suffixTree = new SuffixTree("AAGAAGAAG$");
+          
           suffixTree.constructTree();
-          ////////////////////////End TESTING ////////////////////////////////////////////////////////////
-
+          
           writer.println("Query Found,Nucleotide Start,Nucleotide End");
 
           for(String query : queries) {
