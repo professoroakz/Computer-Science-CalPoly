@@ -8,7 +8,7 @@ public class SuffixTree {
     public char[] DNASequence;
     public final List<Character> DNAAlphabet = new ArrayList<Character>();
     public Node curParent, curInternalNode, curParentChild; 
-    public int startPos, delta, endPos; //startPos and endPos will assume array index notation , delta represents 
+    public int insertRank, startPos, delta, endPos; //startPos and endPos will assume array index notation , delta represents 
     									//distance away from beginning of child node that first conflict was found
 
     public SuffixTree(String s) {
@@ -16,14 +16,16 @@ public class SuffixTree {
         root.setInsertedOrder(0);
         DNASequence = s.toCharArray();
         DNAAlphabet.add('A');
+        insertRank = 1;
     }
 
     public void constructTree() {
     	
-    	endPos =DNASequence.length;
+    	endPos = DNASequence.length;
     	for(startPos = 0; startPos < endPos; startPos++) {
     		traverseTree(startPos);
     		insertNode();
+    		insertRank++;
     	}
     	
     	/*
@@ -132,6 +134,7 @@ public class SuffixTree {
         }
         //All nodes created outside the while loop are leaf nodes.
         currentNode = new Node(curParent, curParent.getEndIndex() + delta + 1, endPos);
+        currentNode.setInsertedOrder(insertRank);
         curParent.nodeMap.put(DNASequence[curParent.getEndIndex() + delta + 1], currentNode);
         
     }
