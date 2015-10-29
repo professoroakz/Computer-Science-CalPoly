@@ -106,39 +106,86 @@ public class SuffixTree {
     	System.out.println();
     }
 
-    public char[] specialCharacters(char c) throws IllegalArgumentException {
-        char[] retChar = new char[2];
-        switch (c) {
-        case 'W':
-            retChar[0] = 'A';
-            retChar[1] = 'T';
-            break;
-        case 'M':
-            retChar[0] = 'A';
-            retChar[1] = 'C';
-            break;
-        case 'S':
-            retChar[0] = 'C';
-            retChar[1] = 'G';
-            break;
-        case 'K':
-            retChar[0] = 'G';
-            retChar[1] = 'T';
-            break;
-        case 'R':
-            retChar[0] = 'A';
-            retChar[1] = 'G';
-            break;
-        case 'Y':
-            retChar[0] = 'C';
-            retChar[1] = 'T';
-            break;
-        default:
-            throw new IllegalArgumentException("Something strange happend");
-        }
+    public int[] findStartPositions(String query) {
+          Node currentParent, currentChild;
+          ArrayList<Integer> retVals = new ArrayList<Integer>();
+          int startCompare, endCompare;
+          HashMap<Character, Node> currentParentsChildrenMap;
 
-        return retChar;
-    }
+          int queryPosition = 0;
+
+          currentParent = root;
+          currentParentsChildrenMap = currentParent.nodeMap;
+
+          System.out.println(queryPosition + " : " + query.charAt(queryPosition));
+          currentChild = currentParentsChildrenMap.get(query.charAt(queryPosition));
+
+          for(int i = 0; i < DNASequence.length; i++) {
+            System.out.print(DNASequence[i]);
+          }
+
+          System.out.println("");
+
+          System.out.println(query);
+
+          while(currentChild != null) {
+               startCompare = currentChild.getStartIndex();
+               endCompare = currentChild.getEndIndex();
+
+               // the +1 because we want to compare the value at the end position
+               for(; startCompare < endCompare + 1; startCompare++) {
+System.out.println(queryPosition + " : " + query.charAt(queryPosition) + " - " + startCompare + " : " + DNASequence[startCompare]);
+                    // if the next character in the query still matches the correct value
+                    if(DNASequence[startCompare] == query.charAt(queryPosition++)) {
+System.out.println("check length (queryPosition, then length): " + queryPosition + " : " + query.length());
+                         // if we have looked through each letter of the query successfully
+                         if(queryPosition == query.length()) {
+                              retVals.addAll(getLeafIndexes(currentChild));
+                              return convertToArray(retVals);
+                         }
+
+                    } else {
+                         // otherwise, we found a mismatch, so our query isn't here
+                         return null;
+                    }
+               }
+               
+               currentParent = currentChild;
+               currentParentsChildrenMap = currentParent.nodeMap;
+               currentChild = currentParentsChildrenMap.get(query.charAt(queryPosition));
+
+          }
+
+          if(retVals.size() > 0) {
+               return convertToArray(retVals);//retVals.toArray(useless);
+          }
+
+          // we didn't find any locations of this query
+          return null;
+     }
+
+     private int[] convertToArray(ArrayList<Integer> vals) {
+        int[] ret = new int[vals.size()];
+        for(int i = 0; i < ret.length; i++) {
+            ret[i] = vals.get(i).intValue();
+        }
+        return ret;
+     }
+
+     public ArrayList<Integer> getLeafIndexes(Node leafAncestor) {
+System.out.println("G: " + (leafAncestor.nodeMap.get('G') != null) + " - A: " + (leafAncestor.nodeMap.get('A') != null) + " - T: " + (leafAncestor.nodeMap.get('T') != null) + " - C: " + (leafAncestor.nodeMap.get('C') != null));
+          ArrayList<Integer> values = new ArrayList<Integer>();
+
+          if(!leafAncestor.getInternalNodeStatus()) {
+               values.add(leafAncestor.getInsertedOrder());
+          } else {
+               for(Character c : leafAncestor.nodeMap.keySet()) {
+                    values.addAll(getLeafIndexes(leafAncestor.nodeMap.get(c)));
+               }
+          }
+
+          return values;
+     }
 
     /* Leaf node or internal node */
     //If a leaf node, it can never have children. If an internal node it can l=only have at most 5 children.
