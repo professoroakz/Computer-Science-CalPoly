@@ -120,7 +120,8 @@ public class Controller {
 
      public void run() {
           int startPosition;
-          SuffixTree suffixTree = new SuffixTree(subjectSequence);
+          int[] startPositions/*;*/ = {0}; // REMOVE THIS DECLARATION LATER! IT IS USELESS
+          SuffixTree suffixTree = new SuffixTree(subjectSequence + "$");
           // build the tree here!//////////////////////////////////////////////////////////////////////////////////
           /////////////////////TESTING////////////////////////////////////////////////////////////////////////
           suffixTree = new SuffixTree("AAGAAGAAG$");
@@ -130,10 +131,16 @@ public class Controller {
           writer.println("Query Found,Nucleotide Start,Nucleotide End");
 
           for(String query : queries) {
-               startPosition = /*THIS NEEDS TO BE THE RETURN FROM TRAVERSING THE TREE*/0; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-               writer.print(query + ",");
-               writer.print(startPosition + ",");
-               writer.println((startPosition + query.length() - 1)); // this is to get the position of the end nucleotide
+               // startPositions = suffixTree.findStartPositions(query); // UNCOMMENT THIS OUT WHEN NEW METHODS ADDED TO SuffixTree.java
+               if(startPositions != null) {
+
+                    for(int i = 0; i < startPositions.length; i++) {
+                         startPosition = /*startPositions[i]*/0;
+                         writer.print(query + ",");
+                         writer.print(startPosition + ",");
+                         writer.println((startPosition + query.length() - 1)); // this is to get the position of the end nucleotide
+                    }                    
+               }
           }
 
           closeOutputFile(true);
