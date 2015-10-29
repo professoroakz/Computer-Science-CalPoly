@@ -24,7 +24,6 @@ public final class GuiDriver {
   public static void main(String... aArgs){
     GuiDriver app = new GuiDriver();
     app.buildAndDisplayGui();
-    
   }
 
 
@@ -126,8 +125,9 @@ public final class GuiDriver {
             String outputText = outputFileTextField.getText();
             if(validateOutputFileName(outputText)) {
                 Controller controller = new Controller(outputText + ".txt");
-                if(controller.readFiles(queryFile, subjectFile)) {
+                if(controller.readFiles(queryFile, subjectFile) && controller.loadQueries()) {
                     // actually do some shit
+                    controller.run();
                     // System.out.println("We in dis bois.");
                 }
             }
