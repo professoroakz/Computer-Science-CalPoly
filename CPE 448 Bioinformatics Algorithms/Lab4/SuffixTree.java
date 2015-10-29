@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SuffixTree {
 
@@ -118,16 +119,16 @@ public class SuffixTree {
           currentParent = root;
           currentParentsChildrenMap = currentParent.nodeMap;
 
-          System.out.println(queryPosition + " : " + query.charAt(queryPosition));
+          // System.out.println(queryPosition + " : " + query.charAt(queryPosition));
           currentChild = currentParentsChildrenMap.get(query.charAt(queryPosition));
 
-          for(int i = 0; i < DNASequence.length; i++) {
-            System.out.print(DNASequence[i]);
-          }
+          // for(int i = 0; i < DNASequence.length; i++) {
+          //   System.out.print(DNASequence[i]);
+          // }
 
-          System.out.println("");
+          // System.out.println("");
 
-          System.out.println(query);
+          // System.out.println(query);
 
           while(currentChild != null) {
                startCompare = currentChild.getStartIndex();
@@ -135,13 +136,14 @@ public class SuffixTree {
 
                // the +1 because we want to compare the value at the end position
                for(; startCompare < endCompare + 1; startCompare++) {
-System.out.println(queryPosition + " : " + query.charAt(queryPosition) + " - " + startCompare + " : " + DNASequence[startCompare]);
+// System.out.println(queryPosition + " : " + query.charAt(queryPosition) + " - " + startCompare + " : " + DNASequence[startCompare]);
                     // if the next character in the query still matches the correct value
                     if(DNASequence[startCompare] == query.charAt(queryPosition++)) {
-System.out.println("check length (queryPosition, then length): " + queryPosition + " : " + query.length());
+// System.out.println("check length (queryPosition, then length): " + queryPosition + " : " + query.length());
                          // if we have looked through each letter of the query successfully
                          if(queryPosition == query.length()) {
                               retVals.addAll(getLeafIndexes(currentChild));
+                              Collections.sort(retVals);
                               return convertToArray(retVals);
                          }
 
@@ -158,6 +160,7 @@ System.out.println("check length (queryPosition, then length): " + queryPosition
           }
 
           if(retVals.size() > 0) {
+               Collections.sort(retVals);
                return convertToArray(retVals);//retVals.toArray(useless);
           }
 
@@ -174,7 +177,7 @@ System.out.println("check length (queryPosition, then length): " + queryPosition
      }
 
      public ArrayList<Integer> getLeafIndexes(Node leafAncestor) {
-System.out.println("G: " + (leafAncestor.nodeMap.get('G') != null) + " - A: " + (leafAncestor.nodeMap.get('A') != null) + " - T: " + (leafAncestor.nodeMap.get('T') != null) + " - C: " + (leafAncestor.nodeMap.get('C') != null));
+// System.out.println("G: " + (leafAncestor.nodeMap.get('G') != null) + " - A: " + (leafAncestor.nodeMap.get('A') != null) + " - T: " + (leafAncestor.nodeMap.get('T') != null) + " - C: " + (leafAncestor.nodeMap.get('C') != null));
           ArrayList<Integer> values = new ArrayList<Integer>();
 
           if(!leafAncestor.getInternalNodeStatus()) {
