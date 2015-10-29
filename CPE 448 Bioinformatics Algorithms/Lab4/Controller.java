@@ -121,7 +121,8 @@ public class Controller {
      public void run() {
           int startPosition;
           SuffixTree suffixTree = new SuffixTree(subjectSequence);
-          // build the tree here!
+          // build the tree here!//////////////////////////////////////////////////////////////////////////////////
+          suffixTree.constructTree();
 
           writer.println("Query Found,Nucleotide Start,Nucleotide End");
 

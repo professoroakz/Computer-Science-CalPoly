@@ -22,10 +22,6 @@ public final class GuiDriver {
   // private int scrollSize;
 
   public static void main(String... aArgs){
-	  //////////////////////////////////////////////// testing for traverseTree() method
-	  //SuffixTree s = new SuffixTree("AAGAAGAAG$");
-	  //s.traverseTree(4);
-	  ///////////////////////////////////////////////
     GuiDriver app = new GuiDriver();
     app.buildAndDisplayGui();
   }

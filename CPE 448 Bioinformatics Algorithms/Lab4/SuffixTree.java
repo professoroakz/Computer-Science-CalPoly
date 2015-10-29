@@ -14,37 +14,19 @@ public class SuffixTree {
     public SuffixTree(String s) {
         root = new Node(null, -1, -1);
         root.setInsertedOrder(0);
-        /////////////////////////////////////////testing for traverseTree() method
-        //Node N1, N2, N3, N4, N5, N6;
-        //N1 = new Node(root, 0, 0);
-        //N1.setInternalNodeStatus(true);
-        //root.nodeMap.put('A', N1);
-        //N2 = new Node(N1, 6, 9);
-        //N2.setInsertedOrder(1);
-        //N5 = new Node(N1, 1, 5);
-        //N5.setInternalNodeStatus(true);
-        //N1.nodeMap.put('A', N5);
-        //N5.nodeMap.put('A', N2);
-        //N3 = new Node(N2, 2, 9);
-        //N3.setInsertedOrder(2);
-        //N1.nodeMap.put('G', N3);
-        //N4 = new Node(root, 2, 9);
-        //N4.setInsertedOrder(3);
-        //root.nodeMap.put('G', N4);
-        //N6 = new Node(N5, 9, 9);
-        //N6.setInsertedOrder(4);
-        //N5.nodeMap.put('$', N6);
-      
-        //root.nodeMap.put('G', N5);
-        //N6 = new Node(N2, 10, 10);
-        //N6.setInsertedOrder(4);
-        //N2.nodeMap.put('$', N6);
-        /////////////////////////////////////////
         DNASequence = s.toCharArray();
         DNAAlphabet.add('A');
     }
 
     public void constructTree() {
+    	
+    	endPos =DNASequence.length;
+    	for(startPos = 0; startPos < endPos; startPos++) {
+    		traverseTree(startPos);
+    		insertNode();
+    	}
+    	
+    	/*
         Node currentParent = root;
         int currentEndPosition = DNASequence.length;
         char[] specialCaseChar;
@@ -110,6 +92,7 @@ public class SuffixTree {
                 currentParent.nodeMap.put(DNASequence[currentStartPosition], currentNode);
                 currentParent = root;
             }
+            
 
             // if(DNAAlphabet.contains(DNASequence[currentStartPosition])) {
             // root.nodeMap.put(DNASequence[currentStartPosition], currentNode);
@@ -125,25 +108,37 @@ public class SuffixTree {
             // }
             // }
         }
+        */
 
     }
-
+	// insertNode() should always be called after a call to traverseTree(). traverseTree() sets up the global class variables
+	//to correct values for inserting a new node. Then insertNode() will handle the actual insertion. And modification of node
+	// properties. insertNode() does not alter any global class variables in any way.
     public void insertNode() {
         if(root == null) throw new IllegalArgumentException("Root cannot be null!");
-
-        Node currentParent = root;
-        int currentEndPosition = DNASequence.length;
-        char[] specialCaseChar;
+        
         Node currentNode;
-        Node currentInternalNode;
 
-        for (int currentStartPosition = 0; currentStartPosition < currentEndPosition; currentStartPosition++) {
-
+        if(curParentChild != null) {
+        	// all nodes created inside are internal nodes
+        	currentNode = new Node(curParent, curParent.getEndIndex() + 1, curParentChild.getStartIndex() + delta - 1); //may not need plus 1
+        	currentNode.setInternalNodeStatus(true);
+        	currentNode.nodeMap.put(DNASequence[curParentChild.getStartIndex() + delta], curParentChild);
+        	curParent.nodeMap.put(DNASequence[currentNode.getStartIndex()], currentNode);
+        	curParentChild.setParent(currentNode);
+        	curParentChild.setStartIndex(currentNode.getEndIndex() + 1);
+        	curParent = currentNode;
+        	curParentChild = curParent.nodeMap.get(DNASequence[curParentChild.getStartIndex() + delta]);
+        }
+        //All nodes created outside the while loop are leaf nodes.
+        currentNode = new Node(curParent, curParent.getEndIndex() + delta + 1, endPos);
+        curParent.nodeMap.put(DNASequence[curParent.getEndIndex() + delta + 1], currentNode);
+        
     }
 
-    //traverseTree takes a given suffix, given through 2 ints, and then traverses an existing
+    //traverseTree takes a given suffix, given through an ints, and then traverses an existing
     //suffix tree to the correct spot in the tree for inserting a leaf node and/or internal node.
-    //performs traversal only.
+    //performs traversal only. Traversal is recorded through global class variables.
     public void traverseTree(int start) { //parameter start should be assumed to using array index notation.
     	curParent = root;
     	endPos = DNASequence.length;
@@ -218,7 +213,7 @@ public class SuffixTree {
         private Node parent;
         private boolean isInternalNode;
         private int insertedOrder;
-        private int startIndex;
+        private int startIndex; //all bounds of beginning and end are inclusive. They are part of the node.
         private int endIndex;
 
         public HashMap<Character, Node> nodeMap = new HashMap<Character, Node>();
