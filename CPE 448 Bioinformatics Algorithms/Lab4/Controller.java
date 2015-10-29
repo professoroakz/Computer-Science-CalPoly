@@ -131,7 +131,7 @@ public class Controller {
                if(startPositions != null) {
 
                     for(int i = 0; i < startPositions.length; i++) {
-                         startPosition = startPositions[i];///*startPositions[i]*/0;
+                         startPosition = startPositions[i] + 1;///*startPositions[i]*/0;
                          writer.print(query + ",");
                          writer.print(startPosition + ",");
                          writer.println((startPosition + query.length() - 1)); // this is to get the position of the end nucleotide
