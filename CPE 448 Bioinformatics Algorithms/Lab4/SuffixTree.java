@@ -87,7 +87,7 @@ public class SuffixTree {
     			suffixMatchCount++;
     			delta++;
     		}
-    		if(curParentChild.isInternalNode == true && ) {
+    		if(curParentChild.isInternalNode == true && delta > curParentChild.getEndIndex()) {
     			System.out.println("child is internal node");
     			curParent = curParentChild;
     			curParentChild = curParent.nodeMap.get(DNASequence[start + delta]); //may assign null
