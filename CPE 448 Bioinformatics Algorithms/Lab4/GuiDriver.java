@@ -24,6 +24,7 @@ public final class GuiDriver {
   public static void main(String... aArgs){
     GuiDriver app = new GuiDriver();
     app.buildAndDisplayGui();
+
   }
 
 
