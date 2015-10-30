@@ -128,7 +128,7 @@ public final class GuiDriver {
                 if(controller.readFiles(queryFile, subjectFile) && controller.loadQueries()) {
                     // actually do some shit
                     controller.run();
-                    System.out.println("We in dis bois.");
+//                    System.out.println("We in dis bois.");
                 }
             }
             else {

@@ -30,7 +30,7 @@ public class Controller {
                queryScanner = new Scanner(queryFile);
           }
           catch(FileNotFoundException e) {
-      //         System.out.println("Query FASTA file " + queryFile.getName() + " is missing.");
+               System.out.println("Query FASTA file " + queryFile.getName() + " is missing.");
                return false;
           }
 
@@ -38,7 +38,7 @@ public class Controller {
                subjectScanner = new Scanner(subjectFile);
           }
           catch(FileNotFoundException e) {
-         //      System.out.println("Subject FASTA file " + subjectFile.getName() + " is missing.");
+               System.out.println("Subject FASTA file " + subjectFile.getName() + " is missing.");
                return false;
           }
 
@@ -46,7 +46,7 @@ public class Controller {
                writer = new PrintWriter(outputFilename);
           }
           catch(FileNotFoundException e) {
-           //    System.out.println("Error when creating " + outputFilename);
+               System.out.println("Error when creating " + outputFilename);
                return false;
           }
 
@@ -67,13 +67,13 @@ public class Controller {
           try {
                line = queryScanner.nextLine().toUpperCase(); // scan the first line with >
           } catch(Exception e) {
-             //  System.out.println("Query file is empty. Please fix and run again.");
+               System.out.println("Query file is empty. Please fix and run again.");
                closeOutputFile(false);
                return false;
           }
 
           if(line.charAt(0) != '>') {
-              // System.out.println("Queries incorrectly separated. Please fix and run again.");
+               System.out.println("Queries incorrectly separated. Please fix and run again.");
                closeOutputFile(false);
                return false;
           }
@@ -84,7 +84,7 @@ public class Controller {
                     line = queryScanner.nextLine().toUpperCase();
 
                     if(line.trim().length() == 0) {
-                //         System.out.println("Empty line found in QueryFile " + queryFile.getName() + ". Please fix and run again.");
+                         System.out.println("Empty line found in QueryFile " + queryFile.getName() + ". Please fix and run again.");
                          closeOutputFile(false);
                          return false;
                     }
@@ -149,7 +149,7 @@ public class Controller {
           try {
                writer.close();
                if(isGoodExit) {
-           //         System.out.println("Congratulations! Your file is successfully downloaded to '" + outputFilename + "'");
+                    System.out.println("Congratulations! Your file is successfully downloaded to '" + outputFilename + "'");
                }
           } catch(Exception e) {
                // do nothing, we want to close the file
@@ -247,7 +247,7 @@ public class Controller {
                queries.add(reverseCompliment(wild3.toString()));
                queries.add(reverseCompliment(wild4.toString()));
           } else {
-          //     System.out.println("Too many degenerate nucleotides in query: " + query + ". Please fix and run again.");
+               System.out.println("Too many degenerate nucleotides in query: " + query + ". Please fix and run again.");
                closeOutputFile(false);
                System.exit(0);
           }
