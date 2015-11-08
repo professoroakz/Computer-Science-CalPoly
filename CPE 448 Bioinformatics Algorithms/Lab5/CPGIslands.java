@@ -9,6 +9,7 @@ public class CPGIslands {
           File file;
           Scanner scan;
           PrintWriter writer;
+          String outputFilename;
 
           String seq = "";
           String seqToUpper = "";
@@ -27,60 +28,45 @@ public class CPGIslands {
 
           int observedExpected;
 
-          public CPGIslands(int window, int step) {
+          public CPGIslands(int window, int step, String output) {
                gcCount = 0;
                windowSize = window;
                stepSize = step;
+               outputFilename = output;
           }
 
-          public void readFile(File file) {
+          public boolean readFile(File file) {
                this.file = file;
 
                try {
                     scan = new Scanner(this.file);
+                    scan.nextLine(); // get rid of the > line
                     while(scan.hasNextLine()) {
                          seq += scan.nextLine();
                     }
                     seqToUpper = seq.toUpperCase();
-                    System.out.println(seq);
-                    System.out.println(seq.length());
+                    // System.out.println(seq);
+                    // System.out.println(seq.length());
                }
                catch(FileNotFoundException e) {
                     System.out.println("File " + file.getName() + " is missing.");
+                    return false;
                }
+
+               return true;
           }
-
-          /*
-           * @deprecated Replaced by #readFile(File file).
-           */
-          @Deprecated
-          public void readFile(String fileName){
-               file = new File(fileName);
-               try {
-                    scan = new Scanner(file);
-                    scan.nextLine();
-                    while(scan.hasNextLine()) {
-                         seq += scan.nextLine();
-                    }
-
-               }
-               catch(FileNotFoundException e) {
-                    System.out.println("File " + " is missing.");
-               }
-          }
-
 
           public void readRollingGCCount() {
                try {
-                    writer = new PrintWriter("output.txt");
+                    writer = new PrintWriter(outputFilename);
                }
                catch(FileNotFoundException e) {
-                    System.out.println("Error when writing to output.txt");
+                    System.out.println("Error when writing to " + outputFilename);
                     System.exit(1);
                }
 
 
-               writer.println("start,end,observed/expected value,%GC");
+               writer.println("Start,End,Observed/Eexpected value,%GC");
 
                int fullSeqLength = seqToUpper.length();
                int currentLocation = 1;
@@ -89,20 +75,32 @@ public class CPGIslands {
                gcCount = 0;
 
                if(currentEndLocation >= fullSeqLength) {
-                    currentEndLocation = fullSeqLength - 1;
+                    currentEndLocation = fullSeqLength;
                }
 
-               while(currentEndLocation <= fullSeqLength) {
-
-                    calcCPGIslands(currentLocation, currentEndLocation, fullSeqLength - 1);
+               while(currentLocation <= currentEndLocation) {
+                    // System.out.println("currentLoc: " + currentLocation + " - currentEndLoc: " + currentEndLocation + " - fullSeqLength: " + fullSeqLength);
+                    calcCPGIslands(currentLocation, currentEndLocation, fullSeqLength);
 
                     currentLocation += stepSize;
-                    currentEndLocation += stepSize;
 
+                    if(currentEndLocation < fullSeqLength) {
+                         // System.out.println("in?");
+                         currentEndLocation += stepSize;
+                    }
                }
 
+               // while(currentEndLocation <= fullSeqLength) {
+
+               //      calcCPGIslands(currentLocation, currentEndLocation, fullSeqLength - 1);
+
+               //      currentLocation += stepSize;
+               //      currentEndLocation += stepSize;
+
+               // }
+
                writer.flush();
-               System.out.println("Congratulations! Your file is successfully downloaded to 'output.txt'");
+               System.out.println("Congratulations! Your file is successfully downloaded to '" + outputFilename + "'");
                try {
                     writer.close();
                }
@@ -113,23 +111,27 @@ public class CPGIslands {
 
           public void calcCPGIslands(int startPos, int endPos, int fullSeqLength) {
                for(int i = startPos; i < endPos; i++) {
+                    // System.out.println("i: " + i + " : seqToUpperLen: " + seqToUpper.length() + " : startPos: " + startPos + " : endPos: " + endPos);
                     if(seqToUpper.charAt(i-1) == 'C' && seqToUpper.charAt(i) == 'G') {
                          currentCpG++;
                     }
                }
 
-               for(int i = startPos; i < endPos; i++) {
+               for(int i = startPos - 1; i < endPos; i++) {
                     if(seqToUpper.charAt(i) == 'G') {
+                         // System.out.println("in G: " + i);
                               gCount++;
                     }
                     if(seqToUpper.charAt(i) == 'C') {
+                         // System.out.println("in C: " + i);
                          cCount++;
                     }
                }
 
                DecimalFormat df = new DecimalFormat("##.##");
 
-               String formattedGC = df.format((((double)(gCount + cCount) / fullSeqLength) * 100));
+               String formattedGC = df.format((((double)(gCount + cCount) / (endPos - startPos + 1)) * 100));
+     // System.out.println("currentCPG: " + currentCpG + " - total nucleotides: " + fullSeqLength + " - Cs: " + cCount + " - Gs: " + gCount);
                String formattedObservedExpected = df.format(((double)(currentCpG * fullSeqLength) / (double)(cCount * gCount)));
 
                writer.println((startPos) + "," + (endPos) + "," + formattedObservedExpected + "," + formattedGC);

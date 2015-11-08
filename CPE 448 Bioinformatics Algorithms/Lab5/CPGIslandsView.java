@@ -10,6 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JFileChooser;
 import java.io.File;
+import javax.swing.Box;
+import java.awt.Dimension;
 
 public final class CPGIslandsView {
   private File file;
@@ -32,12 +34,18 @@ public final class CPGIslandsView {
 
   private void buildContent(JFrame aFrame){
     final JPanel panel = new JPanel();
-    panel.add(new JLabel("Calculate CPG Islands!"));
 
+    Box headerBox = Box.createHorizontalBox();
+
+    headerBox.add(new JLabel("Calculate CPG Islands!"));
+
+    Box fileBox = Box.createHorizontalBox();
+    fileBox.add(new JLabel("File: "));
 
     final JTextField chosenFileTextField = new JTextField("Selected file");
-    panel.add(chosenFileTextField);
-
+    chosenFileTextField.setHorizontalAlignment(JTextField.CENTER);
+    fileBox.add(chosenFileTextField);
+    fileBox.add(Box.createRigidArea(new Dimension(5,0)));
 
     JButton btnFile = new JButton("Select FASTA file");
     btnFile.addActionListener(new ActionListener() {
@@ -57,25 +65,56 @@ public final class CPGIslandsView {
             } else {
                 System.out.println("Open command cancelled by user.");
             }
-            System.out.println(returnVal);
+            // System.out.println(returnVal);
         }
     });
 
-    panel.add(btnFile);
+    fileBox.add(btnFile);
+
+    Box outputFileBox = Box.createHorizontalBox();
+    outputFileBox.add(new JLabel("Output file: "));
+
+
+    final JTextField outputFileTextField = new JTextField("Enter desired output file name.");
+    outputFileTextField.setHorizontalAlignment(JTextField.CENTER);
+    outputFileTextField.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            outputFileTextField.setText("");
+        }
+    });
+
+    outputFileBox.add(outputFileTextField);
+
+    Box calculate = Box.createHorizontalBox();
 
     JButton ok = new JButton("Calculate!");
     ok.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
+            String outputText = outputFileTextField.getText();
             int window = 200;
             int step = 1;
 
-                CPGIslands counter = new CPGIslands(window, step);
-                counter.readFile(file);
-                counter.readRollingGCCount();
+            if(validateOutputFileName(outputText)) {
+                CPGIslands counter = new CPGIslands(window, step, outputText + ".txt");
+                if(counter.readFile(file)) {
+                  counter.readRollingGCCount();
+                }
             }
+        }
     });
     // ok.addActionListener(new ShowDialog(aFrame));
-    panel.add(ok);
+    calculate.add(ok);
+
+    Box allPieces = Box.createVerticalBox();
+    allPieces.add(headerBox);
+    allPieces.add(Box.createRigidArea(new Dimension(0,3)));
+    allPieces.add(fileBox);
+    allPieces.add(Box.createRigidArea(new Dimension(0,3)));
+    allPieces.add(outputFileBox);
+    allPieces.add(Box.createRigidArea(new Dimension(0,3)));
+    allPieces.add(calculate);
+    panel.add(allPieces);
 
     aFrame.getContentPane().add(panel);
   }
@@ -89,6 +128,23 @@ public final class CPGIslandsView {
       JOptionPane.showMessageDialog(fFrame, "Success! The file is outputed as output.txt");
     }
     private JFrame fFrame;
+  }
+
+  private boolean validateOutputFileName(String outputFile) {
+    boolean valid = true;
+
+    if(outputFile.trim().length() > 0) {
+        if(outputFile.indexOf(" ") != -1 || outputFile.indexOf("\\") != -1 || outputFile.indexOf("/") != -1 || outputFile.indexOf(":") != -1 ||
+            outputFile.indexOf("*") != -1 || outputFile.indexOf("?") != -1 || outputFile.indexOf("\"") != -1 || outputFile.indexOf("<") != -1 ||
+            outputFile.indexOf(">") != -1 || outputFile.indexOf("|") != -1) {
+            valid = false;
+        }
+    }
+    else {
+        valid = false;
+    }
+
+    return valid;
   }
 }
 
