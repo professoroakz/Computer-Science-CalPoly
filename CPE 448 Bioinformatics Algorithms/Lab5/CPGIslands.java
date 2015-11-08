@@ -38,11 +38,12 @@ public class CPGIslands {
 
                try {
                     scan = new Scanner(this.file);
-                    scan.nextLine();
                     while(scan.hasNextLine()) {
                          seq += scan.nextLine();
                     }
                     seqToUpper = seq.toUpperCase();
+                    System.out.println(seq);
+                    System.out.println(seq.length());
                }
                catch(FileNotFoundException e) {
                     System.out.println("File " + file.getName() + " is missing.");
