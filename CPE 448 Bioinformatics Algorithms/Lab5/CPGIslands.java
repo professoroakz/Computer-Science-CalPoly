@@ -85,14 +85,14 @@ public class CPGIslands {
                int fullSeqLength = seqToUpper.length();
                int currentLocation = 1;
                int currentEndLocation = windowSize;
+
                gcCount = 0;
 
-               if(currentEndLocation > fullSeqLength) {
+               if(currentEndLocation >= fullSeqLength) {
                     currentEndLocation = fullSeqLength - 1;
                }
 
-               while(currentEndLocation <= fullSeqLength - 1) {
-
+               while(currentEndLocation <= fullSeqLength) {
 
                     calcCPGIslands(currentLocation, currentEndLocation, fullSeqLength - 1);
 
