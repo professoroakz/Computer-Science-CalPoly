@@ -17,7 +17,7 @@ public class CPGIslands {
           int windowSize = 200;
           int stepSize = 1;
 
-          int gcCount;
+          double gcCount;
           int cCount;
           int gCount;
 
@@ -26,10 +26,9 @@ public class CPGIslands {
           int currentStartIndex;
           int currentEndIndex;
 
-          int observedExpected;
+          double observedExpected;
 
           public CPGIslands(int window, int step, String output) {
-               gcCount = 0;
                windowSize = window;
                stepSize = step;
                outputFilename = output;
@@ -72,32 +71,19 @@ public class CPGIslands {
                int currentLocation = 1;
                int currentEndLocation = windowSize;
 
-               gcCount = 0;
-
                if(currentEndLocation >= fullSeqLength) {
                     currentEndLocation = fullSeqLength;
                }
 
                while(currentLocation <= currentEndLocation) {
-                    // System.out.println("currentLoc: " + currentLocation + " - currentEndLoc: " + currentEndLocation + " - fullSeqLength: " + fullSeqLength);
                     calcCPGIslands(currentLocation, currentEndLocation, fullSeqLength);
 
                     currentLocation += stepSize;
 
                     if(currentEndLocation < fullSeqLength) {
-                         // System.out.println("in?");
                          currentEndLocation += stepSize;
                     }
                }
-
-               // while(currentEndLocation <= fullSeqLength) {
-
-               //      calcCPGIslands(currentLocation, currentEndLocation, fullSeqLength - 1);
-
-               //      currentLocation += stepSize;
-               //      currentEndLocation += stepSize;
-
-               // }
 
                writer.flush();
                System.out.println("Congratulations! Your file is successfully downloaded to '" + outputFilename + "'");
@@ -111,7 +97,6 @@ public class CPGIslands {
 
           public void calcCPGIslands(int startPos, int endPos, int fullSeqLength) {
                for(int i = startPos; i < endPos; i++) {
-                    // System.out.println("i: " + i + " : seqToUpperLen: " + seqToUpper.length() + " : startPos: " + startPos + " : endPos: " + endPos);
                     if(seqToUpper.charAt(i-1) == 'C' && seqToUpper.charAt(i) == 'G') {
                          currentCpG++;
                     }
@@ -119,22 +104,30 @@ public class CPGIslands {
 
                for(int i = startPos - 1; i < endPos; i++) {
                     if(seqToUpper.charAt(i) == 'G') {
-                         // System.out.println("in G: " + i);
                               gCount++;
                     }
                     if(seqToUpper.charAt(i) == 'C') {
-                         // System.out.println("in C: " + i);
                          cCount++;
                     }
                }
 
                DecimalFormat df = new DecimalFormat("##.##");
 
-               String formattedGC = df.format((((double)(gCount + cCount) / (endPos - startPos + 1)) * 100));
-     // System.out.println("currentCPG: " + currentCpG + " - total nucleotides: " + fullSeqLength + " - Cs: " + cCount + " - Gs: " + gCount);
-               String formattedObservedExpected = df.format(((double)(currentCpG * fullSeqLength) / (double)(cCount * gCount)));
+               gcCount = (double)(gCount + cCount) / (endPos - startPos + 1);
 
-               writer.println((startPos) + "," + (endPos) + "," + formattedObservedExpected + "," + formattedGC);
+               if(currentCpG == 0) {
+                    observedExpected = 0;
+               } else {
+                    observedExpected = (double)(currentCpG * (endPos - startPos + 1)) / (cCount * gCount);
+               }
+// System.out.println("gcCount: " + gcCount + " - cpg: " + observedExpected);
+
+               String formattedGC = df.format(gcCount * 100);
+               String formattedObservedExpected = df.format(observedExpected);
+
+               if(gcCount >= 0.5 && observedExpected >= 0.6) {
+                    writer.println((startPos) + "," + (endPos) + "," + formattedObservedExpected + "," + formattedGC);
+               }
 
                currentCpG = 0;
                gCount = 0;
