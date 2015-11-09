@@ -50,9 +50,9 @@ public final class CPGIslandsView {
     JButton btnFile = new JButton("Select FASTA file");
     btnFile.addActionListener(new ActionListener() {
         final JFrame frame = new JFrame("Select file");
+        final JFileChooser fc = new JFileChooser();
         //Handle open button action.
         public void actionPerformed(ActionEvent e) {
-            final JFileChooser fc = new JFileChooser();
             int returnVal = fc.showOpenDialog(frame);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 file = fc.getSelectedFile();
