@@ -1014,47 +1014,19 @@ body .markdown-body
     page-break-after: avoid;
   }
 }
-</style><title>LectureNotes</title></head><body><article class="markdown-body"><h2 id="global-alignment"><a name="user-content-global-alignment" href="#global-alignment" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Global Alignment</h2>
-<h3 id="scoring-function-determine-how-good-the-global-alignment-is-quality"><a name="user-content-scoring-function-determine-how-good-the-global-alignment-is-quality" href="#scoring-function-determine-how-good-the-global-alignment-is-quality" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Scoring function - Determine how good the global alignment is (quality)</h3>
-<h3 id="align-every-single-character-from-one-string-to-another"><a name="user-content-align-every-single-character-from-one-string-to-another" href="#align-every-single-character-from-one-string-to-another" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Align every single character from one string to another</h3>
-<h2 id="local-alignment"><a name="user-content-local-alignment" href="#local-alignment" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Local Alignment</h2>
-<h3 id="string-s-p-try-to-find-a-portion-of-s-and-p-where-the-global-alignment-is-really-good"><a name="user-content-string-s-p-try-to-find-a-portion-of-s-and-p-where-the-global-alignment-is-really-good" href="#string-s-p-try-to-find-a-portion-of-s-and-p-where-the-global-alignment-is-really-good" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>String s, p - Try to find a portion of s and p where the global alignment is really good</h3>
-<ul>
-<li><strong><em>_</em>&mdash;</strong><strong><em>_</em>_ in </strong><strong><em>_</em></strong><strong><em>_</em>&mdash;</strong>_</li>
-<li>
-<p>Alignment Cost - Cost and score of the alignment</p>
-</li>
-<li>
-<p>Three things to identify:</p>
-</li>
-<li>Match: cost 5</li>
-<li>Mismatch: cost -4</li>
-<li>Insertion/Delection: cost -3</li>
-<li>Gap penalty: -0.25<ul>
-<li>Gap of k characters</li>
-<li>gap penalty = id + (k-1)**g</li>
-</ul>
-</li>
-</ul>
-<h3 id="example-s1-attgat-s2-atgcaa"><a name="user-content-example-s1-attgat-s2-atgcaa" href="#example-s1-attgat-s2-atgcaa" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Example: s1: ATTGAT, s2: ATGCAA</h3>
-<h3 id="build-matrix"><a name="user-content-build-matrix" href="#build-matrix" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Build matrix:</h3>
-<p>A   A   T   C   G   <em><br />
-T   5   -4 -4  -3  -3<br />
-C <br />
-G</em></p>
-<h4 id="score-10-55-35-35-4"><a name="user-content-score-10-55-35-35-4" href="#score-10-55-35-35-4" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Score: 10 (5+5-3+5-3+5-4)</h4>
-<h3 id="mismatch-means-mutation"><a name="user-content-mismatch-means-mutation" href="#mismatch-means-mutation" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Mismatch means Mutation</h3>
-<h2 id="tt_a_tt-two-different-spots-not-recurring-two-mutations"><a name="user-content-tt_a_tt-two-different-spots-not-recurring-two-mutations" href="#tt_a_tt-two-different-spots-not-recurring-two-mutations" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>TT_A_TT (two different spots (not recurring), two mutations)</h2>
-<h2 id="tt_attt-one-spot-one-mutation"><a name="user-content-tt_attt-one-spot-one-mutation" href="#tt_attt-one-spot-one-mutation" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>TT_ATTT (one spot, one mutation)</h2>
-<h3 id="maximizing-algorithm"><a name="user-content-maximizing-algorithm" href="#maximizing-algorithm" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Maximizing Algorithm</h3>
-<h2 id="ai-j-maxai-1-j-1-subsi-pi-ai-1-j-id-ai-j-1-id"><a name="user-content-ai-j-maxai-1-j-1-subsi-pi-ai-1-j-id-ai-j-1-id" href="#ai-j-maxai-1-j-1-subsi-pi-ai-1-j-id-ai-j-1-id" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>A[i, j] = max(A[i-1, j-1] + sub(si, pi), A[i-1, j] + id, A[i, j-1] + id)</h2>
-<h2 id="a0j-idj"><a name="user-content-a0j-idj" href="#a0j-idj" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>A[0,j] = id*j</h2>
-<h2 id="ai-0-idi"><a name="user-content-ai-0-idi" href="#ai-0-idi" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>A[i, 0] = id*i</h2>
-<h2 id="sub-is-substitution-matrix"><a name="user-content-sub-is-substitution-matrix" href="#sub-is-substitution-matrix" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>sub is substitution matrix</h2>
-<h2 id="convo-with-bio-majors-what-input"><a name="user-content-convo-with-bio-majors-what-input" href="#convo-with-bio-majors-what-input" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Convo with Bio majors: What input?</h2>
-<h3 id="global-alignment_1"><a name="user-content-global-alignment_1" href="#global-alignment_1" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Global alignment</h3>
-<h3 id="input"><a name="user-content-input" href="#input" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Input:</h3>
-<pre><code>* Query file, one sequence "ATCG"
-* Batch file, multiple sequences. Highest score first, ascending Order
-* Gap penalty
-</code></pre></article></body></html>
+</style><title>SequenceAlignment</title></head><body><article class="markdown-body"><p>public class SequenceAlignment{<br />
+    int substitution = -3;<br />
+    String query;<br />
+    String sequence;<br />
+    int[][] matrix = new int[query.length() + 1][sequence.length() + 1];</p>
+<pre><code>public SequenceAlignment(String query, String sequence) {
+    this.query = query;
+    this.sequence = sequence;
+}
+
+/*  */
+public localAlignment() {
+
+}
+</code></pre>
+<p>}</p></article></body></html>
