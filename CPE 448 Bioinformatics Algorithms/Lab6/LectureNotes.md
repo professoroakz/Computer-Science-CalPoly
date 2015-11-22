@@ -29,8 +29,7 @@ _
 ### Mismatch means Mutation
 ## TT_A_TT (two different spots (not recurring), two mutations)
 ## TT_ATTT (one spot, one mutation)
-
-
+s
 ### Maximizing Algorithm
 ## A[i, j] = max(A[i-1, j-1] + sub(si, pi), A[i-1, j] + id, A[i, j-1] + id)
 ## A[0,j] = id*j
@@ -38,7 +37,7 @@ _
 ## sub is substitution matrix
 
 ## Convo with Bio majors: What input?
-### Global alignment
+### Local alignment
 ### Input: 
     * Query file, one sequence "ATCG"
     * Batch file, multiple sequences. Highest score first, ascending Order
