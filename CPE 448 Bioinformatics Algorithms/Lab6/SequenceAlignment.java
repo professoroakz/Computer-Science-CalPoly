@@ -1,25 +1,110 @@
+import java.util.*;
+import java.io.*;
+
 public class SequenceAlignment {
-    String query, sequence;
-    double[][] matrix;
     double[][] pam250;
-    double[][] blossum62;
+    double[][] blosum62;
+
+    String outputFileName;
+    double gapPenalty;
+
+    Writer writer;
+    File queryFile, batchFile;
+    Scanner queryScanner;
+    Scanner batchScanner;
+
+    String query = "";
+    double[][] matrix;
     double pamOrBlossum = 0; // 1: Pam, 2: Blossum
-    double gapPenalty = 0.25;
     double substitution = -3; // remove or add
     double match = 5;
 
-    public SequenceAlignment(String query, String sequence, int pamOrBlossum, double gapPenalty) {
+    public SequenceAlignment(double gapPenalty, String outputName) {
         this.gapPenalty = gapPenalty;
-        this.pamOrBlossum = pamOrBlossum; // irrelevant for local alignment
-        this.query = query.toLowerCase();
-        this.sequence = sequence.toLowerCase();
+        outputFileName = outputName;
+    }
 
-        /* Local alignment: Initialize matrix to 0 */
-        matrix = new double[query.length() + 1][sequence.length() + 1];
-        for(int i = 0; i < query.length(); i++)
-            for(int j = 0; j < sequence.length(); j++)
-                matrix[i][j] = 0;
+    public boolean readFiles(File query, File batch) {
+        queryFile = query;
+        batchFile = batch;
 
+        try {
+            queryScanner = new Scanner(queryFile);
+
+            queryScanner.nextLine(); // get rid of top line
+
+            while(queryScanner.hasNextLine()) {
+                this.query += queryScanner.nextLine().toUpperCase();
+            }
+System.out.println(query);
+        } catch(FileNotFoundException e) {
+            System.out.println("Query file " + queryFile.getName() + "is missing.");
+            return false;
+        }
+
+        try {
+            batchScanner = new Scanner(batchFile);
+        } catch(FileNotFoundException e) {
+            System.out.println("Batch file " + batchFile.getName() + "is missing.");
+            return false;
+        }
+
+        try {
+            writer = new PrintWriter(outputFileName);
+        } catch(FileNotFoundException e) {
+            System.out.println("Error when creating " + outputFileName);
+            return false;
+        }
+
+        return true;
+    }
+
+    public void run() {
+        
+    }
+
+    // public SequenceAlignment(String query, String sequence, int pamOrBlossum, double gapPenalty) {
+    //     this.gapPenalty = gapPenalty;
+    //     this.pamOrBlossum = pamOrBlossum; // irrelevant for local alignment
+    //     this.query = query.toLowerCase();
+    //     this.sequence = sequence.toLowerCase();
+
+    //     /* Local alignment: Initialize matrix to 0 */
+    //     matrix = new double[query.length() + 1][sequence.length() + 1];
+    //     for(int i = 0; i < query.length(); i++)
+    //         for(int j = 0; j < sequence.length(); j++)
+    //             matrix[i][j] = 0;
+
+        
+    // }
+
+    // public void smithWaterman(){
+    //     for(int i = 1; i < query.length(); i++){
+    //         for (int j = 1; j < sequence.length(); j++) {
+    //             double leftScore = matrix[i][j-1] + gapPenalty; // insertion
+    //             double upScore = matrix[i-1][j] + gapPenalty;
+    //             double diagScore = (matrix[i-1][j-1] + ((query.charAt(i-1) == sequence.charAt(j-1)) ? match : substitution));
+    //             matrix[i][j] = Math.min(leftScore, Math.min(upScore, diagScore));
+    //         }
+    //     }
+    // }
+
+    // public void printMatrix(){
+    //     for(int i = 0; i < query.length(); i++){
+    //         for(int j = 0; j < sequence.length(); j++){
+    //             System.out.print(matrix[i][j] + "\t");
+    //         }
+    //         System.out.println();
+    //     }
+    // }
+
+    // public static void main(String[] args) {
+    //     SequenceAlignment sa = new SequenceAlignment("ACGT", "AGTTCACACACACAGACAGACGT", 0, 0.25);
+    //     sa.smithWaterman();
+    //     sa.printMatrix();
+    // }
+
+    public void buildMatrices() {
         pam250 =  new double [][] {
                         {13,    6,    9,    9,    5,   8,   9,  12,   6,   8,   6,   7,   7,   4,  11,  11,  11,   2,   4,   9},
                         { 3,   17,    4,    3,    2,   5,   3,   2,   6,   3,   2,   9,   4,   1,   4,   4,   3,   7,   2,   2},
@@ -41,7 +126,7 @@ public class SequenceAlignment {
                         { 0,    2,    0,    0,    0,   0,   0,   0,   1,   0,   1,   0,   0,   1,   0,   1,   0,  55,   1,   0},
                         { 1,    1,    2,    1,    3,   1,   1,   1,   3,   2,   2,   1,   2,  15,   1,   2,   2,   3,  31,   2},
                         { 7,    4,    4,    4,    4,   4,   4,   4,   5,   4,  15,   10,   4,  10,   5,   5,   5,  72,   4,  17}};
-        blossum62 = new double [][] {
+        blosum62 = new double [][] {
                         { 4, -1, -2, -2,  0, -1, -1,  0, -2, -1, -1, -1, -1, -2, -1,  1,  0, -3, -2,  0},
                         {-1,  5,  0, -2, -3,  1,  0, -2,  0, -3, -2,  2, -1, -3, -2, -1, -1, -3, -2, -3},
                         {-2,  0,  6,  1, -3,  0,  0,  0,  1, -3, -3,  0, -2, -3, -2,  1,  0, -4, -2, -3},
@@ -63,31 +148,4 @@ public class SequenceAlignment {
                         {-2, -2, -2, -3, -2, -1, -2, -3,  2, -1, -1, -2, -1,  3, -3, -2, -2,  2,  7, -1},
                         { 0, -3, -3, -3, -1, -2, -2, -3, -3,  3,  1, -2,  1, -1, -2, -2,  0, -3, -1,  4}};
     }
-
-    public void smithWaterman(){
-        for(int i = 1; i < query.length(); i++){
-            for (int j = 1; j < sequence.length(); j++) {
-                double leftScore = matrix[i][j-1] + gapPenalty; // insertion
-                double upScore = matrix[i-1][j] + gapPenalty;
-                double diagScore = (matrix[i-1][j-1] + ((query.charAt(i-1) == sequence.charAt(j-1)) ? match : substitution));
-                matrix[i][j] = Math.min(leftScore, Math.min(upScore, diagScore));
-            }
-        }
-    }
-
-    public void printMatrix(){
-        for(int i = 0; i < query.length(); i++){
-            for(int j = 0; j < sequence.length(); j++){
-                System.out.print(matrix[i][j] + "\t");
-            }
-            System.out.println();
-        }
-    }
-
-    public static void main(String[] args) {
-        SequenceAlignment sa = new SequenceAlignment("ACGT", "AGTTCACACACACAGACAGACGT", 0, 0.25);
-        sa.smithWaterman();
-        sa.printMatrix();
-    }
-
 }

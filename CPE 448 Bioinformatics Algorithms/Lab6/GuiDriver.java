@@ -142,10 +142,10 @@ public final class GuiDriver {
             if(tryParseDouble(gapText)) {
                 String outputText = outputFileTextField.getText();
                 if(validateOutputFileName(outputText)) {
-                    // Controller controller = new Controller(Double.parseDouble(gapText), outputText + ".txt");
-                    // if(controller.readFiles(queryFile, databaseFile)) {
-                    //     controller.run();
-                    // }
+                    SequenceAlignment controller = new SequenceAlignment(Double.parseDouble(gapText), outputText + ".txt");
+                    if(controller.readFiles(queryFile, databaseFile)) {
+                        controller.run();
+                    }
                     System.out.println("Gap penalty and output file were valid.");
                 }
                 else {
