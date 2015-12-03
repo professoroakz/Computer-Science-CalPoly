@@ -4,24 +4,54 @@ import java.io.*;
 public class SequenceAlignment {
     double[][] pam250;
     double[][] blosum62;
+    HashMap<Character, Integer> letterIdx;
+    ArrayList<Alignment> alignments;
 
     String outputFileName;
     double gapPenalty;
 
-    Writer writer;
+    PrintWriter writer;
     File queryFile, batchFile;
     Scanner queryScanner;
     Scanner batchScanner;
 
+    int iPos = -1;
+    int jPos = -1;
+
     String query = "";
     double[][] matrix;
-    double pamOrBlossum = 0; // 1: Pam, 2: Blossum
-    double substitution = -3; // remove or add
-    double match = 5;
+    double[][] uMatrix; // 1 = Up; 0 = Diagonal; -1 = Left
+    int pamOrBlosum = 0; // 1: Pam, 2: Blossum
 
-    public SequenceAlignment(double gapPenalty, String outputName) {
+    public SequenceAlignment(double gapPenalty, String outputName, int pamBlosum) {
         this.gapPenalty = gapPenalty;
         outputFileName = outputName;
+        pamOrBlosum = pamBlosum;
+        buildMatrices();
+
+        alignments = new ArrayList<Alignment>();
+
+        letterIdx = new HashMap<Character, Integer>();
+        letterIdx.put('A',0);
+        letterIdx.put('R',1);
+        letterIdx.put('N',2);
+        letterIdx.put('D',3);
+        letterIdx.put('C',4);
+        letterIdx.put('Q',5);
+        letterIdx.put('E',6);
+        letterIdx.put('G',7);
+        letterIdx.put('H',8);
+        letterIdx.put('I',9);
+        letterIdx.put('L',10);
+        letterIdx.put('K',11);
+        letterIdx.put('M',12);
+        letterIdx.put('F',13);
+        letterIdx.put('P',14);
+        letterIdx.put('S',15);
+        letterIdx.put('T',16);
+        letterIdx.put('W',17);
+        letterIdx.put('Y',18);
+        letterIdx.put('V',19);
     }
 
     public boolean readFiles(File query, File batch) {
@@ -36,7 +66,7 @@ public class SequenceAlignment {
             while(queryScanner.hasNextLine()) {
                 this.query += queryScanner.nextLine().toUpperCase();
             }
-System.out.println(query);
+
         } catch(FileNotFoundException e) {
             System.out.println("Query file " + queryFile.getName() + "is missing.");
             return false;
@@ -60,92 +90,205 @@ System.out.println(query);
     }
 
     public void run() {
-        
+        String line = "";
+        String sequenceLine = "";
+        String currentSequence = "";
+
+        double score = 0;
+        int pos = -1;
+
+        while(batchScanner.hasNextLine()) {
+            line = batchScanner.nextLine().toUpperCase();
+
+            if(line.indexOf(">") > -1) {
+                sequenceLine = line;
+                line = "";
+                currentSequence = "";
+            } else {
+                currentSequence += line;
+                while(batchScanner.hasNextLine()) {
+                    line = batchScanner.nextLine().toUpperCase();
+
+                    if(line.trim().length() > 0) {
+                        currentSequence += line;
+                    } else {
+                        break;
+                    }
+                }
+
+                createMatrix(query, currentSequence);
+                score = smithWaterman(query, currentSequence);
+                pos = recoverPosition(query, currentSequence);
+
+                alignments.add(new Alignment(sequenceLine, score, pos));
+
+            }
+        }
+
+        Collections.sort(alignments);
+        Collections.reverse(alignments);
+
+        doOutput();
     }
 
-    // public SequenceAlignment(String query, String sequence, int pamOrBlossum, double gapPenalty) {
-    //     this.gapPenalty = gapPenalty;
-    //     this.pamOrBlossum = pamOrBlossum; // irrelevant for local alignment
-    //     this.query = query.toLowerCase();
-    //     this.sequence = sequence.toLowerCase();
+    public void doOutput() {
+        writer.print("Matrix used: ");
+        writer.println(pamOrBlosum == 1 ? "Pam\n" : "Blosum\n");
+        writer.println("GapPenalty: " + gapPenalty + "\n");
 
-    //     /* Local alignment: Initialize matrix to 0 */
-    //     matrix = new double[query.length() + 1][sequence.length() + 1];
-    //     for(int i = 0; i < query.length(); i++)
-    //         for(int j = 0; j < sequence.length(); j++)
-    //             matrix[i][j] = 0;
+        writer.println("Query sequence: " + query + "\n");
 
-        
-    // }
+        for(Alignment a : alignments) {
+            if(!Double.isNaN(a.score)) {
+                writer.println(a.sequenceName);
+                writer.println(a.score + ", " + a.position + "\n");
+            } else {
+                writer.print(a.score + " ::::::: ");
+                writer.println("There is some error with sequence: " + a.sequenceName);
 
-    // public void smithWaterman(){
-    //     for(int i = 1; i < query.length(); i++){
-    //         for (int j = 1; j < sequence.length(); j++) {
-    //             double leftScore = matrix[i][j-1] + gapPenalty; // insertion
-    //             double upScore = matrix[i-1][j] + gapPenalty;
-    //             double diagScore = (matrix[i-1][j-1] + ((query.charAt(i-1) == sequence.charAt(j-1)) ? match : substitution));
-    //             matrix[i][j] = Math.min(leftScore, Math.min(upScore, diagScore));
-    //         }
-    //     }
-    // }
+            }
+        }
 
-    // public void printMatrix(){
-    //     for(int i = 0; i < query.length(); i++){
-    //         for(int j = 0; j < sequence.length(); j++){
-    //             System.out.print(matrix[i][j] + "\t");
-    //         }
-    //         System.out.println();
-    //     }
-    // }
+        writer.flush();
+        try {
+            writer.close();
+        } catch(Exception e) {
+            // do nothing
+        }
+    }
 
-    // public static void main(String[] args) {
-    //     SequenceAlignment sa = new SequenceAlignment("ACGT", "AGTTCACACACACAGACAGACGT", 0, 0.25);
-    //     sa.smithWaterman();
-    //     sa.printMatrix();
-    // }
+    public void createMatrix(String query, String sequence) {
+        matrix = new double[query.length() + 1][sequence.length() + 1];
+        for(int i = 0; i < query.length() + 1; i++) {
+            for(int j = 0; j < sequence.length() + 1; j++) {
+                matrix[i][j] = 0;
+            }
+        }
+
+        uMatrix = new double[query.length() + 1][sequence.length() + 1];
+        for(int i = 0; i < query.length() + 1; i++) {
+            for(int j = 0; j < sequence.length() + 1; j++) {
+                uMatrix[i][j] = -2;
+            }
+        }
+    }
+
+    public void printMatrix(String query, String sequence) {
+        for(int i = 0; i < query.length() + 1; i++) {
+            for(int j = 0; j < sequence.length() + 1; j++) {
+                System.out.print(matrix[i][j] + "\t");
+            }
+            System.out.println();
+        }
+    }
+
+    public double smithWaterman(String query, String sequence) {
+        double[][] subMatrix = (pamOrBlosum == 1 ? pam250 : blosum62);
+        double bestVal = 0;
+        int bestIPos = -1;
+        int bestJPos = -1;
+
+        double leftScore;
+        double upScore;
+        double diagScore;
+
+        for(int i = 1; i < query.length() + 1; i++) {
+            for(int j = 1; j < sequence.length() + 1; j++) {
+                leftScore = matrix[i][j-1] + gapPenalty;
+                upScore = matrix[i-1][j] + gapPenalty;
+                try {
+                    diagScore = matrix[i-1][j-1] + 
+                        subMatrix[letterIdx.get(query.charAt(i-1))][letterIdx.get(sequence.charAt(j-1))];
+                } catch(ArrayIndexOutOfBoundsException e) {
+                    return Float.NaN;
+                } catch(NullPointerException e) {
+                    return Float.NaN;
+                }
+                
+
+                matrix[i][j] = Math.max(0, Math.max(leftScore, Math.max(upScore, diagScore)));
+
+                if(leftScore > upScore && leftScore > diagScore) {
+                    uMatrix[i][j] = -1;
+                } else if(upScore > leftScore && upScore > diagScore) {
+                    uMatrix[i][j] = 1;
+                } else if(diagScore > upScore && diagScore > leftScore) {
+                    uMatrix[i][j] = 0;
+                }
+
+                if(matrix[i][j] > bestVal) {
+                    bestVal = matrix[i][j];
+                    bestIPos = i;
+                    bestJPos = j;
+                }
+            }
+        }
+
+        iPos = bestIPos;
+        jPos = bestJPos;
+        return bestVal;
+    }
+
+    public int recoverPosition(String query, String sequence) {
+        int i = iPos;
+        int j = jPos;
+
+        while(matrix[i][j] > 0) {
+            if(uMatrix[i][j] == 0) {
+                i--;
+                j--;
+            } else if(uMatrix[i][j] == -1) {
+                j--;
+            } else {
+                i--;
+            }
+        }
+        return j + 1; // offset the extra row added for matrix
+    }
 
     public void buildMatrices() {
-        pam250 =  new double [][] {
-                        {13,    6,    9,    9,    5,   8,   9,  12,   6,   8,   6,   7,   7,   4,  11,  11,  11,   2,   4,   9},
-                        { 3,   17,    4,    3,    2,   5,   3,   2,   6,   3,   2,   9,   4,   1,   4,   4,   3,   7,   2,   2},
-                        { 4,    4,    6,    7,    2,   5,   6,   4,   6,   3,   2,   5,   3,   2,   4,   5,   4,   2,   3,   3},
-                        { 5,    4,    8,   11,    1,   7,  10,   5,   6,   3,   2,   5,   3,   1,   4,   5,   5,   1,   2,   3},
-                        { 2,    1,    1,    1,   52,   1,   1,   2,   2,   2,   1,   1,   1,   1,   2,   3,   2,   1,   4,   2},
-                        { 3,    5,    5,    6,    1,  10,   7,   3,   7,   2,   3,   5,   3,   1,   4,   3,   3,   1,   2,   3},
-                        { 5,    4,    7,   11,    1,   9,  12,   5,   6,   3,   2,   5,   3,   1,   4,   5,   5,   1,   2,   3},
-                        {12,    5,   10,   10,    4,   7,   9,  27,   5,   5,   4,   6,   5,   3,   8,  11,   9,   2,   3,   7},
-                        { 2,    5,    5,    4,    2,   7,   4,   2,  15,   2,   2,   3,   2,   2,   3,   3,   2,   2,   3,   2},
-                        { 3,    2,    2,    2,    2,   2,   2,   2,   2,  10,   6,   2,   6,   5,   2,   3,   4,   1,   3,   9},
-                        { 6,    4,    4,    3,    2,   6,   4,   3,   5,  15,  34,   4,  20,  13,   5,   4,   6,   6,   7,  13},
-                        { 6,   18,   10,    8,    2,  10,   8,   5,   8,   5,   4,  24,   9,   2,   6,   8,   8,   4,   3,   5},
-                        { 1,    1,    1,    1,    0,   1,   1,   1,   1,   2,   3,   2,   6,   2,   1,   1,   1,   1,   1,   2},
-                        { 2,    1,    2,    1,    1,   1,   1,   1,   3,   5,   6,   1,   4,  32,   1,   2,   2,   4,  20,   3},
-                        { 7,    5,    5,    4,    3,   5,   4,   5,   5,   3,   3,   4,   3,   2,  20,   6,   5,   1,   2,   4},
-                        { 9,    6,    8,    7,    7,   6,   7,   9,   6,   5,   4,   7,   5,   3,   9,  10,   9,   4,   4,   6},
-                        { 8,    5,    6,    6,    4,   5,   5,   6,   4,   6,   4,   6,   5,   3,   6,   8,  11,   2,   3,   6},
-                        { 0,    2,    0,    0,    0,   0,   0,   0,   1,   0,   1,   0,   0,   1,   0,   1,   0,  55,   1,   0},
-                        { 1,    1,    2,    1,    3,   1,   1,   1,   3,   2,   2,   1,   2,  15,   1,   2,   2,   3,  31,   2},
-                        { 7,    4,    4,    4,    4,   4,   4,   4,   5,   4,  15,   10,   4,  10,   5,   5,   5,  72,   4,  17}};
+        pam250 = new double [][] {
+            { 2,-2, 0, 0,-2, 0, 0, 1,-1,-1,-2,-1,-1,-4, 1, 1, 1,-6,-3, 0}, //A
+            {-2, 6, 0,-1,-4, 1,-1,-3, 2,-2,-3, 3, 0,-4, 0, 0,-1, 2,-4,-2}, //R
+            { 0, 0, 2, 2,-4, 1, 1, 0, 2,-2,-3, 1,-2,-4,-1, 1, 0,-4,-2,-2}, //N
+            { 0,-1, 2, 4,-5, 2, 3, 1, 1,-2,-4, 0,-3,-6,-1, 0, 0,-7,-4,-2}, //D
+            {-2,-4,-4,-5, 4,-5,-5,-3,-3,-2,-6,-5,-5,-4,-3, 0,-2,-8, 0,-2}, //C
+            { 0, 1, 1, 2,-5, 4, 2,-1, 3,-2,-2, 1,-1,-5, 0,-1,-1,-5,-4,-2}, //Q
+            { 0,-1, 1, 3,-5, 2, 4, 0, 1,-2,-3, 0,-2,-5,-1, 0, 0,-7,-4,-2}, //E
+            { 1,-3, 0, 1,-3,-1, 0, 5,-2,-3,-4,-2,-3,-5,-1, 1, 0,-7,-5,-1}, //G
+            {-1, 2, 2, 1,-3, 3, 1,-2, 6,-2,-2, 0,-2,-2, 0,-1,-1,-3, 0,-2}, //H
+            {-1,-2,-2,-2,-2,-2,-2,-3,-2, 5, 2,-2, 2, 1,-2,-1, 0,-5,-1, 4}, //I
+            {-2,-3,-3,-4,-6,-2,-3,-4,-2, 2, 6,-3, 4, 2,-3,-3,-2,-2,-1, 2}, //L
+            {-1, 3, 1, 0,-5, 1, 0,-2, 0,-2,-3, 5, 0,-5,-1, 0, 0,-3,-4,-2}, //K
+            {-1, 0,-2,-3,-5,-1,-2,-3,-2, 2, 4, 0, 6, 0,-2,-2,-1,-4,-2, 2}, //M
+            {-4,-4,-4,-6,-4,-5,-5,-5,-2, 1, 2,-5, 0, 9,-5,-3,-2, 0, 7,-1}, //F
+            { 1, 0,-1,-1,-3, 0,-1,-1, 0,-2,-3,-1,-2,-5, 6, 1, 0,-6,-5,-1}, //P
+            { 1, 0, 1, 0, 0,-1, 0, 1,-1,-1,-3, 0,-2,-3, 1, 3, 1,-2,-3,-1}, //S
+            { 1,-1, 0, 0,-2,-1, 0, 0,-1, 0,-2, 0,-1,-2, 0, 1, 3,-5,-3, 0}, //T
+            {-6, 2,-4,-7,-8,-5,-7,-7,-3,-5,-2,-3,-4, 0,-6,-2,-5,17, 0,-6}, //W
+            {-3,-4,-2,-4, 0,-4,-4,-5, 0,-1,-1,-4,-2, 7,-5,-3,-3, 0,10,-2}, //Y
+            { 0,-2,-2,-2,-2,-2,-2,-1,-2, 4, 2,-2, 2,-1,-1,-1, 0,-6,-2, 4}};//V
+
         blosum62 = new double [][] {
-                        { 4, -1, -2, -2,  0, -1, -1,  0, -2, -1, -1, -1, -1, -2, -1,  1,  0, -3, -2,  0},
-                        {-1,  5,  0, -2, -3,  1,  0, -2,  0, -3, -2,  2, -1, -3, -2, -1, -1, -3, -2, -3},
-                        {-2,  0,  6,  1, -3,  0,  0,  0,  1, -3, -3,  0, -2, -3, -2,  1,  0, -4, -2, -3},
-                        {-2, -2,  1,  6, -3,  0,  2, -1, -1, -3, -4, -1, -3, -3, -1,  0, -1, -4, -3, -3},
-                        { 0, -3, -3, -3,  9, -3, -4, -3, -3, -1, -1, -3, -1, -2, -3, -1, -1, -2, -2, -1},
-                        {-1,  1,  0,  0, -3,  5,  2, -2,  0, -3, -2,  1,  0, -3, -1,  0, -1, -2, -1, -2},
-                        {-1,  0,  0,  2, -4,  2,  5, -2,  0, -3, -3,  1, -2, -3, -1,  0, -1, -3, -2, -2},
-                        { 0, -2,  0, -1, -3, -2, -2,  6, -2, -4, -4, -2, -3, -3, -2,  0, -2, -2, -3, -3},
-                        {-2,  0,  1, -1, -3,  0,  0, -2,  8, -3, -3, -1, -2, -1, -2, -1, -2, -2,  2, -3},
-                        {-1, -3, -3, -3, -1, -3, -3, -4, -3,  4,  2, -3,  1,  0, -3, -2, -1, -3, -1,  3},
-                        {-1, -2, -3, -4, -1, -2, -3, -4, -3,  2,  4, -2,  2,  0, -3, -2, -1, -2, -1,  1},
-                        {-1,  2,  0, -1, -3,  1,  1, -2, -1, -3, -2,  5, -1, -3, -1,  0, -1, -3, -2, -2},
-                        {-1, -1, -2, -3, -1,  0, -2, -3, -2,  1,  2, -1,  5,  0, -2, -1, -1, -1, -1,  1},
-                        {-2, -3, -3, -3, -2, -3, -3, -3, -1,  0,  0, -3,  0,  6, -4, -2, -2,  1,  3, -1},
-                        {-1, -2, -2, -1, -3, -1, -1, -2, -2, -3, -3, -1, -2, -4,  7, -1, -1, -4, -3, -2},
-                        { 1, -1,  1,  0, -1,  0,  0,  0, -1, -2, -2,  0, -1, -2, -1,  4,  1, -3, -2, -2},
-                        { 0, -1,  0, -1, -1, -1, -1, -2, -2, -1, -1, -1, -1, -2, -1,  1,  5, -2, -2,  0},
-                        {-3, -3, -4, -4, -2, -2, -3, -2, -2, -3, -2, -3, -1,  1, -4, -3, -2, 11,  2, -3},
-                        {-2, -2, -2, -3, -2, -1, -2, -3,  2, -1, -1, -2, -1,  3, -3, -2, -2,  2,  7, -1},
-                        { 0, -3, -3, -3, -1, -2, -2, -3, -3,  3,  1, -2,  1, -1, -2, -2,  0, -3, -1,  4}};
+            { 4,-1,-2,-2, 0,-1,-1, 0,-2,-1,-1,-1,-1,-2,-1, 1, 0,-3,-2, 0}, //A
+            {-1, 5, 0,-2,-3, 1, 0,-2, 0,-3,-2, 2,-1,-3,-2,-1,-1,-3,-2,-3}, //R
+            {-2, 0, 6, 1,-3, 0, 0, 0, 1,-3,-3, 0,-2,-3,-2, 1, 0,-4,-2,-3}, //N
+            {-2,-2, 1, 6,-3, 0, 2,-1,-1,-3,-4,-1,-3,-3,-1, 0,-1,-4,-3,-3}, //D
+            { 0,-3,-3,-3, 9,-3,-4,-3,-3,-1,-1,-3,-1,-2,-3,-1,-1,-2,-2,-1}, //C
+            {-1, 1, 0, 0,-3, 5, 2,-2, 0,-3,-2, 1, 0,-3,-1, 0,-1,-3,-2,-2}, //Q
+            {-1, 0, 0, 2,-4, 2, 5,-2, 0,-3,-3, 1,-2,-3,-1, 0,-1,-3,-2,-2}, //E
+            { 0,-2, 0,-1,-3,-2,-2, 6,-2,-4,-4,-2,-3,-3,-2, 0,-2,-2,-3,-3}, //G
+            {-2, 0, 1,-1,-3, 0, 0,-2, 8,-3,-3,-1,-2,-1,-2,-1,-2,-2, 2,-3}, //H
+            {-1,-3,-3,-3,-1,-3,-3,-4,-3, 4, 2,-3, 1, 0,-3,-2,-1,-3,-1, 3}, //I
+            {-1,-2,-3,-4,-1,-2,-3,-4,-3, 2, 4,-2, 2, 0,-3,-2,-1,-2,-1, 1}, //L
+            {-1, 2, 0,-1,-3, 1, 1,-2,-1,-3,-2, 5,-1,-3,-1, 0,-1,-3,-2,-2}, //K
+            {-1,-1,-2,-3,-1, 0,-2,-3,-2, 1, 2,-1, 5, 0,-2,-1,-1,-1,-1, 1}, //M
+            {-2,-3,-3,-3,-2,-3,-3,-3,-1, 0, 0,-3, 0, 6,-4,-2,-2, 1, 3,-1}, //F
+            {-1,-2,-2,-1,-3,-1,-1,-2,-2,-3,-3,-1,-2,-4, 7,-1,-1,-4,-3,-2}, //P
+            { 1,-1, 1, 0,-1, 0, 0, 0,-1,-2,-2, 0,-1,-2,-1, 4, 1,-3,-2,-2}, //S
+            { 0,-1, 0,-1,-1,-1,-1,-2,-2,-1,-1,-1,-1,-2,-1, 1, 5,-2,-2, 0}, //T
+            {-3,-3,-4,-4,-2,-2,-3,-2,-2,-3,-2,-3,-1, 1,-4,-3,-2,11, 2,-3}, //W
+            {-2,-2,-2,-3,-2,-1,-2,-3, 2,-1,-1,-2,-1, 3,-3,-2,-2, 2, 7,-1}, //Y
+            { 0,-3,-3,-3,-1,-2,-2,-3,-3, 3, 1,-2, 1,-1,-2,-2, 0,-3,-1, 4}};//V
     }
 }
