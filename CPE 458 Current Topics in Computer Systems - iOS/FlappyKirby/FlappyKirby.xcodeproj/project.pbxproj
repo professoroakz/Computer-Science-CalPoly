@@ -33,6 +33,8 @@
 		A223C2C11C59A9AA0055281E /* PlayingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A223C2C01C59A9AA0055281E /* PlayingState.swift */; };
 		A223C2C31C59A9B10055281E /* FallingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A223C2C21C59A9B10055281E /* FallingState.swift */; };
 		A223C2C51C59A9B90055281E /* GameOverState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A223C2C41C59A9B90055281E /* GameOverState.swift */; };
+		A223C2ED1C59F1AC0055281E /* MainMenuState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A223C2EC1C59F1AC0055281E /* MainMenuState.swift */; };
+		A223C2EF1C59F1B80055281E /* TutorialState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A223C2EE1C59F1B80055281E /* TutorialState.swift */; };
 		A27927EE1C5814F400C94BB9 /* kirby.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A27927ED1C5814F400C94BB9 /* kirby.mp3 */; };
 		A2C4CDD81C3C601B00EC0CA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C4CDD71C3C601B00EC0CA6 /* AppDelegate.swift */; };
 		A2C4CDDC1C3C601B00EC0CA6 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C4CDDB1C3C601B00EC0CA6 /* GameScene.swift */; };
@@ -69,6 +71,8 @@
 		A223C2C01C59A9AA0055281E /* PlayingState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayingState.swift; sourceTree = "<group>"; };
 		A223C2C21C59A9B10055281E /* FallingState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FallingState.swift; sourceTree = "<group>"; };
 		A223C2C41C59A9B90055281E /* GameOverState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverState.swift; sourceTree = "<group>"; };
+		A223C2EC1C59F1AC0055281E /* MainMenuState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuState.swift; sourceTree = "<group>"; };
+		A223C2EE1C59F1B80055281E /* TutorialState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialState.swift; sourceTree = "<group>"; };
 		A27927ED1C5814F400C94BB9 /* kirby.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = kirby.mp3; sourceTree = "<group>"; };
 		A2C4CDD41C3C601B00EC0CA6 /* FlappyKirby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlappyKirby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2C4CDD71C3C601B00EC0CA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -157,6 +161,8 @@
 				A223C2C01C59A9AA0055281E /* PlayingState.swift */,
 				A223C2C21C59A9B10055281E /* FallingState.swift */,
 				A223C2C41C59A9B90055281E /* GameOverState.swift */,
+				A223C2EC1C59F1AC0055281E /* MainMenuState.swift */,
+				A223C2EE1C59F1B80055281E /* TutorialState.swift */,
 			);
 			name = "Game States";
 			sourceTree = "<group>";
@@ -185,9 +191,9 @@
 				A208C73E1C57E44800550505 /* Enteties */,
 				A208C73D1C57E44200550505 /* Components */,
 				A2C4CDD71C3C601B00EC0CA6 /* AppDelegate.swift */,
+				A2C4CDDD1C3C601B00EC0CA6 /* GameViewController.swift */,
 				A2C4CDDB1C3C601B00EC0CA6 /* GameScene.swift */,
 				A208C7431C57F06D00550505 /* SKTUtils */,
-				A2C4CDDD1C3C601B00EC0CA6 /* GameViewController.swift */,
 				A2C4CDDF1C3C601B00EC0CA6 /* Main.storyboard */,
 				A2C4CDE21C3C601B00EC0CA6 /* Assets.xcassets */,
 				A2C4CDE41C3C601B00EC0CA6 /* LaunchScreen.storyboard */,
@@ -280,6 +286,7 @@
 				A208C73C1C57E41500550505 /* PlayerEntity.swift in Sources */,
 				A208C7571C57F06D00550505 /* SKNode+Extensions.swift in Sources */,
 				A208C7421C57E6C000550505 /* MovementComponent.swift in Sources */,
+				A223C2ED1C59F1AC0055281E /* MainMenuState.swift in Sources */,
 				A208C7541C57F06D00550505 /* SKAction+Extensions.swift in Sources */,
 				A2C4CDDC1C3C601B00EC0CA6 /* GameScene.swift in Sources */,
 				A208C73A1C57652900550505 /* ObstacleEntity.swift in Sources */,
@@ -294,6 +301,7 @@
 				A208C7581C57F06D00550505 /* SKTAudio.swift in Sources */,
 				A208C7501C57F06D00550505 /* CGFloat+Extensions.swift in Sources */,
 				A223C2C51C59A9B90055281E /* GameOverState.swift in Sources */,
+				A223C2EF1C59F1B80055281E /* TutorialState.swift in Sources */,
 				A208C7591C57F06D00550505 /* SKTEffects.swift in Sources */,
 				A208C75B1C57F06D00550505 /* Vector3.swift in Sources */,
 				A223C2C11C59A9AA0055281E /* PlayingState.swift in Sources */,

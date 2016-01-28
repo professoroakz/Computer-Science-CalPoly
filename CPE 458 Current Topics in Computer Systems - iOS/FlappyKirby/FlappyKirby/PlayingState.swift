@@ -19,6 +19,7 @@ class PlayingState: GKState {
     
     override func didEnterWithPreviousState(previousState: GKState?) {
         scene.startSpawningObstacles()
+        scene.player.movementAllowed = true
     }
     
     override func isValidNextState(stateClass: AnyClass) -> Bool {
@@ -27,5 +28,6 @@ class PlayingState: GKState {
     
     override func updateWithDeltaTime(seconds: NSTimeInterval) {
         scene.updateForeground()
+        scene.updateScore()
     }
 }

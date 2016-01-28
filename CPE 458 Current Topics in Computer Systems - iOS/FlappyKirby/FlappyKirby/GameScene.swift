@@ -39,9 +39,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let worldNode = SKNode() // Parent node/container
     let player = Player(imageName: "Kirby0")
     
+    var initalState: AnyClass
+    
+    init(size: CGSize, stateClass: AnyClass) {
+        initalState = stateClass
+        super.init(size: size)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var scoreLabel: SKLabelNode!
     var playAgainLabel: SKLabelNode!
     var tapToBeginLabel: SKLabelNode!
+    let tapToResumeLabel: SKLabelNode! = SKLabelNode(fileNamed: "Pause")
     
     var score: Int = 0
     let numberOfForegrounds: Int = 2
@@ -60,35 +72,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var deltaTime: NSTimeInterval = 0
     
     let dingAction = SKAction.playSoundFileNamed("ding.wav", waitForCompletion: false)
-    let flapAction = SKAction.playSoundFileNamed("flapping.wav", waitForCompletion: false)
     let popAction = SKAction.playSoundFileNamed("pop.wav", waitForCompletion: false)
     let coinAction = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
-    let soundtrack = SKAction.playSoundFileNamed("kirby.mp3", waitForCompletion: false)
-    
+    let flapAction = SKAction.playSoundFileNamed("flapping.wav", waitForCompletion: false)
+    let backgroundMusic = SKAction.playSoundFileNamed("kirby.mp3", waitForCompletion: false)
     
     let firstSpawnDelay: NSTimeInterval = 1.75
     let spawnDelay: NSTimeInterval = 1.5
     
     var hitGround: Bool = false
     var hitObstacle: Bool = false
+    var backgroundMusicIsPlaying: Bool = false
     
     lazy var gameState: GKStateMachine = GKStateMachine(states: [
+        MainMenuState(scene: self),
+        TutorialState(scene: self),
         PlayingState(scene: self),
         FallingState(scene: self),
         GameOverState(scene: self)
     ])
 
     override func didMoveToView(view: SKView) {
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: Selector("pauseGameScene"),
+            name: UIApplicationWillResignActiveNotification,
+            object: nil)
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         physicsWorld.contactDelegate = self
         
         addChild(worldNode)
-        setupBackgrounds()
-        setupForeground()
-        setupPlayer()
-        
-        gameState.enterState(PlayingState)
+        gameState.enterState(initalState)
     }
+    
     
     // MARK: Setup methods
     
@@ -135,38 +150,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.movementComponent.playableStart = playableStart
     }
     
-    func setupLabel() {
+    func setupScoreLabel() {
         scoreLabel = SKLabelNode(fontNamed: fontName)
-        scoreLabel.fontColor = SKColor.whiteColor()
+        
         scoreLabel.position = CGPoint(x: size.width/2, y: size.height - margin)
-        scoreLabel.text = "\(score)"
         scoreLabel.verticalAlignmentMode = .Top
         scoreLabel.zPosition = Layer.UI.rawValue
-        worldNode.addChild(scoreLabel)
-    }
-
-    
-    func presentPlayAgainLabel() {
-        playAgainLabel = SKLabelNode(fontNamed: "Arial")
-        playAgainLabel.fontSize = 24
-        tapToBeginLabel.fontColor = SKColor(red: 255/255.0, green: 255/255.0, blue: 255/255.0, alpha: 1.0)
-        playAgainLabel.position = CGPoint(x: size.width/2, y: size.height - 100.0)
-        playAgainLabel.text = "Tap anywhere to play again"
-        playAgainLabel.verticalAlignmentMode = .Top
-        playAgainLabel.zPosition = Layer.UI.rawValue
-        worldNode.addChild(playAgainLabel)
-    }
-
-    func presentTapToBeginLabel() {
-        tapToBeginLabel = SKLabelNode(fontNamed: "Arial")
-        tapToBeginLabel.fontSize = 39
-        tapToBeginLabel.fontColor = SKColor(red: 255/255.0, green: 255/255.0, blue: 255/255.0, alpha: 1.0)
-        tapToBeginLabel.position = CGPoint(x: size.width/2, y: size.height - 100.0)
-        tapToBeginLabel.text = "Tap to begin!"
-        tapToBeginLabel.verticalAlignmentMode = .Top
-        tapToBeginLabel.zPosition = Layer.UI.rawValue
-        worldNode.addChild(tapToBeginLabel)
         
+        scoreLabel.fontColor = SKColor.whiteColor()
+        scoreLabel.text = "\(score)"
+        
+        worldNode.addChild(scoreLabel)
     }
     
     func startSpawningObstacles() {
@@ -194,6 +188,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let obstacleNode = obstacle.spriteComponent.node
         obstacleNode.zPosition = Layer.Obstacle.rawValue
         obstacleNode.name = "Obstacle"
+        
+        obstacleNode.userData = NSMutableDictionary()
         
         return obstacle.spriteComponent.node
     }
@@ -236,18 +232,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: Gameplay
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if gameState.currentState is PlayingState {
+        switch gameState.currentState {
+        case is MainMenuState:
+            restartGame(TutorialState)
+        case is TutorialState:
+            gameState.enterState(PlayingState)
+        case is PlayingState:
+          //  if !backgroundMusicIsPlaying {
+  //           //   worldNode.runAction(backgroundMusic, withKey: "BackgroundMusic")
+    //            worldNode.runAction(backgroundMusic)
+      //          backgroundMusicIsPlaying = true
+        //    }
             player.movementComponent.applyImpulse()
-        } else if gameState.currentState is GameOverState {
-            restartGame()
+            runAction(flapAction)
+        case is GameOverState:
+            restartGame(TutorialState)
+        default:
+            break
         }
     }
     
-    func restartGame() {
+    func restartGame(stateClass: AnyClass) {
         runAction(popAction)
-        let newScene = GameScene(size: size)
-        let transition = SKTransition.fadeWithColor(SKColor.blackColor(), duration: 0.02)
+        let newScene = GameScene(size: size, stateClass: stateClass)
+        let transition = SKTransition.fadeWithColor(SKColor.blackColor(), duration: 0.4)
         view?.presentScene(newScene, transition: transition)
+        view?.scene?.removeAllChildren()
+
     }
     
     // MARK: Physics
@@ -264,15 +275,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    // MARK: GameStates
-    
-    func switchToNewGame() {
-        runAction(popAction)
-        removeActionForKey("soundtrack")
-        let newScene = GameScene(size: size)
-        let transition = SKTransition.fadeWithColor(SKColor.blackColor(), duration: 0.1)
-        view?.presentScene(newScene, transition: transition)
-    }
     
     // MARK: Updates
    
@@ -287,6 +289,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameState.updateWithDeltaTime(deltaTime)
         player.updateWithDeltaTime(deltaTime)
 
+    }
+    
+    func updateScore() {
+        worldNode.enumerateChildNodesWithName("Obstacle", usingBlock: {node, stop in
+            if let obstacle = node as? SKSpriteNode {
+                if let passed = obstacle.userData?["Passed"] as? NSNumber {
+                    if passed.boolValue {
+                        return
+                    }
+                }
+                
+                if self.player.spriteComponent.node.position.x > obstacle.position.x + obstacle.size.width/2 {
+                    self.score++
+                    self.scoreLabel.text = "\(self.score / 2)"
+                    
+                    obstacle.userData?["Passed"] = NSNumber(bool: true)
+                    self.runAction(self.coinAction)
+                }
+            }
+        })
     }
     
     func updateForeground() {
@@ -305,5 +327,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         })
     }
-
+    
+    // MARK: Pause
+    
+    func pauseGameScene() {
+        self.view?.paused = true
+    }
+    
+    func showPauseText() {
+        if self.view?.paused == true {
+            tapToResume.hidden = false
+        }
+    }
 }

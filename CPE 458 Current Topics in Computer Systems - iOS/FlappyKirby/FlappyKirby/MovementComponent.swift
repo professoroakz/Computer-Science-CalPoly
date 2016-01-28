@@ -11,11 +11,12 @@ import GameKit
 
 class MovementComponent: GKComponent {
     let spriteComponent: SpriteComponent
-    
-    var velocity = CGPoint.zero    
+
+    var velocity = CGPoint.zero
     let gravity: CGFloat = -1200.0 // pixels per second
     let impulse: CGFloat = 400.0
-    
+    var jumpCount = 0
+    let kirby: [String] = ["Kirby0", "Kirby1", "Kirby2", "Kirby3"]
     var playableStart: CGFloat = 0
     
     
@@ -25,11 +26,24 @@ class MovementComponent: GKComponent {
     
     func applyImpulse() {
         velocity = CGPoint(x: 0, y: impulse)
+        animatePlayer()
+    }
+    
+    func animatePlayer() {
+        if let player = entity as? Player {
+            if jumpCount <= 3 {
+                player.spriteComponent.node.texture = SKTexture(imageNamed: kirby[jumpCount])
+                jumpCount++
+            } else {
+                jumpCount = 0
+                player.spriteComponent.node.texture = SKTexture(imageNamed: kirby[jumpCount])
+            }
+        }
     }
     
     func applyMovement(seconds: NSTimeInterval) {
         let spriteNode = spriteComponent.node
-
+        
         // Apply Gravity
         let gStep = CGPoint(x: 0, y: gravity * CGFloat(seconds))
         velocity.x += gStep.x
@@ -47,7 +61,11 @@ class MovementComponent: GKComponent {
     }
 
     override func updateWithDeltaTime(seconds: NSTimeInterval) {
-        applyMovement(seconds)
+        if let player = entity as? Player {
+            if player.movementAllowed {
+                applyMovement(seconds)
+            }
+        }
     }
     
 }

@@ -21,6 +21,8 @@ class GameOverState: GKState {
     override func didEnterWithPreviousState(previousState: GKState?) {
         scene.runAction(hitGroundAction)
         scene.stopSpawningObstacles()
+        
+        scene.player.movementAllowed = false
     }
     
     override func isValidNextState(stateClass: AnyClass) -> Bool {
