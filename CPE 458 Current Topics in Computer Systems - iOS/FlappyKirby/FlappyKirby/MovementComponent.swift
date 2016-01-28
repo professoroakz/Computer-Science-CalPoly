@@ -29,19 +29,16 @@ class MovementComponent: GKComponent {
     
     func applyMovement(seconds: NSTimeInterval) {
         let spriteNode = spriteComponent.node
-        
-        // Apply gravity
-        //let gravityStep = CGPoint(x: 0, y: gravity) * CGFloat(seconds)
-       // velocity += gravityStep
-        
+
+        // Apply Gravity
         let gStep = CGPoint(x: 0, y: gravity * CGFloat(seconds))
         velocity.x += gStep.x
         velocity.y += gStep.y
         
         
         // Apply velocity
-        let velocityStep = velocity * CGFloat(seconds)
-        spriteNode.position += velocityStep
+        let vStep = CGPoint(x: velocity.x * CGFloat(seconds), y: velocity.y * CGFloat(seconds))
+        spriteNode.position += vStep
         
         // Temporary ground hit
         if spriteNode.position.y - spriteNode.size.height/2 < playableStart {
