@@ -27,9 +27,15 @@ struct PhysicsCategory {
     static let Ground: UInt32 = 0b100
 }
 
+extension Int {
+    var degreesToRadians : CGFloat {
+        return CGFloat(self) * CGFloat(M_PI) / 180.0
+    }
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
         
-    let worldNode = SKNode() // Parent node/container
+    let rootNode = SKNode()
     let player = Player(imageName: "Kirby0")
     
     var initalState: AnyClass
@@ -79,14 +85,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var hitObstacle: Bool = false
     var backgroundMusicIsPlaying: Bool = false
     
-    lazy var gameState: GKStateMachine = GKStateMachine(states: [
-        MainMenuState(scene: self),
-        TutorialState(scene: self),
-        PlayingState(scene: self),
-        FallingState(scene: self),
-        GameOverState(scene: self)
-    ])
-    
     let colors = [
         UIColor.greenColor(),
         UIColor.blueColor(),
@@ -96,6 +94,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         UIColor.purpleColor(),
         UIColor.cyanColor()
     ]
+    
+    lazy var gameState: GKStateMachine = GKStateMachine(states: [
+        MainMenuState(scene: self),
+        TutorialState(scene: self),
+        PlayingState(scene: self),
+        FallingState(scene: self),
+        GameOverState(scene: self)
+    ])
 
     
     override func didMoveToView(view: SKView) {
@@ -103,7 +109,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         physicsWorld.contactDelegate = self
         
-        addChild(worldNode)
+        addChild(rootNode)
         
         gameState.enterState(initalState)
     }
@@ -130,7 +136,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 5)
             ])))
         
-            worldNode.addChild(background)
+            rootNode.addChild(background)
         
         let background2 = SKSpriteNode(imageNamed: "Background 1")
         
@@ -144,7 +150,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 5)
             ])))
         
-        worldNode.addChild(background2)
+        rootNode.addChild(background2)
         
         playableStart = size.height - background.size.height
         playableHeight = background.size.height
@@ -173,7 +179,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             foreground.zPosition = Layer.Foreground.rawValue
             foreground.name = "Foreground"
             
-            worldNode.addChild(foreground)
+            rootNode.addChild(foreground)
         }
     }
     
@@ -181,7 +187,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let playerNode = player.spriteComponent.node
         playerNode.position = CGPoint(x: size.width * 0.2, y: playableHeight * 0.4 + playableStart)
         playerNode.zPosition = Layer.Player.rawValue
-        worldNode.addChild(playerNode)
+        rootNode.addChild(playerNode)
         
         player.movementComponent.playableStart = playableStart
     }
@@ -196,8 +202,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.fontColor = SKColor.whiteColor()
         scoreLabel.text = "\(score)"
         
-        worldNode.addChild(scoreLabel)
+        rootNode.addChild(scoreLabel)
     }
+    
+    // MARK: Obstacles
     
     func startSpawningObstacles() {
         let firstDelay = SKAction.waitForDuration(firstSpawnDelay)
@@ -214,7 +222,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func stopSpawningObstacles() {
         removeActionForKey("spawn")
-        worldNode.enumerateChildNodesWithName("Obstacle", usingBlock: {node, stop in
+        rootNode.enumerateChildNodesWithName("Obstacle", usingBlock: {node, stop in
             node.removeAllActions()
         })
     }
@@ -256,7 +264,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 1)
             ])))
         
-        worldNode.addChild(bottomObstacle)
+        rootNode.addChild(bottomObstacle)
         
         // Top obstacle
         
@@ -264,7 +272,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let gapSizeValue = randomGapSize.nextInt()
         
         let topObstacle = createObstacle()
-        topObstacle.zRotation = CGFloat(180).degreesToRadians()
+        topObstacle.zRotation = CGFloat(180.degreesToRadians)
         topObstacle.position = CGPoint(
             x: startX,
             y: bottomObstacle.position.y
@@ -279,7 +287,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 1)
             ])))
         
-        worldNode.addChild(topObstacle)
+        rootNode.addChild(topObstacle)
         
         let moveX = size.width + topObstacle.size.width
         let moveDuration = moveX / groundSpeed
@@ -364,7 +372,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func updateScore() {
-        worldNode.enumerateChildNodesWithName("Obstacle", usingBlock: {node, stop in
+        rootNode.enumerateChildNodesWithName("Obstacle", usingBlock: {node, stop in
             if let obstacle = node as? SKSpriteNode {
                 if let passed = obstacle.userData?["Passed"] as? NSNumber {
                     if passed.boolValue {
@@ -384,7 +392,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func updateForeground() {
-        worldNode.enumerateChildNodesWithName("Foreground", usingBlock: { node, stop in
+        rootNode.enumerateChildNodesWithName("Foreground", usingBlock: { node, stop in
             if let foreground = node as? SKSpriteNode {
                 let moveAmount = CGPoint(x: -self.groundSpeed * CGFloat(self.deltaTime), y: 0)
                 foreground.position.x += moveAmount.x
@@ -399,7 +407,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func updateBackground() {
-        worldNode.enumerateChildNodesWithName("Background", usingBlock: { node, stop in
+        rootNode.enumerateChildNodesWithName("Background", usingBlock: { node, stop in
             if let background = node as? SKSpriteNode {
                 let moveAmount = CGPoint(x: -self.groundSpeed/1.5 * CGFloat(self.deltaTime), y: 0)
                 background.position.x += moveAmount.x

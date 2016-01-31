@@ -53,7 +53,7 @@ class GameOverState: GKState {
         scoreCard.position = CGPoint(x: scene.size.width * 0.5, y: scene.size.height * 0.5)
         scoreCard.name = "ScoreCard"
         scoreCard.zPosition = Layer.UI.rawValue
-        scene.worldNode.addChild(scoreCard)
+        scene.rootNode.addChild(scoreCard)
         
         let lastScore = SKLabelNode(fontNamed: scene.fontName)
         lastScore.fontColor = .blackColor()
@@ -77,14 +77,14 @@ class GameOverState: GKState {
                 + scene.margin + gameOverLabel.size.height / 2)
         
         gameOverLabel.zPosition = Layer.UI.rawValue
-        scene.worldNode.addChild(gameOverLabel)
+        scene.rootNode.addChild(gameOverLabel)
         
         let okButton = SKSpriteNode(imageNamed: "GameOverButton")
         okButton.position = CGPoint(x: scene.size.width * 0.25,
             y: scene.size.height / 2 - scoreCard.size.height / 2
                 - scene.margin - okButton.size.height / 2)
         okButton.zPosition = Layer.UI.rawValue
-        scene.worldNode.addChild(okButton)
+        scene.rootNode.addChild(okButton)
         
         let ok = SKSpriteNode(imageNamed: "OK")
         ok.position = CGPoint(x: 0, y: 5)
@@ -97,7 +97,7 @@ class GameOverState: GKState {
             y: scene.size.height / 2 - scoreCard.size.height / 2
                 - scene.margin - mainMenuButton.size.height / 2)
         mainMenuButton.zPosition = Layer.UI.rawValue
-        scene.worldNode.addChild(mainMenuButton)
+        scene.rootNode.addChild(mainMenuButton)
         
         let mainMenu = SKSpriteNode(imageNamed: "MainMenu")
         mainMenu.position = CGPoint(x: 0, y: 5)

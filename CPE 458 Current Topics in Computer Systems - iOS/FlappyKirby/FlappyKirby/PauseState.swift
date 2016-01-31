@@ -23,7 +23,7 @@ class PauseState: GKState {
     
     override func willExitWithNextState(nextState: GKState) {
         // Remove tutorial
-        scene.worldNode.enumerateChildNodesWithName("Tutorial", usingBlock: { node, stop in
+        scene.rootNode.enumerateChildNodesWithName("Tutorial", usingBlock: { node, stop in
             node.runAction(SKAction.sequence([
                 SKAction.fadeOutWithDuration(0.5),
                 SKAction.removeFromParent()
@@ -44,13 +44,13 @@ class PauseState: GKState {
         tutorial.position = CGPoint(x: scene.size.width * 0.5, y: scene.playableHeight * 0.4 + scene.playableStart)
         tutorial.name = "Tutorial"
         tutorial.zPosition = Layer.UI.rawValue
-        scene.worldNode.addChild(tutorial)
+        scene.rootNode.addChild(tutorial)
         
         let ready = SKSpriteNode(imageNamed: "Ready")
         ready.position = CGPoint(x: scene.size.width * 0.5, y: scene.playableHeight * 0.7 + scene.playableStart)
         ready.name = "Tutorial"
         ready.zPosition = Layer.UI.rawValue
-        scene.worldNode.addChild(ready)
+        scene.rootNode.addChild(ready)
         
     }
 }
