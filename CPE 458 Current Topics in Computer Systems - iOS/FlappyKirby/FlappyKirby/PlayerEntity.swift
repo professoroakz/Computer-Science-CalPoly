@@ -14,7 +14,6 @@ class Player: GKEntity {
     var spriteComponent: SpriteComponent!
     var movementComponent: MovementComponent!
     
-    
     var movementAllowed: Bool = false
     
     init(imageName: String) {
@@ -26,6 +25,8 @@ class Player: GKEntity {
         
         movementComponent = MovementComponent(entity: self)
         addComponent(movementComponent)
+        
+        movementComponent.applyInitialImpulse()
         
         let spriteNode = spriteComponent.node
         

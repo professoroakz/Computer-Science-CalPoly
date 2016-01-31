@@ -27,6 +27,7 @@ class PlayingState: GKState {
     }
     
     override func updateWithDeltaTime(seconds: NSTimeInterval) {
+        scene.updateBackground()
         scene.updateForeground()
         scene.updateScore()
     }

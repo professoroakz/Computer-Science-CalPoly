@@ -21,7 +21,7 @@ class GameViewController: UIViewController {
                 let scene = GameScene(size:CGSize(width: 320, height: 320 * aspectRatio), stateClass: MainMenuState.self)
                 
                 skView.showsFPS = true
-                skView.ignoresSiblingOrder = true // faster
+                skView.ignoresSiblingOrder = true
                 scene.scaleMode = .AspectFill
                 
                 skView.presentScene(scene)

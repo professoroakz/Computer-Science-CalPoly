@@ -23,6 +23,7 @@
 		A208C7591C57F06D00550505 /* SKTEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = A208C74D1C57F06D00550505 /* SKTEffects.swift */; };
 		A208C75A1C57F06D00550505 /* SKTTimingFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A208C74E1C57F06D00550505 /* SKTTimingFunctions.swift */; };
 		A208C75B1C57F06D00550505 /* Vector3.swift in Sources */ = {isa = PBXBuildFile; fileRef = A208C74F1C57F06D00550505 /* Vector3.swift */; };
+		A20944021C5ADA2100BAB961 /* PauseState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20944011C5ADA2100BAB961 /* PauseState.swift */; };
 		A2111BB91C58037C0029B0F3 /* coin.wav in Resources */ = {isa = PBXBuildFile; fileRef = A2111BB21C58037C0029B0F3 /* coin.wav */; };
 		A2111BBA1C58037C0029B0F3 /* ding.wav in Resources */ = {isa = PBXBuildFile; fileRef = A2111BB31C58037C0029B0F3 /* ding.wav */; };
 		A2111BBB1C58037C0029B0F3 /* falling.wav in Resources */ = {isa = PBXBuildFile; fileRef = A2111BB41C58037C0029B0F3 /* falling.wav */; };
@@ -36,6 +37,8 @@
 		A223C2ED1C59F1AC0055281E /* MainMenuState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A223C2EC1C59F1AC0055281E /* MainMenuState.swift */; };
 		A223C2EF1C59F1B80055281E /* TutorialState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A223C2EE1C59F1B80055281E /* TutorialState.swift */; };
 		A27927EE1C5814F400C94BB9 /* kirby.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A27927ED1C5814F400C94BB9 /* kirby.mp3 */; };
+		A28C3E091C5D86240090EBA7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2C4CDE71C3C601B00EC0CA6 /* Info.plist */; };
+		A28C3E0D1C5D86C70090EBA7 /* 8BitWonder.TTF in Resources */ = {isa = PBXBuildFile; fileRef = A28C3E0C1C5D86C70090EBA7 /* 8BitWonder.TTF */; };
 		A2C4CDD81C3C601B00EC0CA6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C4CDD71C3C601B00EC0CA6 /* AppDelegate.swift */; };
 		A2C4CDDC1C3C601B00EC0CA6 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C4CDDB1C3C601B00EC0CA6 /* GameScene.swift */; };
 		A2C4CDDE1C3C601B00EC0CA6 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2C4CDDD1C3C601B00EC0CA6 /* GameViewController.swift */; };
@@ -61,6 +64,7 @@
 		A208C74D1C57F06D00550505 /* SKTEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTEffects.swift; sourceTree = "<group>"; };
 		A208C74E1C57F06D00550505 /* SKTTimingFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTTimingFunctions.swift; sourceTree = "<group>"; };
 		A208C74F1C57F06D00550505 /* Vector3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vector3.swift; sourceTree = "<group>"; };
+		A20944011C5ADA2100BAB961 /* PauseState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PauseState.swift; sourceTree = "<group>"; };
 		A2111BB21C58037C0029B0F3 /* coin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = coin.wav; sourceTree = "<group>"; };
 		A2111BB31C58037C0029B0F3 /* ding.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ding.wav; sourceTree = "<group>"; };
 		A2111BB41C58037C0029B0F3 /* falling.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = falling.wav; sourceTree = "<group>"; };
@@ -74,6 +78,7 @@
 		A223C2EC1C59F1AC0055281E /* MainMenuState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenuState.swift; sourceTree = "<group>"; };
 		A223C2EE1C59F1B80055281E /* TutorialState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialState.swift; sourceTree = "<group>"; };
 		A27927ED1C5814F400C94BB9 /* kirby.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = kirby.mp3; sourceTree = "<group>"; };
+		A28C3E0C1C5D86C70090EBA7 /* 8BitWonder.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = 8BitWonder.TTF; sourceTree = "<group>"; };
 		A2C4CDD41C3C601B00EC0CA6 /* FlappyKirby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlappyKirby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2C4CDD71C3C601B00EC0CA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A2C4CDDB1C3C601B00EC0CA6 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -155,6 +160,14 @@
 			path = .wdmc;
 			sourceTree = "<group>";
 		};
+		A21E3EE01C5AEE9900B76DB4 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				A28C3E0C1C5D86C70090EBA7 /* 8BitWonder.TTF */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
 		A223C2BF1C59A9940055281E /* Game States */ = {
 			isa = PBXGroup;
 			children = (
@@ -163,6 +176,7 @@
 				A223C2C41C59A9B90055281E /* GameOverState.swift */,
 				A223C2EC1C59F1AC0055281E /* MainMenuState.swift */,
 				A223C2EE1C59F1B80055281E /* TutorialState.swift */,
+				A20944011C5ADA2100BAB961 /* PauseState.swift */,
 			);
 			name = "Game States";
 			sourceTree = "<group>";
@@ -186,6 +200,7 @@
 		A2C4CDD61C3C601B00EC0CA6 /* FlappyKirby */ = {
 			isa = PBXGroup;
 			children = (
+				A21E3EE01C5AEE9900B76DB4 /* Fonts */,
 				A223C2BF1C59A9940055281E /* Game States */,
 				A2111BB01C58037C0029B0F3 /* Sounds */,
 				A208C73E1C57E44800550505 /* Enteties */,
@@ -263,12 +278,14 @@
 			files = (
 				A2111BBE1C58037C0029B0F3 /* pop.wav in Resources */,
 				A2111BBC1C58037C0029B0F3 /* flapping.wav in Resources */,
+				A28C3E0D1C5D86C70090EBA7 /* 8BitWonder.TTF in Resources */,
 				A27927EE1C5814F400C94BB9 /* kirby.mp3 in Resources */,
 				A2111BBA1C58037C0029B0F3 /* ding.wav in Resources */,
 				A2C4CDE61C3C601B00EC0CA6 /* LaunchScreen.storyboard in Resources */,
 				A2111BBB1C58037C0029B0F3 /* falling.wav in Resources */,
 				A2111BB91C58037C0029B0F3 /* coin.wav in Resources */,
 				A2111BBD1C58037C0029B0F3 /* hitGround.wav in Resources */,
+				A28C3E091C5D86240090EBA7 /* Info.plist in Resources */,
 				A2C4CDE31C3C601B00EC0CA6 /* Assets.xcassets in Resources */,
 				A2C4CDE11C3C601B00EC0CA6 /* Main.storyboard in Resources */,
 				A2111BBF1C58037C0029B0F3 /* whack.wav in Resources */,
@@ -303,6 +320,7 @@
 				A223C2C51C59A9B90055281E /* GameOverState.swift in Sources */,
 				A223C2EF1C59F1B80055281E /* TutorialState.swift in Sources */,
 				A208C7591C57F06D00550505 /* SKTEffects.swift in Sources */,
+				A20944021C5ADA2100BAB961 /* PauseState.swift in Sources */,
 				A208C75B1C57F06D00550505 /* Vector3.swift in Sources */,
 				A223C2C11C59A9AA0055281E /* PlayingState.swift in Sources */,
 				A2C4CDD81C3C601B00EC0CA6 /* AppDelegate.swift in Sources */,
@@ -419,6 +437,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = FlappyKirby/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = professoroak.FlappyKirby;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -430,6 +449,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = FlappyKirby/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = professoroak.FlappyKirby;
 				PRODUCT_NAME = "$(TARGET_NAME)";

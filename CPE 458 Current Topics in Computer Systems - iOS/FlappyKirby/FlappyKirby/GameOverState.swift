@@ -12,6 +12,7 @@ import GameplayKit
 class GameOverState: GKState {
     unowned let scene: GameScene
     let hitGroundAction = SKAction.playSoundFileNamed("hitGround.wav", waitForCompletion: false)
+    let animationDelay = 0.2
     
     init(scene: SKScene) {
         self.scene = scene as! GameScene
@@ -23,6 +24,7 @@ class GameOverState: GKState {
         scene.stopSpawningObstacles()
         
         scene.player.movementAllowed = false
+        showScoreCard()
     }
     
     override func isValidNextState(stateClass: AnyClass) -> Bool {
@@ -32,4 +34,129 @@ class GameOverState: GKState {
     override func updateWithDeltaTime(seconds: NSTimeInterval) {
         
     }
+    
+    func setHighScore(highScore: Int) {
+        NSUserDefaults.standardUserDefaults().setInteger(highScore, forKey: "HighScore")
+        NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    func getHighScore() -> Int {
+        return NSUserDefaults.standardUserDefaults().integerForKey("HighScore")
+    }
+    
+    func showScoreCard() {
+        if scene.score > getHighScore() {
+                setHighScore(scene.score)
+        }
+        
+        let scoreCard = SKSpriteNode(imageNamed: "ScoreCard")
+        scoreCard.position = CGPoint(x: scene.size.width * 0.5, y: scene.size.height * 0.5)
+        scoreCard.name = "ScoreCard"
+        scoreCard.zPosition = Layer.UI.rawValue
+        scene.worldNode.addChild(scoreCard)
+        
+        let lastScore = SKLabelNode(fontNamed: scene.fontName)
+        lastScore.fontColor = .blackColor()
+        lastScore.position = CGPoint(x: -scoreCard.size.width * 0.25, y: -scoreCard.size.width * 0.2 + scene.margin * 1.5)
+        lastScore.zPosition = Layer.UI.rawValue
+        lastScore.text = "\(scene.score / 2)"
+        scoreCard.addChild(lastScore)
+    
+        let highScore = SKLabelNode(fontNamed: scene.fontName)
+        highScore.fontColor = .blackColor()
+        highScore.position = CGPoint(x: scoreCard.size.width * 0.25, y: -scoreCard.size.width * 0.2 + scene.margin * 1.5)
+        highScore.zPosition = Layer.UI.rawValue
+        highScore.text = "\(getHighScore() / 2)"
+        scoreCard.addChild(highScore)
+        
+        
+        let gameOverLabel = SKSpriteNode(imageNamed: "GameOver") // text
+        gameOverLabel.position = CGPoint(
+            x: scene.size.width / 2,
+            y: scene.size.height / 2 + scoreCard.size.height / 2
+                + scene.margin + gameOverLabel.size.height / 2)
+        
+        gameOverLabel.zPosition = Layer.UI.rawValue
+        scene.worldNode.addChild(gameOverLabel)
+        
+        let okButton = SKSpriteNode(imageNamed: "GameOverButton")
+        okButton.position = CGPoint(x: scene.size.width * 0.25,
+            y: scene.size.height / 2 - scoreCard.size.height / 2
+                - scene.margin - okButton.size.height / 2)
+        okButton.zPosition = Layer.UI.rawValue
+        scene.worldNode.addChild(okButton)
+        
+        let ok = SKSpriteNode(imageNamed: "OK")
+        ok.position = CGPoint(x: 0, y: 5)
+        ok.zPosition = Layer.UI.rawValue
+        
+        okButton.addChild(ok)
+        
+        let mainMenuButton = SKSpriteNode(imageNamed: "GameOverButton")
+        mainMenuButton.position = CGPoint(x: scene.size.width * 0.75,
+            y: scene.size.height / 2 - scoreCard.size.height / 2
+                - scene.margin - mainMenuButton.size.height / 2)
+        mainMenuButton.zPosition = Layer.UI.rawValue
+        scene.worldNode.addChild(mainMenuButton)
+        
+        let mainMenu = SKSpriteNode(imageNamed: "MainMenu")
+        mainMenu.position = CGPoint(x: 0, y: 5)
+        mainMenu.zPosition = Layer.UI.rawValue
+        mainMenuButton.addChild(mainMenu)
+        
+        setupScoreCardAnimations(scoreCard, gameOverLabel: gameOverLabel, okButton: okButton, mainMenuButton: mainMenuButton)
+    }
+    
+    func setupScoreCardAnimations(scoreCard: SKSpriteNode, gameOverLabel: SKSpriteNode, okButton: SKSpriteNode, mainMenuButton: SKSpriteNode) {
+        gameOverLabel.setScale(0)
+        gameOverLabel.alpha = 0
+        let group = SKAction.group([
+            SKAction.fadeInWithDuration(animationDelay),
+            SKAction.scaleTo(1.0, duration: animationDelay)
+            ])
+        group.timingMode = .EaseIn
+        gameOverLabel.runAction(SKAction.sequence([
+            SKAction.waitForDuration(animationDelay),
+            group
+            ]))
+        
+        scoreCard.position = CGPoint(x: scene.size.width * 0.5, y: -scoreCard.size.height/2)
+        let moveTo = SKAction.moveTo(CGPoint(x: scene.size.width/2, y: scene.size.height/2), duration: animationDelay)
+        moveTo.timingMode = .EaseInEaseOut
+        scoreCard.runAction(SKAction.sequence([
+            SKAction.waitForDuration(animationDelay * 2),
+            moveTo
+            ]))
+        
+        okButton.alpha = 0
+        mainMenuButton.alpha = 0
+        let fadeIn = SKAction.sequence([
+            SKAction.waitForDuration(animationDelay * 4),
+            SKAction.fadeInWithDuration(animationDelay)
+            ])
+        
+        okButton.runAction(fadeIn)
+        mainMenuButton.runAction(fadeIn)
+        
+        let pops = SKAction.sequence([
+            SKAction.waitForDuration(animationDelay),
+            scene.popAction,
+            SKAction.waitForDuration(animationDelay),
+            scene.popAction,
+            SKAction.waitForDuration(animationDelay),
+            scene.popAction
+            ])
+        scene.runAction(pops)
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
