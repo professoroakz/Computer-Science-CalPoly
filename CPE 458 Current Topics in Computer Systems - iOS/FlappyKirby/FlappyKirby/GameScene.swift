@@ -34,7 +34,7 @@ extension Int {
 }
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-        
+    
     let rootNode = SKNode()
     let player = Player(imageName: "Kirby0")
     
@@ -58,7 +58,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let numberOfForegrounds: Int = 2
     
     var fontName: String = "8BITWONDERNominal"
-
+    
     var playableStart: CGFloat = 0.0
     var playableHeight: CGFloat = 0.0
     let bottomObstacleMinFraction: CGFloat = 0.1
@@ -102,12 +102,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         PlayingState(scene: self),
         FallingState(scene: self),
         GameOverState(scene: self)
-    ])
-
+        ])
     
-    override func didMoveToView(view: SKView) {        
+    
+    override func didMoveToView(view: SKView) {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("switchToPauseState"), name: "PauseGameScene", object: nil)
-
+        
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         physicsWorld.contactDelegate = self
         
@@ -126,18 +126,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // randomize backgrounds later from array
         let background = SKSpriteNode(imageNamed: "Background 1")
-
-            background.anchorPoint = CGPoint(x: 0.5, y: 1.0) // center
-            background.position = CGPoint(x: size.width / 2, y: size.height)
-            background.zPosition = Layer.Background.rawValue
-            background.name = "Background"
-
-            background.runAction(SKAction.repeatActionForever(SKAction.sequence([
-                SKAction.colorizeWithColor(colors[randColor], colorBlendFactor: 1, duration: 5),
-                SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 5)
+        
+        background.anchorPoint = CGPoint(x: 0.5, y: 1.0) // center
+        background.position = CGPoint(x: size.width / 2, y: size.height)
+        background.zPosition = Layer.Background.rawValue
+        background.name = "Background"
+        
+        background.runAction(SKAction.repeatActionForever(SKAction.sequence([
+            SKAction.colorizeWithColor(colors[randColor], colorBlendFactor: 1, duration: 5),
+            SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 5)
             ])))
         
-            rootNode.addChild(background)
+        rootNode.addChild(background)
         
         let background2 = SKSpriteNode(imageNamed: "Background 1")
         
@@ -207,15 +207,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rootNode.addChild(scoreLabel)
     }
     
+    func setupSoundtrack() {
+        let backgroundMusic = SKAudioNode(fileNamed: "kirby-2.mp3")
+        backgroundMusic.autoplayLooped = true
+        rootNode.addChild(backgroundMusic)
+    }
+    
     // MARK: Pause
     
     func switchToPauseState() {
         gameState.enterState(PauseState)
     }
     
-    func switchToState(state: AnyClass) {
-        gameState.enterState(state)
-    }
     
     func setupInGamePauseButton() {
         pause.position = CGPoint(x: size.width * 0.9, y: size.height - (margin*1.6))
@@ -239,7 +242,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let firstDelay = SKAction.waitForDuration(firstSpawnDelay)
             let spawn = SKAction.runBlock(spawnObstacle)
             let everyDelay = SKAction.waitForDuration(spawnDelay)
-            
             
             let spawnSequence = SKAction.sequence([spawn, everyDelay])
             let foreverSpawn = SKAction.repeatActionForever(spawnSequence)
@@ -356,9 +358,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
             case is TutorialState:
                 gameState.enterState(PlayingState)
-                let backgroundMusic = SKAudioNode(fileNamed: "kirby-2.mp3")
-                backgroundMusic.autoplayLooped = true
-                rootNode.addChild(backgroundMusic)
+                setupSoundtrack()
                 
             case is PlayingState:
                 if touchLocation.x >= size.width * 0.9 && touchLocation.y >= size.height - (margin*2) {
@@ -368,7 +368,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 runAction(flapAction) // TODO why not working
                 
             case is PauseState:
-                    gameState.enterState(PlayingState) // maybe refactor switchtopausetate to switchtostate(param state)
+                gameState.enterState(PlayingState) // maybe refactor switchtopausetate to switchtostate(param state)
                 
             case is GameOverState:
                 if touchLocation.x < size.width * 0.5 && touchLocation.y <= size.width * 0.6 && touchLocation.y >= size.width * 0.5 {
@@ -376,7 +376,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 } else if touchLocation.x > size.width * 0.5 && touchLocation.y <= size.width * 0.6 && touchLocation.y >= size.width * 0.5 {
                     restartGame(MainMenuState)
                 }
-    
+                
             default:
                 break
             }
@@ -389,7 +389,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let transition = SKTransition.fadeWithColor(SKColor.blackColor(), duration: 0.4)
         view?.presentScene(newScene, transition: transition)
         view?.scene?.removeAllChildren()
-
+        
     }
     
     // MARK: Physics
@@ -407,7 +407,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     // MARK: Updates
-   
+    
     override func update(currentTime: CFTimeInterval) {
         if lastUpdateTime == 0 {
             lastUpdateTime = currentTime
@@ -462,7 +462,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         })
     }
-
+    
     func updateBackground() {
         rootNode.enumerateChildNodesWithName("Background", usingBlock: { node, stop in
             if let background = node as? SKSpriteNode {

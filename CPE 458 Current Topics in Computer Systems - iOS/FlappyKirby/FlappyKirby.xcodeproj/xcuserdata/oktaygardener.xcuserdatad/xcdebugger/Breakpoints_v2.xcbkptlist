@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FlappyKirby/GameScene.swift"
-            timestampString = "476170762.350633"
+            timestampString = "476186323.494563"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "365"
-            endingLineNumber = "365"
+            startingLineNumber = "362"
+            endingLineNumber = "362"
             landmarkName = "touchesBegan(_:withEvent:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -111,7 +111,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "212"
             endingLineNumber = "212"
-            landmarkName = "switchToPauseState()"
+            landmarkName = "setupSoundtrack()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -127,7 +127,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "213"
             endingLineNumber = "213"
-            landmarkName = "switchToPauseState()"
+            landmarkName = "setupSoundtrack()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -154,12 +154,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FlappyKirby/GameScene.swift"
-            timestampString = "476170762.350633"
+            timestampString = "476186323.494563"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
-            landmarkName = "startSpawningObstacles()"
+            startingLineNumber = "234"
+            endingLineNumber = "234"
+            landmarkName = "setupInGamePauseButton()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

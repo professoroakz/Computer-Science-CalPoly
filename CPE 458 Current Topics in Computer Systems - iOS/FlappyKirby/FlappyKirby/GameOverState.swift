@@ -13,6 +13,7 @@ class GameOverState: GKState {
     unowned let scene: GameScene
     let hitGroundAction = SKAction.playSoundFileNamed("hitGround.wav", waitForCompletion: false)
     let animationDelay = 0.2
+    let numHighscores = 3
     
     init(scene: SKScene) {
         self.scene = scene as! GameScene
@@ -35,18 +36,29 @@ class GameOverState: GKState {
         
     }
     
-    func setHighScore(highScore: Int) {
-        NSUserDefaults.standardUserDefaults().setInteger(highScore, forKey: "HighScore")
+    func setHighScore(highScore: Int, key: Int) {
+        NSUserDefaults.standardUserDefaults().setInteger(highScore/2, forKey: "HighScore_\(key)") // div 2 obstacle counts as 2 points each
         NSUserDefaults.standardUserDefaults().synchronize()
     }
     
-    func getHighScore() -> Int {
-        return NSUserDefaults.standardUserDefaults().integerForKey("HighScore")
+    func getHighScores() -> Array<Int> {
+
+        var highScores: Array<Int> = []
+        for i in 0..<numHighscores {
+            highScores.append(NSUserDefaults.standardUserDefaults().integerForKey("HighScore_\(i)"))
+            print(NSUserDefaults.standardUserDefaults().integerForKey("HighScore_\(i)"))
+        }
+        
+        return highScores
     }
     
     func showScoreCard() {
-        if scene.score > getHighScore() {
-                setHighScore(scene.score)
+        let highScores: Array<Int> = getHighScores()
+        for i in 0..<highScores.count {
+            if scene.score > highScores[i] {
+                setHighScore(scene.score, key: i) // TODO: push values back one step if new highscore
+                break
+            }
         }
         
         let scoreCard = SKSpriteNode(imageNamed: "ScoreCard")
@@ -64,13 +76,14 @@ class GameOverState: GKState {
     
         let highScore = SKLabelNode(fontNamed: scene.fontName)
         highScore.fontColor = .blackColor()
-        highScore.position = CGPoint(x: scoreCard.size.width * 0.25, y: -scoreCard.size.width * 0.2 + scene.margin * 1.5)
+        highScore.position = CGPoint(x: scoreCard.size.width * 0.20, y: -scoreCard.size.width * 0.2 + scene.margin * 1.5)
         highScore.zPosition = Layer.UI.rawValue
-        highScore.text = "\(getHighScore() / 2)"
+        
+        highScore.text = getHighScores().map({"\($0)"}).joinWithSeparator(" ") // yas yas yas map put in werk
+        highScore.fontSize = 24
         scoreCard.addChild(highScore)
         
-        
-        let gameOverLabel = SKSpriteNode(imageNamed: "GameOver") // text
+        let gameOverLabel = SKSpriteNode(imageNamed: "GameOver")
         gameOverLabel.position = CGPoint(
             x: scene.size.width / 2,
             y: scene.size.height / 2 + scoreCard.size.height / 2
