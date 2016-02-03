@@ -19,11 +19,11 @@ class PauseState: GKState {
     
     override func didEnterWithPreviousState(previousState: GKState?) {
         setupPauseButton()
+        scene.speed = 0
         scene.player.movementAllowed = false
     }
     
     override func willExitWithNextState(nextState: GKState) {
-        //   pauseGame()
         resumeGame()
     }
     
@@ -34,14 +34,6 @@ class PauseState: GKState {
     
     override func updateWithDeltaTime(seconds: NSTimeInterval) {
         
-    }
-    
-    func pauseGame() {
-        if scene.view?.paused == true {
-                scene.view?.paused = false
-            } else {
-                scene.view?.paused = true
-            }
     }
     
     func setupPauseButton() {
@@ -65,9 +57,6 @@ class PauseState: GKState {
         pauseLabel.fontColor = SKColor.whiteColor()
         
         scene.rootNode.addChild(pauseLabel)
-        
-        scene.runAction(SKAction.runBlock(pauseGame))
-    
     }
     
     func resumeGame() {
@@ -76,7 +65,7 @@ class PauseState: GKState {
             node.removeFromParent()
         })
         
+        scene.speed = 1
         scene.player.movementAllowed = true
-        scene.player.movementComponent.applyInitialImpulse()
     }
 }

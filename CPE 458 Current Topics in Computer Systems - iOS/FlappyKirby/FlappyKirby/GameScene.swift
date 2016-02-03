@@ -105,9 +105,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     ])
 
     
-    override func didMoveToView(view: SKView) {
-       // startMusic()
-        
+    override func didMoveToView(view: SKView) {        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("switchToPauseState"), name: "PauseGameScene", object: nil)
 
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
@@ -123,14 +121,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func setupBackgrounds() {
         // Random Colors
         let randomSource = GKARC4RandomSource()
-        let randDistColors = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(0), highestValue: Int(colors.count-1))
+        let randDistColors = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(0), highestValue: Int(colors.count - 1))
         let randColor = randDistColors.nextInt()
         
         // randomize backgrounds later from array
         let background = SKSpriteNode(imageNamed: "Background 1")
 
             background.anchorPoint = CGPoint(x: 0.5, y: 1.0) // center
-            background.position = CGPoint(x: size.width/2, y: size.height)
+            background.position = CGPoint(x: size.width / 2, y: size.height)
             background.zPosition = Layer.Background.rawValue
             background.name = "Background"
 
@@ -144,7 +142,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let background2 = SKSpriteNode(imageNamed: "Background 1")
         
         background2.anchorPoint = CGPoint(x: 0.5, y: 1.0) // center
-        background2.position = CGPoint(x: size.width*1.5, y: size.height)
+        background2.position = CGPoint(x: size.width * 1.5, y: size.height)
         background2.zPosition = Layer.Background.rawValue
         background2.name = "Background"
         
@@ -215,6 +213,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameState.enterState(PauseState)
     }
     
+    func switchToState(state: AnyClass) {
+        gameState.enterState(state)
+    }
+    
     func setupInGamePauseButton() {
         pause.position = CGPoint(x: size.width * 0.9, y: size.height - (margin*1.6))
         pause.zPosition = Layer.UI.rawValue
@@ -233,16 +235,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: Obstacles
     
     func startSpawningObstacles() {
-        let firstDelay = SKAction.waitForDuration(firstSpawnDelay)
-        let spawn = SKAction.runBlock(spawnObstacle)
-        let everyDelay = SKAction.waitForDuration(spawnDelay)
-        
-        
-        let spawnSequence = SKAction.sequence([spawn, everyDelay])
-        let foreverSpawn = SKAction.repeatActionForever(spawnSequence)
-        let overallSequence = SKAction.sequence([firstDelay, foreverSpawn])
-        
-        runAction(overallSequence, withKey: "spawn")
+        if player.movementAllowed {
+            let firstDelay = SKAction.waitForDuration(firstSpawnDelay)
+            let spawn = SKAction.runBlock(spawnObstacle)
+            let everyDelay = SKAction.waitForDuration(spawnDelay)
+            
+            
+            let spawnSequence = SKAction.sequence([spawn, everyDelay])
+            let foreverSpawn = SKAction.repeatActionForever(spawnSequence)
+            let overallSequence = SKAction.sequence([firstDelay, foreverSpawn])
+            runAction(overallSequence, withKey: "spawn")
+        }
     }
     
     func stopSpawningObstacles() {
@@ -266,63 +269,65 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func spawnObstacle() {
         // Random Color for obstacles
-        let randomSource = GKARC4RandomSource()
-        let randDistColors = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(0), highestValue: Int(colors.count - 1))
-        let randColor = randDistColors.nextInt()
-        
-        // Bottom obstacle
-        let bottomObstacle = createObstacle()
-        let startX = size.width + bottomObstacle.size.width/2
-        
-        let bottomObstacleMin = (playableStart - bottomObstacle.size.height/2) + playableHeight * bottomObstacleMinFraction
-        let bottomObstacleMax = (playableStart - bottomObstacle.size.height/2) + playableHeight * bottomObstacleMaxFraction
-        
-        // Using GameplayKit's randomization
-        let randomDistribution = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(round(bottomObstacleMin)), highestValue: Int(round(bottomObstacleMax)))
-        let randomValue = randomDistribution.nextInt()
-        
-        bottomObstacle.position = CGPointMake(startX, CGFloat(randomValue))
-        
-        bottomObstacle.runAction(SKAction.repeatActionForever(SKAction.sequence([
-            SKAction.colorizeWithColor(colors[randColor], colorBlendFactor: 1, duration: 1),
-            SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 1)
-            ])))
-        
-        rootNode.addChild(bottomObstacle)
-        
-        // Top obstacle
-        
-        let randomGapSize = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(0), highestValue: Int(1))
-        let gapSizeValue = randomGapSize.nextInt()
-        
-        let topObstacle = createObstacle()
-        topObstacle.zRotation = CGFloat(180.degreesToRadians)
-        topObstacle.position = CGPoint(
-            x: startX,
-            y: bottomObstacle.position.y
-                + bottomObstacle.size.height/2
-                + topObstacle.size.height/2
-                + player.spriteComponent.node.size.height
-                * gapMultiplier * (gapSizeValue == 0 ? 1.30 : 1.05)
-        )
-        
-        topObstacle.runAction(SKAction.repeatActionForever(SKAction.sequence([
-            SKAction.colorizeWithColor(colors[randColor], colorBlendFactor: 1, duration: 1),
-            SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 1)
-            ])))
-        
-        rootNode.addChild(topObstacle)
-        
-        let moveX = size.width + topObstacle.size.width
-        let moveDuration = moveX / groundSpeed
-        
-        let sequence = SKAction.sequence([
-            SKAction.moveByX(-moveX, y: 0, duration: NSTimeInterval(moveDuration)),
-            SKAction.removeFromParent()
-            ])
-        
-        topObstacle.runAction(sequence)
-        bottomObstacle.runAction(sequence)
+        if player.movementAllowed {
+            let randomSource = GKARC4RandomSource()
+            let randDistColors = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(0), highestValue: Int(colors.count - 1))
+            let randColor = randDistColors.nextInt()
+            
+            // Bottom obstacle
+            let bottomObstacle = createObstacle()
+            let startX = size.width + bottomObstacle.size.width/2
+            
+            let bottomObstacleMin = (playableStart - bottomObstacle.size.height/2) + playableHeight * bottomObstacleMinFraction
+            let bottomObstacleMax = (playableStart - bottomObstacle.size.height/2) + playableHeight * bottomObstacleMaxFraction
+            
+            // Using GameplayKit's randomization
+            let randomDistribution = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(round(bottomObstacleMin)), highestValue: Int(round(bottomObstacleMax)))
+            let randomValue = randomDistribution.nextInt()
+            
+            bottomObstacle.position = CGPointMake(startX, CGFloat(randomValue))
+            
+            bottomObstacle.runAction(SKAction.repeatActionForever(SKAction.sequence([
+                SKAction.colorizeWithColor(colors[randColor], colorBlendFactor: 1, duration: 1),
+                SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 1)
+                ])))
+            
+            rootNode.addChild(bottomObstacle)
+            
+            // Top obstacle
+            
+            let randomGapSize = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(0), highestValue: Int(1))
+            let gapSizeValue = randomGapSize.nextInt()
+            
+            let topObstacle = createObstacle()
+            topObstacle.zRotation = CGFloat(180.degreesToRadians)
+            topObstacle.position = CGPoint(
+                x: startX,
+                y: bottomObstacle.position.y
+                    + bottomObstacle.size.height/2
+                    + topObstacle.size.height/2
+                    + player.spriteComponent.node.size.height
+                    * gapMultiplier * (gapSizeValue == 0 ? 1.30 : 1.05)
+            )
+            
+            topObstacle.runAction(SKAction.repeatActionForever(SKAction.sequence([
+                SKAction.colorizeWithColor(colors[randColor], colorBlendFactor: 1, duration: 1),
+                SKAction.colorizeWithColor(.whiteColor(), colorBlendFactor: 1, duration: 1)
+                ])))
+            
+            rootNode.addChild(topObstacle)
+            
+            let moveX = size.width + topObstacle.size.width
+            let moveDuration = moveX / groundSpeed
+            
+            let sequence = SKAction.sequence([
+                SKAction.moveByX(-moveX, y: 0, duration: NSTimeInterval(moveDuration)),
+                SKAction.removeFromParent()
+                ])
+            
+            topObstacle.runAction(sequence)
+            bottomObstacle.runAction(sequence)
+        }
     }
     
     // MARK: Gameplay
@@ -364,7 +369,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
             case is PauseState:
                     gameState.enterState(PlayingState) // maybe refactor switchtopausetate to switchtostate(param state)
-                    //player.movementComponent.applyInitialImpulse()
                 
             case is GameOverState:
                 if touchLocation.x < size.width * 0.5 && touchLocation.y <= size.width * 0.6 && touchLocation.y >= size.width * 0.5 {

@@ -53,12 +53,19 @@ class MainMenuState: GKState {
         playButton.position = CGPoint(x: scene.size.width * 0.5, y: scene.size.height / 2)
         playButton.zPosition = Layer.UI.rawValue
         
-        scene.rootNode.addChild(playButton)
-        
         let play = SKSpriteNode(imageNamed: "Play")
-        
         play.position = CGPoint(x: 0, y: scene.margin/2)
+        
+        let scaleUp = SKAction.scaleTo(1.05, duration: 0.75)
+        scaleUp.timingMode = .EaseInEaseOut
+        let scaleDown = SKAction.scaleTo(0.95, duration: 0.75)
+        scaleDown.timingMode = .EaseInEaseOut
+        
+        play.runAction(SKAction.repeatActionForever(SKAction.sequence([scaleUp, scaleDown])))
+
         playButton.addChild(play)
+        
+        scene.rootNode.addChild(playButton)
         
         let learn = SKSpriteNode(imageNamed: "Github")
         learn.position = CGPoint(x: scene.size.width * 0.5, y: scene.size.height / 2)
@@ -67,12 +74,7 @@ class MainMenuState: GKState {
         learn.zPosition = Layer.UI.rawValue
         
         scene.rootNode.addChild(learn)
+
         
-        let scaleUp = SKAction.scaleTo(1.05, duration: 0.75)
-        scaleUp.timingMode = .EaseInEaseOut
-        let scaleDown = SKAction.scaleTo(0.95, duration: 0.75)
-        scaleDown.timingMode = .EaseInEaseOut
-        
-        play.runAction(SKAction.repeatActionForever(SKAction.sequence([scaleUp, scaleDown])))
     }
 }

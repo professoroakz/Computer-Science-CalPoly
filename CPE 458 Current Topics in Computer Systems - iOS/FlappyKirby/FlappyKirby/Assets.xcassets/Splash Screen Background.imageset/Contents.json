@@ -2,10 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "SpashScreen@1x.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "SplashScreen@2x.png",
       "scale" : "2x"
     },
     {

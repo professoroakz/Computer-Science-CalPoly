@@ -19,9 +19,9 @@ class PlayingState: GKState {
     }
     
     override func didEnterWithPreviousState(previousState: GKState?) {
+        scene.player.movementAllowed = true
         scene.startSpawningObstacles()
         scene.setupInGamePauseButton()
-        scene.player.movementAllowed = true
     }
     
     
