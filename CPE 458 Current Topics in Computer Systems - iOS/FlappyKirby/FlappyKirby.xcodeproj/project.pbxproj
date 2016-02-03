@@ -33,6 +33,7 @@
 		A2C4CDE11C3C601B00EC0CA6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2C4CDDF1C3C601B00EC0CA6 /* Main.storyboard */; };
 		A2C4CDE31C3C601B00EC0CA6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2C4CDE21C3C601B00EC0CA6 /* Assets.xcassets */; };
 		A2C4CDE61C3C601B00EC0CA6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2C4CDE41C3C601B00EC0CA6 /* LaunchScreen.storyboard */; };
+		A2F4F9FF1C5F2E58008F4C7D /* kirby-2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = A2F4F9FE1C5F2E58008F4C7D /* kirby-2.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +64,7 @@
 		A2C4CDE21C3C601B00EC0CA6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A2C4CDE51C3C601B00EC0CA6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A2C4CDE71C3C601B00EC0CA6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A2F4F9FE1C5F2E58008F4C7D /* kirby-2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = "kirby-2.mp3"; path = ".wdmc/kirby-2.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 			children = (
 				A2111BB11C58037C0029B0F3 /* .wdmc */,
 				A2111BB21C58037C0029B0F3 /* coin.wav */,
+				A2F4F9FE1C5F2E58008F4C7D /* kirby-2.mp3 */,
 				A27927ED1C5814F400C94BB9 /* kirby.mp3 */,
 				A2111BB31C58037C0029B0F3 /* ding.wav */,
 				A2111BB41C58037C0029B0F3 /* falling.wav */,
@@ -235,6 +238,7 @@
 				A2111BBE1C58037C0029B0F3 /* pop.wav in Resources */,
 				A2111BBC1C58037C0029B0F3 /* flapping.wav in Resources */,
 				A28C3E0D1C5D86C70090EBA7 /* 8BitWonder.TTF in Resources */,
+				A2F4F9FF1C5F2E58008F4C7D /* kirby-2.mp3 in Resources */,
 				A27927EE1C5814F400C94BB9 /* kirby.mp3 in Resources */,
 				A2111BBA1C58037C0029B0F3 /* ding.wav in Resources */,
 				A2C4CDE61C3C601B00EC0CA6 /* LaunchScreen.storyboard in Resources */,

@@ -52,7 +52,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scoreLabel: SKLabelNode!
     var playAgainLabel: SKLabelNode!
     var tapToBeginLabel: SKLabelNode!
-    let tapToResumeLabel: SKLabelNode! = SKLabelNode(fileNamed: "Pause")
+    let pause = SKSpriteNode(imageNamed: "Pause")
     
     var score: Int = 0
     let numberOfForegrounds: Int = 2
@@ -72,16 +72,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let dingAction = SKAction.playSoundFileNamed("ding.wav", waitForCompletion: false)
     let popAction = SKAction.playSoundFileNamed("pop.wav", waitForCompletion: false)
-    let coinAction = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
+    let scoreAction = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
     let flapAction = SKAction.playSoundFileNamed("flapping.wav", waitForCompletion: false)
- //   let backgroundMusic = SKAction.playSoundFileNamed("kirby.mp3", waitForCompletion: false)
+    let backgroundMusic = SKAction.playSoundFileNamed("kirby-2.mp3", waitForCompletion: false)
     
-    let bgMusic: SKAudioNode = SKAudioNode(fileNamed: "kirby.mp3")
     
     let firstSpawnDelay: NSTimeInterval = 1.75
     let spawnDelay: NSTimeInterval = 1.5
     
     var hitGround: Bool = false
+    var hitRoof: Bool = false
     var hitObstacle: Bool = false
     var backgroundMusicIsPlaying: Bool = false
     
@@ -98,6 +98,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     lazy var gameState: GKStateMachine = GKStateMachine(states: [
         MainMenuState(scene: self),
         TutorialState(scene: self),
+        PauseState(scene: self),
         PlayingState(scene: self),
         FallingState(scene: self),
         GameOverState(scene: self)
@@ -105,7 +106,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     
     override func didMoveToView(view: SKView) {
-     //   startMusic()
+       // startMusic()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("switchToPauseState"), name: "PauseGameScene", object: nil)
+
         physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         physicsWorld.contactDelegate = self
         
@@ -121,7 +125,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let randomSource = GKARC4RandomSource()
         let randDistColors = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(0), highestValue: Int(colors.count-1))
         let randColor = randDistColors.nextInt()
-        
         
         // randomize backgrounds later from array
         let background = SKSpriteNode(imageNamed: "Background 1")
@@ -165,9 +168,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func startMusic() {
-        if !backgroundMusicIsPlaying {
-        //runAction(backgroundMusic)
-            backgroundMusicIsPlaying = true
+        if gameState.currentState is PlayingState {
+            let backgroundMusic = SKAudioNode(fileNamed: "kirby-2.mp3")
+            backgroundMusic.autoplayLooped = true
+            addChild(backgroundMusic)
         }
     }
     
@@ -203,6 +207,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.text = "\(score)"
         
         rootNode.addChild(scoreLabel)
+    }
+    
+    // MARK: Pause
+    
+    func switchToPauseState() {
+        gameState.enterState(PauseState)
+    }
+    
+    func setupInGamePauseButton() {
+        pause.position = CGPoint(x: size.width * 0.9, y: size.height - (margin*1.6))
+        pause.zPosition = Layer.UI.rawValue
+        pause.name = "InGamePause"
+        
+        let scaleUp = SKAction.scaleTo(1.05, duration: 0.75)
+        scaleUp.timingMode = .EaseInEaseOut
+        let scaleDown = SKAction.scaleTo(0.95, duration: 0.75)
+        scaleDown.timingMode = .EaseInEaseOut
+        
+        pause.runAction(SKAction.repeatActionForever(SKAction.sequence([scaleUp, scaleDown])))
+        
+        rootNode.addChild(pause)
     }
     
     // MARK: Obstacles
@@ -244,7 +269,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let randomSource = GKARC4RandomSource()
         let randDistColors = GKRandomDistribution(randomSource: randomSource, lowestValue: Int(0), highestValue: Int(colors.count - 1))
         let randColor = randDistColors.nextInt()
-        
         
         // Bottom obstacle
         let bottomObstacle = createObstacle()
@@ -306,7 +330,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if let touch = touches.first {
             let touchLocation = touch.locationInNode(self)
-
+            
+            if self.paused {
+                if gameState.currentState is PlayingState {
+                    if touchLocation.y > size.height / 2 {
+                        player.movementAllowed = true
+                        player.movementComponent.applyInitialImpulse()
+                    }
+                }
+            }
+            
             switch gameState.currentState {
             case is MainMenuState:
                 if touchLocation.y < size.width * 0.2 {
@@ -315,17 +348,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     }
                 }
                 restartGame(TutorialState)
+                
             case is TutorialState:
                 gameState.enterState(PlayingState)
+                let backgroundMusic = SKAudioNode(fileNamed: "kirby-2.mp3")
+                backgroundMusic.autoplayLooped = true
+                rootNode.addChild(backgroundMusic)
+                
             case is PlayingState:
+                if touchLocation.x >= size.width * 0.9 && touchLocation.y >= size.height - (margin*2) {
+                    switchToPauseState()
+                }
                 player.movementComponent.applyImpulse()
-                runAction(flapAction)
+                runAction(flapAction) // TODO why not working
+                
+            case is PauseState:
+                    gameState.enterState(PlayingState) // maybe refactor switchtopausetate to switchtostate(param state)
+                    //player.movementComponent.applyInitialImpulse()
+                
             case is GameOverState:
                 if touchLocation.x < size.width * 0.5 && touchLocation.y <= size.width * 0.6 && touchLocation.y >= size.width * 0.5 {
                     restartGame(TutorialState)
                 } else if touchLocation.x > size.width * 0.5 && touchLocation.y <= size.width * 0.6 && touchLocation.y >= size.width * 0.5 {
                     restartGame(MainMenuState)
                 }
+    
             default:
                 break
             }
@@ -355,7 +402,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    
     // MARK: Updates
    
     override func update(currentTime: CFTimeInterval) {
@@ -368,7 +414,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         gameState.updateWithDeltaTime(deltaTime)
         player.updateWithDeltaTime(deltaTime)
-
+        
+        checkOutOfBounds()
+    }
+    
+    func checkOutOfBounds() {
+        if self.player.spriteComponent.node.position.y > self.view?.bounds.height {
+            gameState.enterState(FallingState)
+        }
     }
     
     func updateScore() {
@@ -385,7 +438,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     self.scoreLabel.text = "\(self.score / 2)"
                     
                     obstacle.userData?["Passed"] = NSNumber(bool: true)
-                    self.runAction(self.coinAction)
+                    self.runAction(self.scoreAction)
                 }
             }
         })
@@ -421,23 +474,5 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         })
     }
     
-    // MARK: Pause
-    
-    func pauseGameScene() {
-        self.view?.paused = true
-     //   tapToResumeLabel.hidden = false
-    }
-    
-    func setupPauseButton() {
-        tapToResumeLabel.position = CGPoint(x: scene!.size.width * 0.5, y: scene!.size.height * 0.5)
-        tapToResumeLabel.zPosition = Layer.UI.rawValue
-        
-        let scaleUp = SKAction.scaleTo(1.05, duration: 0.75)
-        scaleUp.timingMode = .EaseInEaseOut
-        let scaleDown = SKAction.scaleTo(0.95, duration: 0.75)
-        scaleDown.timingMode = .EaseInEaseOut
-        
-        tapToResumeLabel.runAction(SKAction.repeatActionForever(SKAction.sequence([scaleUp, scaleDown])))
-    }
     
 }

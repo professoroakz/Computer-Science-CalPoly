@@ -13,7 +13,7 @@ class MovementComponent: GKComponent {
     let spriteComponent: SpriteComponent
 
     var velocity = CGPoint.zero
-    let gravity: CGFloat = -1200.0 // pixels per second
+    var gravity: CGFloat = -1200.0 // pixels per second
     let impulse: CGFloat = 400.0
     var playableStart: CGFloat = 0.0
     var numberOfFrames: Int = 4

@@ -18,18 +18,15 @@ class PauseState: GKState {
     }
     
     override func didEnterWithPreviousState(previousState: GKState?) {
-        //
+        setupPauseButton()
+        scene.player.movementAllowed = false
     }
     
     override func willExitWithNextState(nextState: GKState) {
-        // Remove tutorial
-        scene.rootNode.enumerateChildNodesWithName("Tutorial", usingBlock: { node, stop in
-            node.runAction(SKAction.sequence([
-                SKAction.fadeOutWithDuration(0.5),
-                SKAction.removeFromParent()
-                ]))
-        })
+        //   pauseGame()
+        resumeGame()
     }
+    
     
     override func isValidNextState(stateClass: AnyClass) -> Bool {
         return stateClass is PlayingState.Type
@@ -39,18 +36,47 @@ class PauseState: GKState {
         
     }
     
-    func setupPause() {
-        let tutorial = SKSpriteNode(imageNamed: "Tutorial")
-        tutorial.position = CGPoint(x: scene.size.width * 0.5, y: scene.playableHeight * 0.4 + scene.playableStart)
-        tutorial.name = "Tutorial"
-        tutorial.zPosition = Layer.UI.rawValue
-        scene.rootNode.addChild(tutorial)
+    func pauseGame() {
+        if scene.view?.paused == true {
+                scene.view?.paused = false
+            } else {
+                scene.view?.paused = true
+            }
+    }
+    
+    func setupPauseButton() {
+        scene.player.movementAllowed = false
         
-        let ready = SKSpriteNode(imageNamed: "Ready")
-        ready.position = CGPoint(x: scene.size.width * 0.5, y: scene.playableHeight * 0.7 + scene.playableStart)
-        ready.name = "Tutorial"
-        ready.zPosition = Layer.UI.rawValue
-        scene.rootNode.addChild(ready)
+        let pause = SKSpriteNode(imageNamed: "Pause")
+        pause.position = CGPoint(x: scene.size.width * 0.5, y: scene.size.height * 0.5)
+        pause.zPosition = Layer.UI.rawValue
+        pause.name = "Pause"
         
+        scene.rootNode.addChild(pause)
+        
+        let pauseLabel = SKLabelNode(fontNamed: scene.fontName)
+        
+        pauseLabel.position = CGPoint(x: scene.size.width * 0.5, y: scene.size.height * 0.5 + scene.margin * 3)
+        pauseLabel.verticalAlignmentMode = .Top
+        pauseLabel.zPosition = Layer.UI.rawValue
+        pauseLabel.text = "Paused"
+        pauseLabel.name = "Pause"
+        
+        pauseLabel.fontColor = SKColor.whiteColor()
+        
+        scene.rootNode.addChild(pauseLabel)
+        
+        scene.runAction(SKAction.runBlock(pauseGame))
+    
+    }
+    
+    func resumeGame() {
+        scene.removeActionForKey("Pause")
+        scene.rootNode.enumerateChildNodesWithName("Pause", usingBlock: {node, stop in
+            node.removeFromParent()
+        })
+        
+        scene.player.movementAllowed = true
+        scene.player.movementComponent.applyInitialImpulse()
     }
 }

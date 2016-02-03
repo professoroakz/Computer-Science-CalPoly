@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A20943E31C5AB43200BAB961"
+               BlueprintIdentifier = "A2F4FA081C604320008F4C7D"
                BuildableName = "WordOfTheDay.app"
                BlueprintName = "WordOfTheDay"
                ReferencedContainer = "container:WordOfTheDay.xcodeproj">
@@ -32,7 +32,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A20943E31C5AB43200BAB961"
+            BlueprintIdentifier = "A2F4FA081C604320008F4C7D"
             BuildableName = "WordOfTheDay.app"
             BlueprintName = "WordOfTheDay"
             ReferencedContainer = "container:WordOfTheDay.xcodeproj">
@@ -55,7 +55,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A20943E31C5AB43200BAB961"
+            BlueprintIdentifier = "A2F4FA081C604320008F4C7D"
             BuildableName = "WordOfTheDay.app"
             BlueprintName = "WordOfTheDay"
             ReferencedContainer = "container:WordOfTheDay.xcodeproj">
@@ -74,7 +74,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "A20943E31C5AB43200BAB961"
+            BlueprintIdentifier = "A2F4FA081C604320008F4C7D"
             BuildableName = "WordOfTheDay.app"
             BlueprintName = "WordOfTheDay"
             ReferencedContainer = "container:WordOfTheDay.xcodeproj">
