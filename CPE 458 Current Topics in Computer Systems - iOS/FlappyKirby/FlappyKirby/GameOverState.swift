@@ -25,6 +25,7 @@ class GameOverState: GKState {
         scene.stopSpawningObstacles()
         
         scene.player.movementAllowed = false
+        updateHighScores()
         showScoreCard()
     }
     
@@ -36,9 +37,10 @@ class GameOverState: GKState {
         
     }
     
-    func setHighScore(highScore: Int, key: Int) {
-        NSUserDefaults.standardUserDefaults().setInteger(highScore/2, forKey: "HighScore_\(key)") // div 2 obstacle counts as 2 points each
-        NSUserDefaults.standardUserDefaults().synchronize()
+    func setHighScore(highscores: Array<Int>) {
+        for i in 0..<highscores.count {
+            NSUserDefaults.standardUserDefaults().setInteger(highscores[i], forKey: "HighScore_\(i)") // div 2 obstacle counts as 2 points each
+        }
     }
     
     func getHighScores() -> Array<Int> {
@@ -46,20 +48,26 @@ class GameOverState: GKState {
         var highScores: Array<Int> = []
         for i in 0..<numHighscores {
             highScores.append(NSUserDefaults.standardUserDefaults().integerForKey("HighScore_\(i)"))
-            print(NSUserDefaults.standardUserDefaults().integerForKey("HighScore_\(i)"))
         }
         
         return highScores
     }
     
-    func showScoreCard() {
-        let highScores: Array<Int> = getHighScores()
+    func updateHighScores() {
+        var highScores: Array<Int> = getHighScores()
         for i in 0..<highScores.count {
-            if scene.score > highScores[i] {
-                setHighScore(scene.score, key: i) // TODO: push values back one step if new highscore
+            if scene.score/2 > highScores[i] {
+                if scene.score == highScores[i] {
+                    break
+                }
+                highScores.insert(scene.score/2, atIndex: i)
                 break
             }
         }
+        setHighScore(highScores)
+    }
+
+    func showScoreCard() {
         
         let scoreCard = SKSpriteNode(imageNamed: "ScoreCard")
         scoreCard.position = CGPoint(x: scene.size.width * 0.5, y: scene.size.height * 0.5)
