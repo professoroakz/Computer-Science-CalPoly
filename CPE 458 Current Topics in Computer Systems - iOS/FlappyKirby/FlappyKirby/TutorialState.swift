@@ -21,7 +21,6 @@ class TutorialState: GKState {
     }
     
     override func willExitWithNextState(nextState: GKState) {
-        // Remove tutorial
         scene.rootNode.enumerateChildNodesWithName("Tutorial", usingBlock: { node, stop in
             node.runAction(SKAction.sequence([
                 SKAction.fadeOutWithDuration(0.5),

@@ -84,7 +84,7 @@ class GameOverState: GKState {
     
         let highScore = SKLabelNode(fontNamed: scene.fontName)
         highScore.fontColor = .blackColor()
-        highScore.position = CGPoint(x: scoreCard.size.width * 0.20, y: -scoreCard.size.width * 0.2 + scene.margin * 1.5)
+        highScore.position = CGPoint(x: scoreCard.size.width * 0.20, y: -scoreCard.size.width * 0.2 + scene.margin * 1.55)
         highScore.zPosition = Layer.UI.rawValue
         
         highScore.text = getHighScores().map({"\($0)"}).joinWithSeparator(" ") // yas yas yas map put in werk

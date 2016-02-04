@@ -7,8 +7,6 @@
 //
 
 import SpriteKit
-import AVKit
-import AVFoundation
 import UIKit
 import GameKit
 
@@ -74,7 +72,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let popAction = SKAction.playSoundFileNamed("pop.wav", waitForCompletion: false)
     let scoreAction = SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false)
     let flapAction = SKAction.playSoundFileNamed("flapping.wav", waitForCompletion: false)
-    let backgroundMusic = SKAction.playSoundFileNamed("kirby-2.mp3", waitForCompletion: false)
     
     
     let firstSpawnDelay: NSTimeInterval = 1.75
@@ -165,14 +162,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsBody?.contactTestBitMask = PhysicsCategory.Player
     }
     
-    func startMusic() {
-        if gameState.currentState is PlayingState {
-            let backgroundMusic = SKAudioNode(fileNamed: "kirby-2.mp3")
-            backgroundMusic.autoplayLooped = true
-            addChild(backgroundMusic)
-        }
-    }
-    
     func setupForeground() {
         for i in 0..<numberOfForegrounds {
             let foreground = SKSpriteNode(imageNamed: "Ground 1")
@@ -208,7 +197,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func setupSoundtrack() {
-        let backgroundMusic = SKAudioNode(fileNamed: "kirby-2.mp3")
+        let backgroundMusic = SKAudioNode(fileNamed: "kirby.mp3")
         backgroundMusic.autoplayLooped = true
         rootNode.addChild(backgroundMusic)
     }
@@ -365,10 +354,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     switchToPauseState()
                 }
                 player.movementComponent.applyImpulse()
-                runAction(flapAction) // TODO why not working
+                runAction(flapAction)
                 
             case is PauseState:
-                gameState.enterState(PlayingState) // maybe refactor switchtopausetate to switchtostate(param state)
+                gameState.enterState(PlayingState)
                 
             case is GameOverState:
                 if touchLocation.x < size.width * 0.5 && touchLocation.y <= size.width * 0.6 && touchLocation.y >= size.width * 0.5 {
@@ -393,7 +382,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     // MARK: Physics
-    
     func didBeginContact(contact: SKPhysicsContact) {
         let other = contact.bodyA.categoryBitMask == PhysicsCategory.Player ? contact.bodyB : contact.bodyA
         
@@ -407,7 +395,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     // MARK: Updates
-    
     override func update(currentTime: CFTimeInterval) {
         if lastUpdateTime == 0 {
             lastUpdateTime = currentTime

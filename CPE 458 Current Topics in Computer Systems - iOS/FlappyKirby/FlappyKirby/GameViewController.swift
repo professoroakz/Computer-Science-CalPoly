@@ -15,7 +15,6 @@ class GameViewController: UIViewController {
         
         if let skView = self.view as? SKView {
             if skView.scene == nil {
-                // create scene
                 let aspectRatio = skView.bounds.size.height / skView.bounds.size.width
                 
                 let scene = GameScene(size:CGSize(width: 320, height: 320 * aspectRatio), stateClass: MainMenuState.self)
