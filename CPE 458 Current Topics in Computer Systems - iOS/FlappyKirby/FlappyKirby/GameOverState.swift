@@ -55,9 +55,10 @@ class GameOverState: GKState {
     
     func updateHighScores() {
         var highScores: Array<Int> = getHighScores()
+        
         for i in 0..<highScores.count {
             if scene.score/2 > highScores[i] {
-                if scene.score == highScores[i] {
+                if highScores.contains(scene.score/2) {
                     break
                 }
                 highScores.insert(scene.score/2, atIndex: i)
