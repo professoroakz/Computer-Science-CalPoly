@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /stats/
+Disallow: /~csc101/Javadocs/
+Disallow: /~csc102/Java5Docs/
+Disallow: /~gfisher/grad-survey/
