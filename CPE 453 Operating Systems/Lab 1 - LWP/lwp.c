@@ -1,38 +1,25 @@
 #include "lwp.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
 #define STACK_SIZE 4196
 #define MAX_THREADS 10
 
+/* crocess table */
+lwp_context lwp_ptable[LWP_PROC_LIMIT];
+/* current number of LWPs */
+int lwp_procs = 0;
+/* current number of running LWPs */
+int lwp_running = 0;
+/* initial stack pointer */
+ptr_int_t init_sp;
 
-typedef struct node {
-    int index;
-    struct node *next;
-} node;
+/* currently running lwp */
+lwp_context *current_lwp;
 
+/* current scheduling func */
+schedfun *sched_fun;
 
-int process_table[MAX_THREADS];
-int current_process = 0;
-uint32_t next_pid = 0;
-struct node *root;
-
-void * stack_ptr;
-
-
-void queue_init() {
-    root->index = 0;
-    root->next = NULL;
-}
-
-int queue_insert() {
-    return 0;
-}
-
-int queue_delete() {
-    return 0;
-}
 
 
 int new_lwp(lwpfun func, void *args, size_t stack_size) {
