@@ -24,7 +24,7 @@ numbersmain: numbersmain.c lwp.h $(LWP)
 numbersmain-ex: numbersmain.c lwp.h $(LWP-EX)
 	cc -Wall -Werror -g -o $@ $< $(LWP-EX)
 
-$(LWP): lwp.o smartalloc.o
+$(LWP): lwp.o
 	ar r $@ lwp.o
 	ranlib $@
 
@@ -32,10 +32,8 @@ lwp.o: lwp.c lwp.h
 	cc -Wall -Werror -g -c -o $@ $<
 	cc -S $<
 
-smartalloc.o: smartalloc.c
-	cc -Wall -Werror -g -c -o $@ $<
 
 clean:
 	-rm -f numbersmain snakemain hungrymain $(LWP) lwp.o liblwp.o numbersmain-ex snakemain-ex hungrymain-ex
-	-rm -f lwp.s smartalloc.o
+	-rm -f lwp.s
 
