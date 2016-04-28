@@ -3,7 +3,6 @@
 
 ### Distributed transactions and distributed consensus
 
-
 ### Assume that you have statically partitioned your data into key ranges mapped to each node (e.g., keys 1-100 on node1, keys 101-200 on node 2 and so on).
 #### Assume only one writer can update a key’s value but multiple readers can read a key.
 ### Details:

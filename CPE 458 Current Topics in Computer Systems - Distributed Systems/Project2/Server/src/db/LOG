@@ -1,0 +1,71 @@
+=============== Apr 27, 2016 (PDT) ===============
+16:44:30.920212 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:44:30.920790 db@open opening
+16:44:30.921431 version@stat F·[] S·0B[] Sc·[]
+16:44:30.921599 db@janitor F·2 G·0
+16:44:30.921616 db@open done T·814.518µs
+=============== Apr 27, 2016 (PDT) ===============
+16:44:57.744042 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:44:57.744453 version@stat F·[] S·0B[] Sc·[]
+16:44:57.744468 db@open opening
+16:44:57.744519 journal@recovery F·1
+16:44:57.744804 journal@recovery recovering @1
+16:44:57.745439 memdb@flush created L0@2 N·3 S·143B "fizz,v1":"fizz3,v3"
+16:44:57.745772 version@stat F·[1] S·143B[143B] Sc·[0.25]
+16:44:57.746416 db@janitor F·3 G·0
+16:44:57.746434 db@open done T·1.956918ms
+16:44:57.746591 db@close closing
+16:44:57.746697 db@close done T·103.423µs
+=============== Apr 27, 2016 (PDT) ===============
+16:45:03.640965 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:45:03.641310 version@stat F·[1] S·143B[143B] Sc·[0.25]
+16:45:03.641325 db@open opening
+16:45:03.641371 journal@recovery F·1
+16:45:03.641718 journal@recovery recovering @3
+16:45:03.642368 memdb@flush created L0@5 N·3 S·143B "fizz,v5":"fizz3,v7"
+16:45:03.643050 version@stat F·[2] S·286B[286B] Sc·[0.50]
+16:45:03.644275 db@janitor F·4 G·0
+16:45:03.644354 db@open done T·2.993221ms
+16:45:03.644656 db@close closing
+16:45:03.644944 db@close done T·282.818µs
+=============== Apr 27, 2016 (PDT) ===============
+17:04:54.681889 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:04:54.682732 version@stat F·[2] S·286B[286B] Sc·[0.50]
+17:04:54.682752 db@open opening
+17:04:54.682811 journal@recovery F·1
+17:04:54.683299 journal@recovery recovering @6
+17:04:54.683845 memdb@flush created L0@8 N·3 S·143B "fizz,v9":"fizz3,v11"
+17:04:54.684336 version@stat F·[3] S·429B[429B] Sc·[0.75]
+17:04:54.685009 db@janitor F·5 G·0
+17:04:54.685031 db@open done T·2.268161ms
+17:04:54.685520 db@close closing
+17:04:54.685650 db@close done T·122.449µs
+=============== Apr 27, 2016 (PDT) ===============
+17:05:30.977978 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:05:30.978354 version@stat F·[3] S·429B[429B] Sc·[0.75]
+17:05:30.978372 db@open opening
+17:05:30.978424 journal@recovery F·1
+17:05:30.978749 journal@recovery recovering @9
+17:05:30.979285 memdb@flush created L0@11 N·3 S·143B "fizz,v13":"fizz3,v15"
+17:05:30.979851 version@stat F·[4] S·572B[572B] Sc·[1.00]
+17:05:30.980486 db@janitor F·6 G·0
+17:05:30.980509 db@open done T·2.124893ms
+17:05:30.980608 table@compaction L0·4 -> L1·0 S·572B Q·19
+17:05:30.980764 db@close closing
+17:05:30.980946 db@close done T·167.263µs
+=============== Apr 27, 2016 (PDT) ===============
+17:08:32.541227 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:08:32.541567 version@stat F·[4] S·572B[572B] Sc·[1.00]
+17:08:32.541582 db@open opening
+17:08:32.541633 journal@recovery F·1
+17:08:32.541947 journal@recovery recovering @12
+17:08:32.542576 memdb@flush created L0@14 N·3 S·143B "fizz,v17":"fizz3,v19"
+17:08:32.542894 version@stat F·[5] S·715B[715B] Sc·[1.25]
+17:08:32.543661 db@janitor F·7 G·0
+17:08:32.543679 db@open done T·2.087494ms
+17:08:32.543766 table@compaction L0·5 -> L1·0 S·715B Q·20
+17:08:32.544070 db@close closing
+17:08:32.544247 table@build created L1@17 N·3 S·143B "fizz,v17":"fizz3,v19"
+17:08:32.544258 table@build exiting
+17:08:32.544263 table@build revert @17
+17:08:32.544502 db@close done T·430.579µs
