@@ -39,13 +39,13 @@ var routes = Routes{
     Route{
         "StockShow",
         "GET",
-        "/stocks/{key}",
+        "/{key}",
         GatewayStockShow,
     },
     Route{
     "StockCreate",
     "POST",
-    "/stocks",
+    "/",
     GatewayStockCreate,
     },
 }
