@@ -1,61 +1,141 @@
+from __future__ import division
 import argparse
 import sys
 # init method
 
 jobs = {}
+processes = []
 count = 0
 sched_alg = ""
 quantum_rr = -1
+num_processes = 0
 
-# read input
+class Process:
+    arrival_time = 0
+    burst_time = 0
+    number = 0
 
-# fix constructs
-# do rr, srjn, fifo etc algorithms
+    wait_time = 0
+    response_time = 0
+    turnaround_time = 0
+    checked = 0
 
-# jobs(job_run_time, arrival_time)
+    remaining = 0
+
+    def __init__(self, number, burst_time, arrival_time):
+        self.burst_time = burst_time
+        self.arrival_time = arrival_time
+        self.number = number
+        self.remaining = self.burst_time
+
 
 def fifo():
-    global jobs
-    joblist = sorted(jobs, key=lambda tup: tup[1])
+    global processes
 
-    wait_times = []
-    wait_times.append(0) #wt first process is 0
+    jobs = sorted(processes, key = lambda x: x.number)
 
-    response_times = []
-    response_times.append(1)
+    time = 0
 
-    t_times = [] #turnaround
+    for j in jobs:
+        if time == 0:
+            j.wait_time = 0
+            j.response_time = j.wait_time + 1
+            time += j.burst_time + j.response_time
+            j.turnaround_time = time - j.response_time
+        else:
+            j.wait_time = time
+            j.response_time = j.wait_time
+            time += j.burst_time
+            j.turnaround_time = time - j.response_time
 
-    total_response_time = 0
-    total_turnaround_time = 0
-    total_wait_time = 0
+    for x in jobs:
+        print_current_job(x.number, x.response_time, x.turnaround_time, x.wait_time)
 
-    for idx, job in enumerate(joblist, start=1):
-        wait_times.append(0)
-        response_times.append(1)
+    avg_response_time = sum([x.response_time for x in jobs]) / len(jobs)
+    avg_turnaround_time = sum([x.turnaround_time for x in jobs]) / len(jobs)
+    avg_wait_time = sum([x.wait_time for x in jobs]) / len(jobs)
 
-        for idx2, job2 in enumerate(joblist, start=0):
-            if idx == idx2:
-                break
-            wait_times[idx] += job2[0]
-            response_times[idx] = wait_times[idx]
+    print_all_jobs(avg_response_time, avg_turnaround_time, avg_wait_time)
 
-    for idx, job in enumerate(joblist):
-        t_times.append(job[0] + wait_times[idx])
-        print job[0], wait_times[idx]
-        total_wait_time += wait_times[idx]
-        total_turnaround_time += t_times[idx]
-
-    for x in range(0, len(jobs)):
-        print_current_job(jobs[x][1], response_times[x], t_times[x], wait_times[x])
-
-    print_all_jobs(sum(response_times)/len(joblist), total_turnaround_time/len(joblist), total_wait_time/len(joblist))
 
 def srjn():
-    pass
+    jobs = processes
+    time = 0
+    counter = 0
+    flag = False
+    done = False
+    left = len(jobs)
+    done_jobs = []
+
+    for j in jobs:
+        if time == 0:
+            time += 1
+            j.remaining -= 1
+
+        if j in done_jobs:
+            continue
+
+        for j2 in jobs:
+            if j2 in done_jobs:
+                continue
+
+            if j.burst_time < j2.burst_time:
+                current = j
+            else:
+                current = j2
+
+            time += current.remaining
+            current.remaining = 0
+            flag = True
+
+            if current.remaining == 0 and flag == True:
+                current.wait_time = time - current.burst_time - current.arrival_time
+                current.response_time = current.wait_time + 1
+                current.turnaround_time = time - current.arrival_time
+                print_current_job(current.number, current.response_time, current.turnaround_time, current.wait_time)
+                done_jobs.append(current)
+
+            if len(done_jobs) == len(jobs):
+                done = True
+            else:
+                break
+
+    if done == True:
+        avg_response_time = sum([x.response_time for x in jobs]) / len(jobs)
+        avg_turnaround_time = sum([x.turnaround_time for x in jobs]) / len(jobs)
+        avg_wait_time = sum([x.wait_time for x in jobs]) / len(jobs)
+        print_all_jobs(avg_response_time, avg_turnaround_time, avg_wait_time)
 
 def rr():
-    pass
+    global quantum_rr, jobs
+
+    jobs = sorted(processes, key = lambda x: x.number)
+
+    time = 0
+    counter = 0
+    flag = False
+    left = len(jobs)
+
+    while left != 0:
+        for j in jobs:
+            if j.remaining <= quantum_rr and j.remaining > 0:
+                time += j.remaining
+                j.remaining = 0
+                flag = True
+            elif j.remaining > 0:
+                j.remaining -= quantum_rr
+                time += quantum_rr
+            if j.remaining == 0 and flag == True:
+                left -= 1
+                j.wait_time = time - j.burst_time - j.arrival_time
+                j.response_time = j.wait_time + 1
+                j.turnaround_time = time - j.arrival_time
+                print_current_job(j.number, j.response_time, j.turnaround_time, j.wait_time)
+
+    avg_response_time = sum([x.response_time for x in jobs]) / len(jobs)
+    avg_turnaround_time = sum([x.turnaround_time for x in jobs]) / len(jobs)
+    avg_wait_time = sum([x.wait_time for x in jobs]) / len(jobs)
+    print_all_jobs(avg_response_time, avg_turnaround_time, avg_wait_time)
 
 
 def print_current_job(job_num, response_time, turnaround_time, wait_time):
@@ -72,9 +152,10 @@ def print_all_jobs(response_time, turnaround_time, wait_time):
         + ' Wait: ' + '{:3.2f}'.format(wait_time))
 
 def sched_algorithm(alg):
-    if alg is "SRJN":
+    alg_str = "".join(alg)
+    if alg_str == "SRJN":
         srjn()
-    elif alg is "RR":
+    elif alg_str == "RR":
         rr()
     else:
         fifo()
@@ -107,7 +188,7 @@ def read_input(args):
 
 
 def main():
-    global jobs
+    global jobs, quantum_rr, processes, num_processes
 
     parser = argparse.ArgumentParser()
     parser.add_argument('inputfile', help='inputfile')
@@ -116,22 +197,16 @@ def main():
 
     args = parser.parse_args()
 
-    count = 0
-
     read_input(args)
-
-    # print("~ Filename: {}".format(args.inputfile))
-    # print("~ -p: {}".format(args.p))
-    # print("~ -q: {}".format(args.q))
 
     sched_alg, quantum_rr = check_args(args.p, args.q)
 
-    print(sched_alg, quantum_rr)
+    count = 0
+    for job in jobs:
+        p = Process(count, job[0], job[1])
+        processes.append(p)
+        count += 1
 
-    for (key, val) in jobs:
-        print(key, val)
-
-    jobs = sorted(jobs, key=lambda tup: tup[1])
     sched_algorithm(sched_alg)
 
 
