@@ -8,7 +8,6 @@ import (
     "io"
     "bytes"
     "time"
-    // "strconv"
 
     "github.com/gorilla/mux"
 )
@@ -16,17 +15,34 @@ import (
 // curl -H "Content-Type: application/json" -d '{"key":"1-2-06", "value":"bar"}' http://localhost:8080/
 
 const dateFormat = "1-2-06"
-const numNodes = 3
+const numNodes = 10
 var nodes [numNodes]string
-var indexToNodes map[int64][numNodes]int = make(map[int64][3]int)
+var indexToNodes map[int64][numNodes]int = make(map[int64][numNodes]int)
 
 func init(){
     nodes[0] = "localhost:8081"
     nodes[1] = "localhost:8082"
     nodes[2] = "localhost:8083"
+    nodes[3] = "localhost:8084"
+    nodes[4] = "localhost:8085"
+
+    nodes[5] = "207.62.153.136:8081"
+    nodes[6] = "207.62.153.136:8082"
+    nodes[7] = "207.62.153.136:8083"
+    nodes[8] = "207.62.153.136:8084"
+    nodes[9] = "207.62.153.136:8085"
+
     indexToNodes[0] = [numNodes]int{0, 1, 2}
-    indexToNodes[1] = [numNodes]int{1, 2, 0}
-    indexToNodes[2] = [numNodes]int{2, 0, 1}
+    indexToNodes[1] = [numNodes]int{1, 2, 3}
+    indexToNodes[2] = [numNodes]int{2, 3, 4}
+    indexToNodes[3] = [numNodes]int{3, 4, 5}
+    indexToNodes[4] = [numNodes]int{4, 5, 6}
+
+    indexToNodes[5] = [numNodes]int{5, 6, 7}
+    indexToNodes[6] = [numNodes]int{6, 7, 8}
+    indexToNodes[7] = [numNodes]int{7, 8, 9}
+    indexToNodes[8] = [numNodes]int{8, 9, 0}
+    indexToNodes[9] = [numNodes]int{9, 0, 1}
 }
 
 // Takes a date and returns the responsible node
