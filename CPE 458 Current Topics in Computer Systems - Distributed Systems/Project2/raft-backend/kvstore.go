@@ -26,10 +26,7 @@ func newKVStore(proposeC chan<- string, commitC <-chan *string, errorC <-chan er
         return &kvstore{proposeC: nil, db: nil}
     }
 
-    s := &kvstore{
-        proposeC: proposeC,
-        db: db,
-    }
+    s := &kvstore{proposeC: proposeC, db: db}
 
     // replay log into key-value map
     s.readCommits(commitC, errorC)
@@ -42,12 +39,11 @@ func newKVStore(proposeC chan<- string, commitC <-chan *string, errorC <-chan er
 func (s *kvstore) Lookup(key string) (string, bool) {
     s.mu.RLock()
     v, e := s.db.Get(key)
-    log.Printf("val of v: %s", v)
     s.mu.RUnlock()
-    if e == nil {
-    	return v, true
-    } else {
+    if e != nil {
     	return v, false
+    } else {
+    	return v, true
     }
 }
 

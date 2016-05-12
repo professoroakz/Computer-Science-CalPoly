@@ -86,6 +86,10 @@ Then the new node can be started as the others were, using the --join option:
 raftexample --id 4 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379,http://127.0.0.1:42379 --port 42380 --join
 ```
 
+
+/raft-backend --id 4 --cluster http://127.0.0.1:4321,http://127.0.0.1:4322,http://127.0.0.1:4323,http://127.0.0.1:4324
+
+
 The new node should join the cluster and be able to service key/value requests.
 
 We can remove a node using a DELETE request:
