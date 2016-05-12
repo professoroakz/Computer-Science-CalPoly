@@ -8,6 +8,7 @@ import (
     "net/http"
     "encoding/json"
     "os"
+    "fmt"
 )
 
 func main() {
@@ -83,6 +84,7 @@ func HandlePut(w http.ResponseWriter, r *http.Request, backend *Backend) {
         }
     }
 
+    fmt.Printf("Key:%s - Val:%s", stock.Key, stock.Value)
     backend.Put(stock.Key, stock.Value)
 
     w.Header().Set("Content-Type", "application/json; charset=UTF-8")
