@@ -1,0 +1,13 @@
+foreman start
+
+curl -L http://127.0.0.1:12380/my-key -XPUT -d bar
+curl -L http://127.0.0.1:12380/my-key
+goreman run stop raftexample2
+curl -L http://127.0.0.1:12380/my-key -XPUT -d foo
+curl -L http://127.0.0.1:12380/my-key
+goreman run start raftexample2
+curl -L http://127.0.0.1:22380/my-key
+
+goreman run stop raftexample1
+goreman run stop raftexample2
+goreman run stop raftexample3
