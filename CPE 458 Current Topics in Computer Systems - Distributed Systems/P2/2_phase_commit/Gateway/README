@@ -1,0 +1,18 @@
+Run instructions:
+
+1 go clean
+2 go get
+3 go build
+./Gateway <PORT>
+
+
+If "go get" does not work and gives an error regarding GOPATH, RIP.
+
+vim ~/.zprofile or whatever,
+
+
+example config:
+
+
+export GOPATH=~/Go
+export GOBIN=$GOPATH/bin
