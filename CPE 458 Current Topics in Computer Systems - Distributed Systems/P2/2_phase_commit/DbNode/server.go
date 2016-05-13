@@ -13,8 +13,6 @@ import (
 
 func main() {
     // parse command line arguments
-    // dbname := flag.String("db name", "./testdb", "Open the database with the specified name")
-    // addr := flag.String("port", "8080", "listening port")
     addr := os.Args[1]
 
     flag.Parse()

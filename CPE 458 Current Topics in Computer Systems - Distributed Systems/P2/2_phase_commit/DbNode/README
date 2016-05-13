@@ -1,0 +1,14 @@
+README 2 phase commit
+
+___ DbNode ___
+DbNode files:
+
+backend.go: Manages Database
+leveldb.go: leveldb wrapper
+server.go: Starts server and handlers GET and POST/PUT
+stock.go:  Struct for a stock object
+
+Run DbNode:
+go build
+./DbNode [port]
+i.e. ./DbNode 8081
