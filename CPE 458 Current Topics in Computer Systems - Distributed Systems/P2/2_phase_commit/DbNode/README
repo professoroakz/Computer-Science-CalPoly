@@ -1,7 +1,7 @@
 README 2 phase commit
 
 ___ DbNode ___
-DbNode files:
+Files:
 
 backend.go: Manages Database
 leveldb.go: leveldb wrapper

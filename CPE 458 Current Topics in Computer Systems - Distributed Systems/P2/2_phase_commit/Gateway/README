@@ -16,3 +16,12 @@ example config:
 
 export GOPATH=~/Go
 export GOBIN=$GOPATH/bin
+
+___ Modification in GatewayHandlers.go ___
+Add the address of all nodes to ‘nodes’ array
+Specific the replica locations for all nodes in ‘indexToNodes’ array
+
+
+__ Add and Get values ___
+Get: GET <Gateway address>/{key}
+Add: POST <Gateway address>/ with body: {“key”:”{key}”, “value”:”{value}”}
