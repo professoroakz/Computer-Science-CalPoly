@@ -1,0 +1,8 @@
+# Parser arguments working
+
+
+32-bit integer
+
+* 15234
+
+256 entries in page_table, load all from disk (?)
