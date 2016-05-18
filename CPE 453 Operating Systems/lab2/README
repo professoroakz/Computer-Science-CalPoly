@@ -1,11 +1,5 @@
 Adam Oktay Bahceci
 
-Special instructions:
-RR known not to work. See mail I sent, please!
-
-Unfortunately I had to be in the hospital and
-furthermore rest for a couple of days after an internal failure and chronic asthma :/
-
 For what types of workloads does SRJN deliver the same turnaround times as FIFO?
 Example: Six tasks arrive after eachother, the first one is much longer than the others.
 
@@ -27,9 +21,7 @@ Job   3 -- Response: 1.00  Turnaround 8.00  Wait 0.00
 Job   4 -- Response: 17.00  Turnaround 123.00  Wait 27.00
 
 
-
 What happens to response time with RR as quantum lengths increase? Can you write an equation that gives the worst-case response time, given N jobs?
 Response time is shorter as the quantum lengths increase.
 
-
-Sorry, I did not have time to provide longer answers.
+sum(processes.burst_time) * 1/quantum + misses
