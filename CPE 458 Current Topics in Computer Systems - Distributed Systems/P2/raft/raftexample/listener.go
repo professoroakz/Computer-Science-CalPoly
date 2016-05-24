@@ -27,6 +27,11 @@ type stoppableListener struct {
 	stopc <-chan struct{}
 }
 
+func main() {
+	go Accept()
+	GOMAXPROC(NUM_PROS)
+}
+
 func newStoppableListener(addr string, stopc <-chan struct{}) (*stoppableListener, error) {
 	ln, err := net.Listen("tcp", addr)
 	if err != nil {

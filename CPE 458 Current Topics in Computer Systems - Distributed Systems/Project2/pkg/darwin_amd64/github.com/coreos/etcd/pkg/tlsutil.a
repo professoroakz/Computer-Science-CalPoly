@@ -1,308 +1,0 @@
-!<arch>
-__.PKGDEF       0           0     0     644     37981     `
-go object darwin amd64 go1.6.2 X:none
-build id "d63dfaee6da2b831a2b9a1d008b1c0475a4c3339"
-
-$$
-package tlsutil
-	import tls "crypto/tls"
-	import x509 "crypto/x509"
-	import pem "encoding/pem"
-	import ioutil "io/ioutil"
-	type @"crypto/x509".SignatureAlgorithm int
-	func (@"crypto/x509".algoÂ·2 @"crypto/x509".SignatureAlgorithm) String () (? string)
-	type @"crypto/x509".PublicKeyAlgorithm int
-	import big "math/big" // indirect
-	type @"math/big".Word uintptr
-	type @"math/big".divisor struct { @"math/big".bbb @"math/big".nat; @"math/big".nbits int; @"math/big".ndigits int }
-	import rand "math/rand" // indirect
-	type @"math/rand".Source interface { Int63() (? int64); Seed(@"math/rand".seed int64) }
-	type @"math/rand".Rand struct { @"math/rand".src @"math/rand".Source }
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") ExpFloat64 () (? float64)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Float32 () (? float32)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Float64 () (? float64)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Int () (? int)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Int31 () (? int32)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Int31n (@"math/rand".nÂ·3 int32) (? int32)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Int63 () (? int64)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Int63n (@"math/rand".nÂ·3 int64) (? int64)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Intn (@"math/rand".nÂ·3 int) (? int)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") NormFloat64 () (? float64)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Perm (@"math/rand".nÂ·3 int) (? []int)
-	func (@"math/rand".rÂ·3 *@"math/rand".Rand "esc:0x9") Read (@"math/rand".pÂ·4 []byte "esc:0x1") (@"math/rand".nÂ·1 int, @"math/rand".errÂ·2 error)
-	func (@"math/rand".rÂ·1 *@"math/rand".Rand "esc:0x9") Seed (@"math/rand".seedÂ·2 int64)
-	func (@"math/rand".rÂ·2 *@"math/rand".Rand "esc:0x9") Uint32 () (? uint32)
-	import io "io" // indirect
-	type @"io".ByteScanner interface { ReadByte() (@"io".c byte, @"io".err error); UnreadByte() (? error) }
-	type @"math/big".nat []@"math/big".Word
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".add (@"math/big".xÂ·3 @"math/big".nat, @"math/big".yÂ·4 @"math/big".nat) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".and (@"math/big".xÂ·3 @"math/big".nat "esc:0x1", @"math/big".yÂ·4 @"math/big".nat "esc:0x1") (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".andNot (@"math/big".xÂ·3 @"math/big".nat "esc:0x9", @"math/big".yÂ·4 @"math/big".nat "esc:0x1") (? @"math/big".nat)
-	func (@"math/big".xÂ·2 @"math/big".nat "esc:0x1") @"math/big".bit (@"math/big".iÂ·3 uint) (? uint) { var @"math/big".jÂ·4 uint; ; @"math/big".jÂ·4 = @"math/big".iÂ·3 / uint(0x40); if @"math/big".jÂ·4 >= uint(len(@"math/big".xÂ·2)) { return uint(0x0) }; return uint(@"math/big".xÂ·2[@"math/big".jÂ·4] >> (@"math/big".iÂ·3 % uint(0x40)) & @"math/big".Word(0x1)) }
-	func (@"math/big".xÂ·2 @"math/big".nat "esc:0x1") @"math/big".bitLen () (? int)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x1") @"math/big".bytes (@"math/big".bufÂ·3 []byte "esc:0x1") (@"math/big".iÂ·1 int)
-	func (@"math/big".zÂ·1 @"math/big".nat "esc:0x1") @"math/big".clear ()
-	func (@"math/big".xÂ·2 @"math/big".nat "esc:0x1") @"math/big".cmp (@"math/big".yÂ·3 @"math/big".nat "esc:0x1") (@"math/big".rÂ·1 int)
-	func (@"math/big".qÂ·1 @"math/big".nat) @"math/big".convertWords (@"math/big".sÂ·2 []byte "esc:0x1", @"math/big".bÂ·3 @"math/big".Word, @"math/big".ndigitsÂ·4 int, @"math/big".bbÂ·5 @"math/big".Word, @"math/big".tableÂ·6 []@"math/big".divisor "esc:0x9")
-	func (@"math/big".zÂ·3 @"math/big".nat) @"math/big".div (@"math/big".z2Â·4 @"math/big".nat, @"math/big".uÂ·5 @"math/big".nat, @"math/big".vÂ·6 @"math/big".nat) (@"math/big".qÂ·1 @"math/big".nat, @"math/big".rÂ·2 @"math/big".nat)
-	func (@"math/big".zÂ·3 @"math/big".nat "esc:0x12") @"math/big".divLarge (@"math/big".uÂ·4 @"math/big".nat, @"math/big".uInÂ·5 @"math/big".nat, @"math/big".vÂ·6 @"math/big".nat) (@"math/big".qÂ·1 @"math/big".nat, @"math/big".rÂ·2 @"math/big".nat)
-	func (@"math/big".zÂ·3 @"math/big".nat) @"math/big".divW (@"math/big".xÂ·4 @"math/big".nat, @"math/big".yÂ·5 @"math/big".Word) (@"math/big".qÂ·1 @"math/big".nat, @"math/big".rÂ·2 @"math/big".Word)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".expNN (@"math/big".xÂ·3 @"math/big".nat, @"math/big".yÂ·4 @"math/big".nat "esc:0x1", @"math/big".mÂ·5 @"math/big".nat) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".expNNMontgomery (@"math/big".xÂ·3 @"math/big".nat, @"math/big".yÂ·4 @"math/big".nat "esc:0x1", @"math/big".mÂ·5 @"math/big".nat) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".expNNWindowed (@"math/big".xÂ·3 @"math/big".nat, @"math/big".yÂ·4 @"math/big".nat "esc:0x1", @"math/big".mÂ·5 @"math/big".nat) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".expWW (@"math/big".xÂ·3 @"math/big".Word, @"math/big".yÂ·4 @"math/big".Word) (? @"math/big".nat)
-	func (@"math/big".xÂ·2 @"math/big".nat "esc:0x9") @"math/big".itoa (@"math/big".negÂ·3 bool, @"math/big".baseÂ·4 int) (? []byte)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".make (@"math/big".nÂ·3 int) (? @"math/big".nat)
-	func (@"math/big".xÂ·2 @"math/big".nat) @"math/big".modW (@"math/big".dÂ·3 @"math/big".Word) (@"math/big".rÂ·1 @"math/big".Word)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".montgomery (@"math/big".xÂ·3 @"math/big".nat, @"math/big".yÂ·4 @"math/big".nat "esc:0x1", @"math/big".mÂ·5 @"math/big".nat, @"math/big".kÂ·6 @"math/big".Word, @"math/big".nÂ·7 int) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".mul (@"math/big".xÂ·3 @"math/big".nat, @"math/big".yÂ·4 @"math/big".nat) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".mulAddWW (@"math/big".xÂ·3 @"math/big".nat, @"math/big".yÂ·4 @"math/big".Word, @"math/big".rÂ·5 @"math/big".Word) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".mulRange (@"math/big".aÂ·3 uint64, @"math/big".bÂ·4 uint64) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".norm () (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".or (@"math/big".xÂ·3 @"math/big".nat "esc:0x9", @"math/big".yÂ·4 @"math/big".nat "esc:0x9") (? @"math/big".nat)
-	func (@"math/big".nÂ·2 @"math/big".nat) @"math/big".probablyPrime (@"math/big".repsÂ·3 int) (? bool)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".random (@"math/big".randÂ·3 *@"math/rand".Rand "esc:0x9", @"math/big".limitÂ·4 @"math/big".nat "esc:0x1", @"math/big".nÂ·5 int) (? @"math/big".nat)
-	func (@"math/big".zÂ·5 @"math/big".nat) @"math/big".scan (@"math/big".rÂ·6 @"io".ByteScanner, @"math/big".baseÂ·7 int, @"math/big".fracOkÂ·8 bool) (@"math/big".resÂ·1 @"math/big".nat, @"math/big".bÂ·2 int, @"math/big".countÂ·3 int, @"math/big".errÂ·4 error)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".set (@"math/big".xÂ·3 @"math/big".nat "esc:0x9") (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".setBit (@"math/big".xÂ·3 @"math/big".nat "esc:0x9", @"math/big".iÂ·4 uint, @"math/big".bÂ·5 uint) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".setBytes (@"math/big".bufÂ·3 []byte "esc:0x1") (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".setUint64 (@"math/big".xÂ·3 uint64) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".setWord (@"math/big".xÂ·3 @"math/big".Word) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".shl (@"math/big".xÂ·3 @"math/big".nat, @"math/big".sÂ·4 uint) (? @"math/big".nat)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".shr (@"math/big".xÂ·3 @"math/big".nat, @"math/big".sÂ·4 uint) (? @"math/big".nat)
-	func (@"math/big".xÂ·2 @"math/big".nat "esc:0x1") @"math/big".sticky (@"math/big".iÂ·3 uint) (? uint)
-	func (@"math/big".zÂ·2 @"math/big".nat) @"math/big".sub (@"math/big".xÂ·3 @"math/big".nat, @"math/big".yÂ·4 @"math/big".nat) (? @"math/big".nat)
-	func (@"math/big".xÂ·2 @"math/big".nat "esc:0x1") @"math/big".trailingZeroBits () (? uint)
-	func (@"math/big".xÂ·2 @"math/big".nat "esc:0x9") @"math/big".utoa (@"math/big".baseÂ·3 int) (? []byte)
-	func (@"math/big".zÂ·2 @"math/big".nat "esc:0x12") @"math/big".xor (@"math/big".xÂ·3 @"math/big".nat "esc:0x9", @"math/big".yÂ·4 @"math/big".nat "esc:0x9") (? @"math/big".nat)
-	import fmt "fmt" // indirect
-	type @"fmt".State interface { Flag(@"fmt".c int) (? bool); Precision() (@"fmt".prec int, @"fmt".ok bool); Width() (@"fmt".wid int, @"fmt".ok bool); Write(@"fmt".b []byte) (@"fmt".ret int, @"fmt".err error) }
-	type @"fmt".ScanState interface { Read(@"fmt".buf []byte) (@"fmt".n int, @"fmt".err error); ReadRune() (@"fmt".r rune, @"fmt".size int, @"fmt".err error); SkipSpace(); Token(@"fmt".skipSpace bool, @"fmt".f func(? rune) (? bool)) (@"fmt".token []byte, @"fmt".err error); UnreadRune() (? error); Width() (@"fmt".wid int, @"fmt".ok bool) }
-	type @"math/big".Int struct { @"math/big".neg bool; @"math/big".abs @"math/big".nat }
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Abs (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Add (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") And (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") AndNot (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x9") Append (@"math/big".bufÂ·3 []byte "esc:0x1a", @"math/big".baseÂ·4 int) (? []byte)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Binomial (@"math/big".nÂ·3 int64, @"math/big".kÂ·4 int64) (? *@"math/big".Int)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x9") Bit (@"math/big".iÂ·3 int) (? uint)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x1") BitLen () (? int)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x22") Bits () (? []@"math/big".Word) { return @"math/big".xÂ·2.@"math/big".abs }
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x1") Bytes () (? []byte)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x1") Cmp (@"math/big".yÂ·3 *@"math/big".Int "esc:0x1") (@"math/big".rÂ·1 int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Div (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·3 *@"math/big".Int "esc:0x1a") DivMod (@"math/big".xÂ·4 *@"math/big".Int "esc:0x9", @"math/big".yÂ·5 *@"math/big".Int "esc:0x9", @"math/big".mÂ·6 *@"math/big".Int "esc:0x8a") (? *@"math/big".Int, ? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Exp (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x1", @"math/big".mÂ·5 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".xÂ·1 *@"math/big".Int "esc:0x9") Format (@"math/big".sÂ·2 @"fmt".State, @"math/big".chÂ·3 rune)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") GCD (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9", @"math/big".aÂ·5 *@"math/big".Int "esc:0x9", @"math/big".bÂ·6 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x9") GobDecode (@"math/big".bufÂ·3 []byte "esc:0x1") (? error)
-	func (@"math/big".xÂ·3 *@"math/big".Int "esc:0x1") GobEncode () (? []byte, ? error)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x1") Int64 () (? int64) { var @"math/big".vÂ·3 int64; ; @"math/big".vÂ·3 = int64(@"math/big".low64(@"math/big".xÂ·2.@"math/big".abs)); if @"math/big".xÂ·2.@"math/big".neg { @"math/big".vÂ·3 = -@"math/big".vÂ·3 }; return @"math/big".vÂ·3 }
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Lsh (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".nÂ·4 uint) (? *@"math/big".Int)
-	func (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9") MarshalJSON () (? []byte, ? error)
-	func (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9") MarshalText () (@"math/big".textÂ·1 []byte, @"math/big".errÂ·2 error)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Mod (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") ModInverse (@"math/big".gÂ·3 *@"math/big".Int "esc:0x9", @"math/big".nÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") ModSqrt (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".pÂ·4 *@"math/big".Int) (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Mul (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") MulRange (@"math/big".aÂ·3 int64, @"math/big".bÂ·4 int64) (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Neg (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Not (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Or (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x9") ProbablyPrime (@"math/big".nÂ·3 int) (? bool)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Quo (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·3 *@"math/big".Int "esc:0x1a") QuoRem (@"math/big".xÂ·4 *@"math/big".Int "esc:0x9", @"math/big".yÂ·5 *@"math/big".Int "esc:0x9", @"math/big".rÂ·6 *@"math/big".Int "esc:0x8a") (? *@"math/big".Int, ? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Rand (@"math/big".rndÂ·3 *@"math/rand".Rand "esc:0x9", @"math/big".nÂ·4 *@"math/big".Int "esc:0x1") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Rem (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Rsh (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".nÂ·4 uint) (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x9") Scan (@"math/big".sÂ·3 @"fmt".ScanState, @"math/big".chÂ·4 rune) (? error)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Set (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") SetBit (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".iÂ·4 int, @"math/big".bÂ·5 uint) (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x12") SetBits (@"math/big".absÂ·3 []@"math/big".Word) (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") SetBytes (@"math/big".bufÂ·3 []byte "esc:0x1") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") SetInt64 (@"math/big".xÂ·3 int64) (? *@"math/big".Int)
-	func (@"math/big".zÂ·3 *@"math/big".Int "esc:0x1a") SetString (@"math/big".sÂ·4 string, @"math/big".baseÂ·5 int) (? *@"math/big".Int, ? bool)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") SetUint64 (@"math/big".xÂ·3 uint64) (? *@"math/big".Int)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x1") Sign () (? int) { if len(@"math/big".xÂ·2.@"math/big".abs) == int(0x0) { return int(0x0) }; if @"math/big".xÂ·2.@"math/big".neg { return int(-0x1) }; return int(0x1) }
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x9") String () (? string)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Sub (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x9") Text (@"math/big".baseÂ·3 int) (? string)
-	func (@"math/big".xÂ·2 *@"math/big".Int "esc:0x1") Uint64 () (? uint64) { return @"math/big".low64(@"math/big".xÂ·2.@"math/big".abs) }
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x9") UnmarshalJSON (@"math/big".textÂ·3 []byte) (? error)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x9") UnmarshalText (@"math/big".textÂ·3 []byte) (? error)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") Xor (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".yÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") @"math/big".binaryGCD (@"math/big".aÂ·3 *@"math/big".Int "esc:0x9", @"math/big".bÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") @"math/big".modSqrt3Mod4Prime (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".pÂ·4 *@"math/big".Int "esc:0x9") (? *@"math/big".Int)
-	func (@"math/big".zÂ·2 *@"math/big".Int "esc:0x1a") @"math/big".modSqrtTonelliShanks (@"math/big".xÂ·3 *@"math/big".Int "esc:0x9", @"math/big".pÂ·4 *@"math/big".Int) (? *@"math/big".Int)
-	func (@"math/big".zÂ·4 *@"math/big".Int "esc:0x1a") @"math/big".scan (@"math/big".rÂ·5 @"io".ByteScanner, @"math/big".baseÂ·6 int) (? *@"math/big".Int, ? int, ? error)
-	import pkix "crypto/x509/pkix" // indirect
-	import asn1 "encoding/asn1" // indirect
-	type @"encoding/asn1".ObjectIdentifier []int
-	func (@"encoding/asn1".oiÂ·2 @"encoding/asn1".ObjectIdentifier "esc:0x1") Equal (@"encoding/asn1".otherÂ·3 @"encoding/asn1".ObjectIdentifier "esc:0x1") (? bool)
-	func (@"encoding/asn1".oiÂ·2 @"encoding/asn1".ObjectIdentifier "esc:0x1") String () (? string)
-	type @"crypto/x509/pkix".AttributeTypeAndValue struct { Type @"encoding/asn1".ObjectIdentifier; Value interface {} }
-	type @"crypto/x509/pkix".RelativeDistinguishedNameSET []@"crypto/x509/pkix".AttributeTypeAndValue
-	type @"crypto/x509/pkix".RDNSequence []@"crypto/x509/pkix".RelativeDistinguishedNameSET
-	type @"crypto/x509/pkix".Name struct { Country []string; Organization []string; OrganizationalUnit []string; Locality []string; Province []string; StreetAddress []string; PostalCode []string; SerialNumber string; CommonName string; Names []@"crypto/x509/pkix".AttributeTypeAndValue; ExtraNames []@"crypto/x509/pkix".AttributeTypeAndValue }
-	func (@"crypto/x509/pkix".nÂ·1 *@"crypto/x509/pkix".Name "esc:0x9") FillFromRDNSequence (@"crypto/x509/pkix".rdnsÂ·2 *@"crypto/x509/pkix".RDNSequence "esc:0x9")
-	func (@"crypto/x509/pkix".nÂ·2 @"crypto/x509/pkix".Name) ToRDNSequence () (@"crypto/x509/pkix".retÂ·1 @"crypto/x509/pkix".RDNSequence)
-	func (@"crypto/x509/pkix".nÂ·2 @"crypto/x509/pkix".Name "esc:0x1") @"crypto/x509/pkix".appendRDNs (@"crypto/x509/pkix".inÂ·3 @"crypto/x509/pkix".RDNSequence "esc:0x1a", @"crypto/x509/pkix".valuesÂ·4 []string "esc:0x9", @"crypto/x509/pkix".oidÂ·5 @"encoding/asn1".ObjectIdentifier) (? @"crypto/x509/pkix".RDNSequence)
-	import time "time" // indirect
-	type @"time".zone struct { @"time".name string; @"time".offset int; @"time".isDST bool }
-	type @"time".zoneTrans struct { @"time".when int64; @"time".index uint8; @"time".isstd bool; @"time".isutc bool }
-	type @"time".Location struct { @"time".name string; @"time".zone []@"time".zone; @"time".tx []@"time".zoneTrans; @"time".cacheStart int64; @"time".cacheEnd int64; @"time".cacheZone *@"time".zone }
-	func (@"time".lÂ·2 *@"time".Location "esc:0x22") String () (? string)
-	func (@"time".lÂ·2 *@"time".Location "esc:0x1") @"time".firstZoneUsed () (? bool)
-	func (@"time".lÂ·2 *@"time".Location "esc:0x12") @"time".get () (? *@"time".Location)
-	func (@"time".lÂ·6 *@"time".Location "esc:0x32") @"time".lookup (@"time".secÂ·7 int64) (@"time".nameÂ·1 string, @"time".offsetÂ·2 int, @"time".isDSTÂ·3 bool, @"time".startÂ·4 int64, @"time".endÂ·5 int64)
-	func (@"time".lÂ·2 *@"time".Location "esc:0x1") @"time".lookupFirstZone () (? int)
-	func (@"time".lÂ·4 *@"time".Location "esc:0x1") @"time".lookupName (@"time".nameÂ·5 string "esc:0x1", @"time".unixÂ·6 int64) (@"time".offsetÂ·1 int, @"time".isDSTÂ·2 bool, @"time".okÂ·3 bool)
-	type @"time".Duration int64
-	func (@"time".dÂ·2 @"time".Duration) Hours () (? float64) { var @"time".hourÂ·3 @"time".Duration; ; @"time".hourÂ·3 = @"time".dÂ·2 / @"time".Duration(0x34630b8a000); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0x34630b8a000); return float64(@"time".hourÂ·3) + float64(@"time".nsecÂ·4) * float64(8190022623310637111963488201822504381538623676021880892417778544696899264837610290203272971060556344039023584360473938041055625214280336402169897364226048p-553) }
-	func (@"time".dÂ·2 @"time".Duration) Minutes () (? float64) { var @"time".minÂ·3 @"time".Duration; ; @"time".minÂ·3 = @"time".dÂ·2 / @"time".Duration(0xdf8475800); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0xdf8475800); return float64(@"time".minÂ·3) + float64(@"time".nsecÂ·4) * float64(7678146209353722106395056769533233877065564876941352542109479049699919628723768656821910653339403201031675627614471533358284117434246264392176261853609984p-547) }
-	func (@"time".dÂ·2 @"time".Duration) Nanoseconds () (? int64) { return int64(@"time".dÂ·2) }
-	func (@"time".dÂ·2 @"time".Duration) Seconds () (? float64) { var @"time".secÂ·3 @"time".Duration; ; @"time".secÂ·3 = @"time".dÂ·2 / @"time".Duration(0x3b9aca00); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0x3b9aca00); return float64(@"time".secÂ·3) + float64(@"time".nsecÂ·4) * float64(7198262071269114660816079141112770740375861891461678802759824945047098083990024106014198994535558872472104883612039846078596891298747423852523262413111296p-541) }
-	func (@"time".dÂ·2 @"time".Duration) String () (? string)
-	type @"time".Month int
-	func (@"time".mÂ·2 @"time".Month) String () (? string) { return @"time".months[@"time".mÂ·2 - @"time".Month(0x1)] }
-	type @"time".Weekday int
-	func (@"time".dÂ·2 @"time".Weekday) String () (? string) { return @"time".days[@"time".dÂ·2] }
-	type @"time".Time struct { @"time".sec int64; @"time".nsec int32; @"time".loc *@"time".Location }
-	func (@"time".tÂ·2 @"time".Time "esc:0x12") Add (@"time".dÂ·3 @"time".Duration) (? @"time".Time) { @"time".tÂ·2.@"time".sec += int64(@"time".dÂ·3 / @"time".Duration(0x3b9aca00)); var @"time".nsecÂ·4 int32; ; @"time".nsecÂ·4 = int32(@"time".tÂ·2.@"time".nsec) + int32(@"time".dÂ·3 % @"time".Duration(0x3b9aca00)); if @"time".nsecÂ·4 >= int32(0x3b9aca00) { @"time".tÂ·2.@"time".sec++; @"time".nsecÂ·4 -= int32(0x3b9aca00) } else { if @"time".nsecÂ·4 < int32(0x0) { @"time".tÂ·2.@"time".sec--; @"time".nsecÂ·4 += int32(0x3b9aca00) } }; @"time".tÂ·2.@"time".nsec = @"time".nsecÂ·4; return @"time".tÂ·2 }
-	func (@"time".tÂ·2 @"time".Time "esc:0x12") AddDate (@"time".yearsÂ·3 int, @"time".monthsÂ·4 int, @"time".daysÂ·5 int) (? @"time".Time)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") After (@"time".uÂ·3 @"time".Time "esc:0x1") (? bool) { return @"time".tÂ·2.@"time".sec > @"time".uÂ·3.@"time".sec || @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec > @"time".uÂ·3.@"time".nsec }
-	func (@"time".tÂ·2 @"time".Time "esc:0x9") AppendFormat (@"time".bÂ·3 []byte "esc:0x1a", @"time".layoutÂ·4 string "esc:0x9") (? []byte)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Before (@"time".uÂ·3 @"time".Time "esc:0x1") (? bool) { return @"time".tÂ·2.@"time".sec < @"time".uÂ·3.@"time".sec || @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec < @"time".uÂ·3.@"time".nsec }
-	func (@"time".tÂ·4 @"time".Time "esc:0x1") Clock () (@"time".hourÂ·1 int, @"time".minÂ·2 int, @"time".secÂ·3 int)
-	func (@"time".tÂ·4 @"time".Time "esc:0x1") Date () (@"time".yearÂ·1 int, @"time".monthÂ·2 @"time".Month, @"time".dayÂ·3 int)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Day () (? int)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Equal (@"time".uÂ·3 @"time".Time "esc:0x1") (? bool) { return @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec == @"time".uÂ·3.@"time".nsec }
-	func (@"time".tÂ·2 @"time".Time "esc:0x9") Format (@"time".layoutÂ·3 string "esc:0x9") (? string)
-	func (@"time".tÂ·2 *@"time".Time "esc:0x1") GobDecode (@"time".dataÂ·3 []byte "esc:0x1") (? error)
-	func (@"time".tÂ·3 @"time".Time "esc:0x1") GobEncode () (? []byte, ? error)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Hour () (? int)
-	func (@"time".tÂ·3 @"time".Time "esc:0x1") ISOWeek () (@"time".yearÂ·1 int, @"time".weekÂ·2 int)
-	func (@"time".tÂ·2 @"time".Time "esc:0x12") In (@"time".locÂ·3 *@"time".Location "esc:0x12") (? @"time".Time)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") IsZero () (? bool) { return @"time".tÂ·2.@"time".sec == int64(0x0) && @"time".tÂ·2.@"time".nsec == int32(0x0) }
-	func (@"time".tÂ·2 @"time".Time "esc:0x12") Local () (? @"time".Time) { @"time".tÂ·2.@"time".loc = @"time".Local; return @"time".tÂ·2 }
-	func (@"time".tÂ·2 @"time".Time "esc:0x12") Location () (? *@"time".Location) { var @"time".lÂ·3 *@"time".Location; ; @"time".lÂ·3 = @"time".tÂ·2.@"time".loc; if @"time".lÂ·3 == nil { @"time".lÂ·3 = @"time".UTC }; return @"time".lÂ·3 }
-	func (@"time".tÂ·3 @"time".Time "esc:0x1") MarshalBinary () (? []byte, ? error)
-	func (@"time".tÂ·3 @"time".Time "esc:0x9") MarshalJSON () (? []byte, ? error)
-	func (@"time".tÂ·3 @"time".Time "esc:0x9") MarshalText () (? []byte, ? error)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Minute () (? int)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Month () (? @"time".Month)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Nanosecond () (? int) { return int(@"time".tÂ·2.@"time".nsec) }
-	func (@"time".tÂ·2 @"time".Time "esc:0x12") Round (@"time".dÂ·3 @"time".Duration) (? @"time".Time)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Second () (? int)
-	func (@"time".tÂ·2 @"time".Time "esc:0x9") String () (? string)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Sub (@"time".uÂ·3 @"time".Time "esc:0x1") (? @"time".Duration)
-	func (@"time".tÂ·2 @"time".Time "esc:0x12") Truncate (@"time".dÂ·3 @"time".Duration) (? @"time".Time)
-	func (@"time".tÂ·2 @"time".Time "esc:0x12") UTC () (? @"time".Time) { @"time".tÂ·2.@"time".loc = @"time".UTC; return @"time".tÂ·2 }
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Unix () (? int64) { return @"time".tÂ·2.@"time".sec + int64(-0xe7791f700) }
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") UnixNano () (? int64) { return (@"time".tÂ·2.@"time".sec + int64(-0xe7791f700)) * int64(0x3b9aca00) + int64(@"time".tÂ·2.@"time".nsec) }
-	func (@"time".tÂ·2 *@"time".Time "esc:0x1") UnmarshalBinary (@"time".dataÂ·3 []byte "esc:0x1") (? error)
-	func (@"time".tÂ·2 *@"time".Time "esc:0x1") UnmarshalJSON (@"time".dataÂ·3 []byte "esc:0x1") (@"time".errÂ·1 error)
-	func (@"time".tÂ·2 *@"time".Time "esc:0x1") UnmarshalText (@"time".dataÂ·3 []byte "esc:0x1") (@"time".errÂ·1 error)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Weekday () (? @"time".Weekday)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") Year () (? int)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") YearDay () (? int)
-	func (@"time".tÂ·3 @"time".Time "esc:0x32") Zone () (@"time".nameÂ·1 string, @"time".offsetÂ·2 int)
-	func (@"time".tÂ·2 @"time".Time "esc:0x1") @"time".abs () (? uint64)
-	func (@"time".tÂ·5 @"time".Time "esc:0x1") @"time".date (@"time".fullÂ·6 bool) (@"time".yearÂ·1 int, @"time".monthÂ·2 @"time".Month, @"time".dayÂ·3 int, @"time".ydayÂ·4 int)
-	func (@"time".tÂ·4 @"time".Time "esc:0x32") @"time".locabs () (@"time".nameÂ·1 string, @"time".offsetÂ·2 int, @"time".absÂ·3 uint64)
-	type @"crypto/x509".KeyUsage int
-	type @"crypto/x509/pkix".Extension struct { Id @"encoding/asn1".ObjectIdentifier; Critical bool "asn1:\"optional\""; Value []byte }
-	type @"crypto/x509".ExtKeyUsage int
-	import net "net" // indirect
-	type @"net".IPMask []byte
-	func (@"net".mÂ·3 @"net".IPMask "esc:0x1") Size () (@"net".onesÂ·1 int, @"net".bitsÂ·2 int)
-	func (@"net".mÂ·2 @"net".IPMask "esc:0x1") String () (? string)
-	type @"net".IP []byte
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") DefaultMask () (? @"net".IPMask)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") Equal (@"net".xÂ·3 @"net".IP "esc:0x1") (? bool)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") IsGlobalUnicast () (? bool)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") IsInterfaceLocalMulticast () (? bool) { return len(@"net".ipÂ·2) == int(0x10) && @"net".ipÂ·2[int(0x0)] == byte(0xff) && @"net".ipÂ·2[int(0x1)] & byte(0xf) == byte(0x1) }
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") IsLinkLocalMulticast () (? bool)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") IsLinkLocalUnicast () (? bool)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") IsLoopback () (? bool)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") IsMulticast () (? bool)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") IsUnspecified () (? bool)
-	func (@"net".ipÂ·3 @"net".IP "esc:0x1") MarshalText () (? []byte, ? error)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") Mask (@"net".maskÂ·3 @"net".IPMask "esc:0x1") (? @"net".IP)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x1") String () (? string)
-	func (@"net".ipÂ·2 @"net".IP "esc:0x12") To16 () (? @"net".IP) { if len(@"net".ipÂ·2) == int(0x4) { return @"net".IPv4(@"net".ipÂ·2[int(0x0)], @"net".ipÂ·2[int(0x1)], @"net".ipÂ·2[int(0x2)], @"net".ipÂ·2[int(0x3)]) }; if len(@"net".ipÂ·2) == int(0x10) { return @"net".ipÂ·2 }; return nil }
-	func (@"net".ipÂ·2 @"net".IP "esc:0x12") To4 () (? @"net".IP)
-	func (@"net".ipÂ·2 *@"net".IP "esc:0x1") UnmarshalText (@"net".textÂ·3 []byte "esc:0x1") (? error)
-	type @"encoding/asn1".RawContent []byte
-	type @"encoding/asn1".RawValue struct { Class int; Tag int; IsCompound bool; Bytes []byte; FullBytes []byte }
-	type @"crypto/x509/pkix".AlgorithmIdentifier struct { Algorithm @"encoding/asn1".ObjectIdentifier; Parameters @"encoding/asn1".RawValue "asn1:\"optional\"" }
-	type @"crypto/x509/pkix".RevokedCertificate struct { SerialNumber *@"math/big".Int; RevocationTime @"time".Time; Extensions []@"crypto/x509/pkix".Extension "asn1:\"optional\"" }
-	type @"crypto/x509/pkix".TBSCertificateList struct { Raw @"encoding/asn1".RawContent; Version int "asn1:\"optional,default:1\""; Signature @"crypto/x509/pkix".AlgorithmIdentifier; Issuer @"crypto/x509/pkix".RDNSequence; ThisUpdate @"time".Time; NextUpdate @"time".Time "asn1:\"optional\""; RevokedCertificates []@"crypto/x509/pkix".RevokedCertificate "asn1:\"optional\""; Extensions []@"crypto/x509/pkix".Extension "asn1:\"tag:0,optional,explicit\"" }
-	type @"encoding/asn1".BitString struct { Bytes []byte; BitLength int }
-	func (@"encoding/asn1".bÂ·2 @"encoding/asn1".BitString "esc:0x1") At (@"encoding/asn1".iÂ·3 int) (? int) { if @"encoding/asn1".iÂ·3 < int(0x0) || @"encoding/asn1".iÂ·3 >= @"encoding/asn1".bÂ·2.BitLength { return int(0x0) }; var @"encoding/asn1".xÂ·4 int; ; @"encoding/asn1".xÂ·4 = @"encoding/asn1".iÂ·3 / int(0x8); var @"encoding/asn1".yÂ·5 uint; ; @"encoding/asn1".yÂ·5 = uint(0x7) - uint(@"encoding/asn1".iÂ·3 % int(0x8)); return int(@"encoding/asn1".bÂ·2.Bytes[@"encoding/asn1".xÂ·4] >> @"encoding/asn1".yÂ·5) & int(0x1) }
-	func (@"encoding/asn1".bÂ·2 @"encoding/asn1".BitString "esc:0x12") RightAlign () (? []byte)
-	type @"crypto/x509/pkix".CertificateList struct { TBSCertList @"crypto/x509/pkix".TBSCertificateList; SignatureAlgorithm @"crypto/x509/pkix".AlgorithmIdentifier; SignatureValue @"encoding/asn1".BitString }
-	func (@"crypto/x509/pkix".certListÂ·2 *@"crypto/x509/pkix".CertificateList "esc:0x1") HasExpired (@"crypto/x509/pkix".nowÂ·3 @"time".Time "esc:0x1") (? bool) { return @"crypto/x509/pkix".nowÂ·3.After(@"crypto/x509/pkix".certListÂ·2.TBSCertList.NextUpdate) }
-	type @"io".Reader interface { Read(@"io".p []byte) (@"io".n int, @"io".err error) }
-	type @"crypto/x509".VerifyOptions struct { DNSName string; Intermediates *@"crypto/x509".CertPool; Roots *@"crypto/x509".CertPool; CurrentTime @"time".Time; KeyUsages []@"crypto/x509".ExtKeyUsage }
-	type @"crypto/x509".Certificate struct { Raw []byte; RawTBSCertificate []byte; RawSubjectPublicKeyInfo []byte; RawSubject []byte; RawIssuer []byte; Signature []byte; SignatureAlgorithm @"crypto/x509".SignatureAlgorithm; PublicKeyAlgorithm @"crypto/x509".PublicKeyAlgorithm; PublicKey interface {}; Version int; SerialNumber *@"math/big".Int; Issuer @"crypto/x509/pkix".Name; Subject @"crypto/x509/pkix".Name; NotBefore @"time".Time; NotAfter @"time".Time; KeyUsage @"crypto/x509".KeyUsage; Extensions []@"crypto/x509/pkix".Extension; ExtraExtensions []@"crypto/x509/pkix".Extension; UnhandledCriticalExtensions []@"encoding/asn1".ObjectIdentifier; ExtKeyUsage []@"crypto/x509".ExtKeyUsage; UnknownExtKeyUsage []@"encoding/asn1".ObjectIdentifier; BasicConstraintsValid bool; IsCA bool; MaxPathLen int; MaxPathLenZero bool; SubjectKeyId []byte; AuthorityKeyId []byte; OCSPServer []string; IssuingCertificateURL []string; DNSNames []string; EmailAddresses []string; IPAddresses []@"net".IP; PermittedDNSDomainsCritical bool; PermittedDNSDomains []string; CRLDistributionPoints []string; PolicyIdentifiers []@"encoding/asn1".ObjectIdentifier }
-	func (@"crypto/x509".cÂ·2 *@"crypto/x509".Certificate "esc:0x9") CheckCRLSignature (@"crypto/x509".crlÂ·3 *@"crypto/x509/pkix".CertificateList "esc:0x9") (@"crypto/x509".errÂ·1 error)
-	func (@"crypto/x509".cÂ·2 *@"crypto/x509".Certificate "esc:0x9") CheckSignature (@"crypto/x509".algoÂ·3 @"crypto/x509".SignatureAlgorithm, @"crypto/x509".signedÂ·4 []byte, @"crypto/x509".signatureÂ·5 []byte) (@"crypto/x509".errÂ·1 error)
-	func (@"crypto/x509".cÂ·2 *@"crypto/x509".Certificate "esc:0x9") CheckSignatureFrom (@"crypto/x509".parentÂ·3 *@"crypto/x509".Certificate "esc:0x9") (@"crypto/x509".errÂ·1 error)
-	func (@"crypto/x509".cÂ·3 *@"crypto/x509".Certificate "esc:0x9") CreateCRL (@"crypto/x509".randÂ·4 @"io".Reader, @"crypto/x509".privÂ·5 interface {}, @"crypto/x509".revokedCertsÂ·6 []@"crypto/x509/pkix".RevokedCertificate, @"crypto/x509".nowÂ·7 @"time".Time, @"crypto/x509".expiryÂ·8 @"time".Time) (@"crypto/x509".crlBytesÂ·1 []byte, @"crypto/x509".errÂ·2 error)
-	func (@"crypto/x509".cÂ·2 *@"crypto/x509".Certificate "esc:0x1") Equal (@"crypto/x509".otherÂ·3 *@"crypto/x509".Certificate "esc:0x1") (? bool)
-	func (@"crypto/x509".cÂ·3 *@"crypto/x509".Certificate) Verify (@"crypto/x509".optsÂ·4 @"crypto/x509".VerifyOptions) (@"crypto/x509".chainsÂ·1 [][]*@"crypto/x509".Certificate, @"crypto/x509".errÂ·2 error)
-	func (@"crypto/x509".cÂ·2 *@"crypto/x509".Certificate "esc:0x1a") VerifyHostname (@"crypto/x509".hÂ·3 string) (? error)
-	func (@"crypto/x509".cÂ·3 *@"crypto/x509".Certificate) @"crypto/x509".buildChains (@"crypto/x509".cacheÂ·4 map[int][][]*@"crypto/x509".Certificate "esc:0x1", @"crypto/x509".currentChainÂ·5 []*@"crypto/x509".Certificate "esc:0x9", @"crypto/x509".optsÂ·6 *@"crypto/x509".VerifyOptions "esc:0x20a") (@"crypto/x509".chainsÂ·1 [][]*@"crypto/x509".Certificate, @"crypto/x509".errÂ·2 error)
-	func (@"crypto/x509".cÂ·2 *@"crypto/x509".Certificate "esc:0x12") @"crypto/x509".isValid (@"crypto/x509".certTypeÂ·3 int, @"crypto/x509".currentChainÂ·4 []*@"crypto/x509".Certificate "esc:0x1", @"crypto/x509".optsÂ·5 *@"crypto/x509".VerifyOptions "esc:0x1") (? error)
-	func (@"crypto/x509".cÂ·3 *@"crypto/x509".Certificate "esc:0x1") @"crypto/x509".systemVerify (@"crypto/x509".optsÂ·4 *@"crypto/x509".VerifyOptions "esc:0x1") (@"crypto/x509".chainsÂ·1 [][]*@"crypto/x509".Certificate, @"crypto/x509".errÂ·2 error) { return nil, nil }
-	type @"crypto/x509".CertPool struct { @"crypto/x509".bySubjectKeyId map[string][]int; @"crypto/x509".byName map[string][]int; @"crypto/x509".certs []*@"crypto/x509".Certificate }
-	func (@"crypto/x509".sÂ·1 *@"crypto/x509".CertPool "esc:0x9") AddCert (@"crypto/x509".certÂ·2 *@"crypto/x509".Certificate)
-	func (@"crypto/x509".sÂ·2 *@"crypto/x509".CertPool "esc:0x9") AppendCertsFromPEM (@"crypto/x509".pemCertsÂ·3 []byte) (@"crypto/x509".okÂ·1 bool)
-	func (@"crypto/x509".sÂ·2 *@"crypto/x509".CertPool "esc:0x9") Subjects () (@"crypto/x509".resÂ·1 [][]byte)
-	func (@"crypto/x509".sÂ·4 *@"crypto/x509".CertPool "esc:0x18a") @"crypto/x509".findVerifiedParents (@"crypto/x509".certÂ·5 *@"crypto/x509".Certificate "esc:0x9") (@"crypto/x509".parentsÂ·1 []int, @"crypto/x509".errCertÂ·2 *@"crypto/x509".Certificate, @"crypto/x509".errÂ·3 error)
-	func @"".NewCertPool (@"".CAFilesÂ·3 []string "esc:0x9") (? *@"crypto/x509".CertPool, ? error)
-	import crypto "crypto" // indirect
-	type @"crypto".PrivateKey interface {}
-	type @"crypto/tls".Certificate struct { Certificate [][]byte; PrivateKey @"crypto".PrivateKey; OCSPStaple []byte; SignedCertificateTimestamps [][]byte; Leaf *@"crypto/x509".Certificate }
-	func @"".NewCert (@"".certfileÂ·3 string, @"".keyfileÂ·4 string, @"".parseFuncÂ·5 func(? []byte, ? []byte) (? @"crypto/tls".Certificate, ? error) "esc:0x10a") (? *@"crypto/tls".Certificate, ? error)
-	func @"".init ()
-	func @"math/big".low64 (@"math/big".zÂ·2 @"math/big".nat "esc:0x1") (? uint64) { if len(@"math/big".zÂ·2) == int(0x0) { return uint64(0x0) }; var @"math/big".vÂ·3 uint64; ; @"math/big".vÂ·3 = uint64(@"math/big".zÂ·2[int(0x0)]); if false && len(@"math/big".zÂ·2) > int(0x1) { @"math/big".vÂ·3 |= uint64(@"math/big".zÂ·2[int(0x1)]) << uint(0x20) }; return @"math/big".vÂ·3 }
-	var @"time".months [12]string
-	var @"time".days [7]string
-	var @"time".Local *@"time".Location
-	var @"time".UTC *@"time".Location
-	func @"net".IPv4 (@"net".aÂ·2 byte, @"net".bÂ·3 byte, @"net".cÂ·4 byte, @"net".dÂ·5 byte) (? @"net".IP) { var @"net".pÂ·6 @"net".IP; ; @"net".pÂ·6 = make(@"net".IP, 0x10); copy(@"net".pÂ·6, @"net".v4InV6Prefix); @"net".pÂ·6[int(0xc)] = @"net".aÂ·2; @"net".pÂ·6[int(0xd)] = @"net".bÂ·3; @"net".pÂ·6[int(0xe)] = @"net".cÂ·4; @"net".pÂ·6[int(0xf)] = @"net".dÂ·5; return @"net".pÂ·6 }
-	var @"net".v4InV6Prefix []byte
-
-$$
- _go_.o          0           0     0     644     17761     `
-go object darwin amd64 go1.6.2 X:none
-
-!
-  go13ldcrypto/tls.acrypto/x509.aencoding/pem.aio/ioutil.a ş"".NewCertPool      eH‹%    HD$ H;A†f  Hìà   1ÛH‰œ$  H‰œ$  H    H‰$HÇD$    HÇD$    HÇD$    è    H‹\$ H‰\$hH    H‰$HÇD$    HÇD$    HÇD$    è    H‹\$ H‰\$`H    H‰$è    H‹D$H‰D$XHƒø „¸  H‹l$h€=     …  H‰(Hƒø „z  H‹l$`€=     …L  H‰h1íH‰hH‰hH‰h H‰D$HH‹”$è   H‹„$ğ   H‹œ$ø   H‰œ$Ø   1ÉH‰„$Ğ   H‰D$8H‰”$È   H‰ĞH‹l$8H9é+  H‰D$PHƒø „×  H‹H‹hH‰L$@H‰”$   H‰¬$˜   H‰”$    H‰$H‰¬$¨   H‰l$è    H‹\$H‰œ$°   H‹\$H‰œ$¸   H‹\$ H‰œ$À   H‹D$(H‹L$0H‰L$xH‰D$pHƒø t$HÇ„$       H‰„$  H‰Œ$  HÄà   ÃH‹œ$°   H‰$H‹œ$¸   H‰\$H‹œ$À   H‰\$è    H‹D$H‹\$ H‰œ$°   H‹\$(H‰œ$¸   H‹\$0H‰œ$À   1íH9èuFH‹D$PH‹L$@HƒÀHÿÁH‹l$8H9éŒÕşÿÿH‹\$HH‰œ$   1ÛH‰œ$  H‰œ$  HÄà   ÃHƒø „ƒ   HXH‹H‰$H‹KH‰L$H‹KH‰L$è    H‹D$H‹L$ H‹T$(H‰”$ˆ   H‰Œ$€   Hƒù t$HÇ„$       H‰Œ$  H‰”$  HÄà   ÃH‹\$HH‰$H‰D$è    éÏşÿÿ‰ évÿÿÿ‰ é"şÿÿL@L‰$H‰l$è    H‹D$Xéœıÿÿ‰ éıÿÿH‰$H‰l$è    H‹D$Xé]ıÿÿ‰ éAıÿÿè    éxüÿÿÌÌÌÌÌÌÌÌ 
-      h  *type.map[string][]int   °  runtime.makemap   Ò  *type.map[string][]int   š  runtime.makemap   ¼  2type.crypto/x509.CertPool   Î  "runtime.newobject   Œ (runtime.writeBarrier   Ê (runtime.writeBarrier   ¨  $io/ioutil.ReadFile   È  &encoding/pem.Decode   ’  8crypto/x509.ParseCertificate   Ê  >crypto/x509.(*CertPool).AddCert   ”  .runtime.writebarrierptr   Ò  .runtime.writebarrierptr   ş  0runtime.morestack_noctxt   `À  """.autotmp_0009 Ÿtype.string "".autotmp_0008 Ÿtype.*string "".autotmp_0007 Ïtype.int "".autotmp_0006 ¿type.int "".autotmp_0005 4type.*crypto/x509.CertPool "".autotmp_0004  4type.*crypto/x509.CertPool "".autotmp_0003 /type.[]string "".autotmp_0002 ÿ*type.map[string][]int "".autotmp_0001 ï*type.map[string][]int "".err ¿type.error "".err ßtype.error "".pemByte _type.[]uint8 "".CAFile type.string "".certPool ¯4type.*crypto/x509.CertPool "".~r2 @type.error "".~r1 04type.*crypto/x509.CertPool "".CAFiles  type.[]string :Àİ¿À£¿Àt¿Àh¿  P41ÖsT$
-W('C$B ( W5íµ( TgclocalsÂ·0eb8895aada11c3eccf0d9ced3582bb1 TgclocalsÂ·613ad8614f2501c1206c92312dbf6254   î/Users/oktaygardener/Documents/dev/Computer-Science-CalPoly/CPE 458 Current Topics in Computer Systems - Distributed Systems/Project2/src/github.com/coreos/etcd/pkg/tlsutil/tlsutil.goş"".NewCert  à
-  à
-eH‹%    H„$8ÿÿÿH;A†€  HìH  1ÛH‰œ$€  H‰œ$ˆ  H‹œ$P  H‰$H‹œ$X  H‰\$è    H‹\$H‰œ$Ğ   H‹\$H‰œ$Ø   H‹\$ H‰œ$à   H‹D$(H‹L$0H‰Œ$°   H‰„$¨   Hƒø t$HÇ„$x      H‰„$€  H‰Œ$ˆ  HÄH  ÃH‹œ$`  H‰$H‹œ$h  H‰\$è    H‹\$H‰œ$¸   H‹\$H‰œ$À   H‹\$ H‰œ$È   H‹D$(H‹L$0H‰Œ$°   H‰„$¨   Hƒø t$HÇ„$x      H‰„$€  H‰Œ$ˆ  HÄH  ÃH‹œ$p  1íH9ëuH    H‰œ$p  H    H‰$è    H‹\$H‰œ$    H‹œ$Ğ   H‰$H‹œ$Ø   H‰\$H‹œ$à   H‰\$H‹œ$¸   H‰\$H‹œ$À   H‰\$ H‹œ$È   H‰\$(H‹”$p  H‹ÿÓH¼$è   Ht$0è    H‹œ$   H‰œ$¨   H‹œ$˜   H‰œ$°   H‹œ$    H¬$è   H‰\$H‰l$H-    H‰,$è    H‹„$¨   Hƒø t,HÇ„$x      H‰„$€  H‹œ$°   H‰œ$ˆ  HÄH  ÃH‹œ$    H‰œ$x  1ÛH‰œ$€  H‰œ$ˆ  HÄH  Ãè    é[ıÿÿÌÌÌÌÌÌÌÌÌÌÌ
-      œ  $io/ioutil.ReadFile   ®  $io/ioutil.ReadFile   °  2crypto/tls.X509KeyPairÂ·f   Î  6type.crypto/tls.Certificate   à  "runtime.newobject   ²       ÒØ  runtime.duffcopy   Ô  6type.crypto/tls.Certificate   æ  (runtime.typedmemmove   ¸
-  0runtime.morestack_noctxt   €  "".autotmp_0010 ¿6type.crypto/tls.Certificate "".&tlsCert Ï8type.*crypto/tls.Certificate "".key Ÿtype.[]uint8 "".err ¿type.error "".cert ïtype.[]uint8 "".~r4 `type.error "".~r3 P8type.*crypto/tls.Certificate "".parseFunc @vtype.func([]uint8, []uint8) (crypto/tls.Certificate, error) "".keyfile  type.string "".certfile  type.string <"šˆª) ° <j4W$W$Û,*%  M‰™jY~ TgclocalsÂ·6eca59721bfd594d0b9f08a5bfd915bf TgclocalsÂ·abc19028e2c9a63c623c4c789a293fcc   î/Users/oktaygardener/Documents/dev/Computer-Science-CalPoly/CPE 458 Current Topics in Computer Systems - Distributed Systems/Project2/src/github.com/coreos/etcd/pkg/tlsutil/tlsutil.goş"".init  À  ÀeH‹%    H;avC¶    €û t¶    €ûuÃè    Æ    è    è    è    è    Æ    Ãè    ë§ÌÌÌÌÌÌÌ
-      $  "".initdoneÂ·   <  "".initdoneÂ·   R  "runtime.throwinit   b "".initdoneÂ·   n  crypto/tls.init   x   crypto/x509.init   ‚  "encoding/pem.init   Œ  io/ioutil.init   ˜ "".initdoneÂ·   ¦  0runtime.morestack_noctxt        ` ` ’` 
- (8 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   î/Users/oktaygardener/Documents/dev/Computer-Science-CalPoly/CPE 458 Current Topics in Computer Systems - Distributed Systems/Project2/src/github.com/coreos/etcd/pkg/tlsutil/tlsutil.goş(type..hash.[8]string     eH‹%    H;avpHƒì(H‹L$81ÀHÇD$   H‹l$H9è}DH‰D$ H‹\$0Hƒû t>H‰ÅHÁåHëH‰$H‰L$8H‰L$è    H‹L$H‹D$ HÿÀH‹l$H9è|¼H‰L$@HƒÄ(Ã‰ë¾è    éwÿÿÿÌÌÌÌÌÌÌ
-      ¬  runtime.strhash   €  0runtime.morestack_noctxt   0P  
-"".autotmp_0012 type.int "".autotmp_0011 type.int "".~r2  type.uintptr "".h type.uintptr "".p  type.*[8]string PgOPO   
- U; TgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2 TgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb   î/Users/oktaygardener/Documents/dev/Computer-Science-CalPoly/CPE 458 Current Topics in Computer Systems - Distributed Systems/Project2/src/github.com/coreos/etcd/pkg/tlsutil/tlsutil.goş$type..eq.[8]string à  àeH‹%    H;a†Î   HƒìX1ÀHÇD$(   H‹l$(H9è’   H‰D$0H‹\$`Hƒû „–   H‰ÅHÁåHëH‹3H‹KH‹\$hHƒû tvH‰ÅHÁåHëH‹H‹CH9ÁuVH‰t$HH‰4$H‰L$PH‰L$H‰T$8H‰T$H‰D$@H‰D$è    ¶\$ €û t H‹D$0HÿÀH‹l$(H9èŒnÿÿÿÆD$pHƒÄXÃÆD$p HƒÄXÃ‰ë†‰écÿÿÿè    éÿÿÿÌÌÌÌÌ
-      ¼   runtime.eqstring   Ä  0runtime.morestack_noctxt   0°  "".autotmp_0016 ?type.string "".autotmp_0015 type.string "".autotmp_0014 _type.int "".autotmp_0013 Otype.int "".~r2  type.bool "".q type.*[8]string "".p  type.*[8]string ,°´¯°	¯°¯ ğ ğ  S TgclocalsÂ·3bb21ca8fe1d99a3e492463bd711418a TgclocalsÂ·a8eabfc4a4514ed6b3b0c61e9680e440   î/Users/oktaygardener/Documents/dev/Computer-Science-CalPoly/CPE 458 Current Topics in Computer Systems - Distributed Systems/Project2/src/github.com/coreos/etcd/pkg/tlsutil/tlsutil.goşTgclocalsÂ·613ad8614f2501c1206c92312dbf6254 H  H                             şTgclocalsÂ·0eb8895aada11c3eccf0d9ced3582bb1 H  H                            şTgclocalsÂ·abc19028e2c9a63c623c4c789a293fcc 8  8          @   H          şTgclocalsÂ·6eca59721bfd594d0b9f08a5bfd915bf 8  8                      şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           ş>"".initdoneÂ·  type.uint8   ş""".NewCertPoolÂ·f              "".NewCertPool   ş"".NewCertÂ·f              "".NewCert   ş"".initÂ·f              "".init   ş"runtime.gcbits.01    ş*go.string.hdr."[]int"                       "go.string."[]int"   ş"go.string."[]int"   []int  ştype.[]int                 fù                                                 
-0   runtime.algarray   @  "runtime.gcbits.01   P  *go.string.hdr."[]int"   p  &go.weak.type.*[]int   €  type.int   ş.go.typelink.[]int	[]int              type.[]int   ş.go.string.hdr."[]uint8"                       &go.string."[]uint8"   ş&go.string."[]uint8"   []uint8  ştype.[]uint8                 ß~.8                                                 
-0   runtime.algarray   @  "runtime.gcbits.01   P  .go.string.hdr."[]uint8"   p  *go.weak.type.*[]uint8   €  type.uint8   ş6go.typelink.[]uint8	[]uint8              type.[]uint8   şruntime.gcbits.      ş0go.string.hdr."[8]uint8"                       (go.string."[8]uint8"   ş(go.string."[8]uint8"    [8]uint8  ştype.[8]uint8 °  °               >ù0´ ‘                                                               0   runtime.algarray   @  runtime.gcbits.   P  0go.string.hdr."[8]uint8"   p  ,go.weak.type.*[8]uint8   €  type.uint8     type.[]uint8   ş:go.typelink.[8]uint8	[8]uint8              type.[8]uint8   ş0go.string.hdr."[]string"                       (go.string."[]string"   ş(go.string."[]string"    []string  ştype.[]string                 Ó¨ó
-                                                 
-0   runtime.algarray   @  "runtime.gcbits.01   P  0go.string.hdr."[]string"   p  ,go.weak.type.*[]string   €  type.string   ş:go.typelink.[]string	[]string              type.[]string   şTgclocalsÂ·33cdeccccebe80329f1fdbee7f5874cb           şTgclocalsÂ·0b86ef39f3fed835f14ba5f4d7c62fa2             şTgclocalsÂ·a8eabfc4a4514ed6b3b0c61e9680e440              şTgclocalsÂ·3bb21ca8fe1d99a3e492463bd711418a             ş0type..hashfunc.[8]string              (type..hash.[8]string   ş,type..eqfunc.[8]string              $type..eq.[8]string   ş&type..alg.[8]string                        0type..hashfunc.[8]string     ,type..eqfunc.[8]string   ş&runtime.gcbits.5555   UU ş2go.string.hdr."[8]string"             	          *go.string."[8]string"   ş*go.string."[8]string"    [8]string  ştype.[8]string °  °€       x       USŒ>                                                                0  &type..alg.[8]string   @  &runtime.gcbits.5555   P  2go.string.hdr."[8]string"   p  .go.weak.type.*[8]string   €  type.string     type.[]string   ş>go.typelink.[8]string	[8]string              type.[8]string   ş.go.string.hdr."[][]int"                       &go.string."[][]int"   ş&go.string."[][]int"   [][]int  ştype.[][]int                 >qã"                                                 
-0   runtime.algarray   @  "runtime.gcbits.01   P  .go.string.hdr."[][]int"   p  *go.weak.type.*[][]int   €  type.[]int   ş6go.typelink.[][]int	[][]int              type.[][]int   ş*runtime.gcbits.499224   I’$ ş0go.string.hdr."[8][]int"                       (go.string."[8][]int"   ş(go.string."[8][]int"    [8][]int  ştype.[8][]int °  °À       °       Ì¼î                                                                0à  runtime.algarray   @  *runtime.gcbits.499224   P  0go.string.hdr."[8][]int"   p  ,go.weak.type.*[8][]int   €  type.[]int     type.[][]int   ş:go.typelink.[8][]int	[8][]int              type.[8][]int   şPgo.string.hdr."*map.bucket[string][]int"                       Hgo.string."*map.bucket[string][]int"   şHgo.string."*map.bucket[string][]int" @  2*map.bucket[string][]int  ş:type.*map.bucket[string][]int                 Ÿ 6                                                
-0   runtime.algarray   @  "runtime.gcbits.01   P  Pgo.string.hdr."*map.bucket[string][]int"   p  Lgo.weak.type.**map.bucket[string][]int   €  8type.map.bucket[string][]int   ş6runtime.gcbits.aaaa92244902   ªª’$I şNgo.string.hdr."map.bucket[string][]int"                       Fgo.string."map.bucket[string][]int"   şFgo.string."map.bucket[string][]int" 0  0map.bucket[string][]int  ş.go.string.hdr."topbits"                       &go.string."topbits"   ş&go.string."topbits"   topbits  ş(go.string.hdr."keys"                        go.string."keys"   ş go.string."keys"   
-keys  ş,go.string.hdr."values"                       $go.string."values"   ş$go.string."values"   values  ş0go.string.hdr."overflow"                       (go.string."overflow"   ş(go.string."overflow"    overflow  ş8type.map.bucket[string][]int ğ  ğP      P      <
-0º                                                                                                                                                                              ˆ                                       H      0à  runtime.algarray   @  6runtime.gcbits.aaaa92244902   P  Ngo.string.hdr."map.bucket[string][]int"   p  Jgo.weak.type.*map.bucket[string][]int   €° 8type.map.bucket[string][]int   °  .go.string.hdr."topbits"   Ğ  type.[8]uint8   €  (go.string.hdr."keys"      type.[8]string   Ğ  ,go.string.hdr."values"   ğ  type.[8][]int      0go.string.hdr."overflow"   À  :type.*map.bucket[string][]int   ş"runtime.gcbits.2c   , şHgo.string.hdr."map.hdr[string][]int"                       @go.string."map.hdr[string][]int"   ş@go.string."map.hdr[string][]int" 0  *map.hdr[string][]int  ş*go.string.hdr."count"                       "go.string."count"   ş"go.string."count"   count  ş*go.string.hdr."flags"                       "go.string."flags"   ş"go.string."flags"   flags  ş"go.string.hdr."B"                       go.string."B"   şgo.string."B"   B  ş*go.string.hdr."hash0"                       "go.string."hash0"   ş"go.string."hash0"   hash0  ş.go.string.hdr."buckets"                       &go.string."buckets"   ş&go.string."buckets"   buckets  ş4go.string.hdr."oldbuckets"             
-          ,go.string."oldbuckets"   ş,go.string."oldbuckets"    oldbuckets  ş2go.string.hdr."nevacuate"             	          *go.string."nevacuate"   ş*go.string."nevacuate"    nevacuate  ş2type.map.hdr[string][]int °  °0       0       ŒÄ™                                                                                                                                                                              	                                                                                                                                                                                                    (       *0à  runtime.algarray   @  "runtime.gcbits.2c   P  Hgo.string.hdr."map.hdr[string][]int"   p  Dgo.weak.type.*map.hdr[string][]int   €° 2type.map.hdr[string][]int   °  *go.string.hdr."count"   Ğ  type.int   €  *go.string.hdr."flags"      type.uint8   Ğ  "go.string.hdr."B"   ğ  type.uint8      *go.string.hdr."hash0"   À  type.uint32   ğ  .go.string.hdr."buckets"     :type.*map.bucket[string][]int   À  4go.string.hdr."oldbuckets"   à  :type.*map.bucket[string][]int     2go.string.hdr."nevacuate"   °  type.uintptr   à  0go.string.hdr."overflow"   €  &type.unsafe.Pointer   ş@go.string.hdr."map[string][]int"                       8go.string."map[string][]int"   ş8go.string."map[string][]int" 0  "map[string][]int  ş*type.map[string][]int Ğ  Ğ              £(.³ 5                                                                          P0€  runtime.algarray   @  "runtime.gcbits.01   P  @go.string.hdr."map[string][]int"   p  <go.weak.type.*map[string][]int   €  type.string     type.[]int      8type.map.bucket[string][]int   °  2type.map.hdr[string][]int   şZgo.typelink.map[string][]int	map[string][]int              *type.map[string][]int   ş~go.string.hdr."func([]uint8, []uint8) (tls.Certificate, error)"             /          vgo.string."func([]uint8, []uint8) (tls.Certificate, error)"   şvgo.string."func([]uint8, []uint8) (tls.Certificate, error)" `  `func([]uint8, []uint8) (tls.Certificate, error)  şvtype.func([]uint8, []uint8) (crypto/tls.Certificate, error) °  °              û; Œ 3                                                                                                                            0€  runtime.algarray   @  "runtime.gcbits.01   P  ~go.string.hdr."func([]uint8, []uint8) (tls.Certificate, error)"   p  ˆgo.weak.type.*func([]uint8, []uint8) (crypto/tls.Certificate, error)   ğ vtype.func([]uint8, []uint8) (crypto/tls.Certificate, error)   À vtype.func([]uint8, []uint8) (crypto/tls.Certificate, error)   ğ  type.[]uint8   €  type.[]uint8     6type.crypto/tls.Certificate      type.error   şägo.typelink.func([]uint8, []uint8) (tls.Certificate, error)	func([]uint8, []uint8) (crypto/tls.Certificate, error)              vtype.func([]uint8, []uint8) (crypto/tls.Certificate, error)   ş4go.string.hdr."*[8]string"             
-          ,go.string."*[8]string"   ş,go.string."*[8]string"    *[8]string  ştype.*[8]string                 ­”o 6                                                
-0   runtime.algarray   @  "runtime.gcbits.01   P  4go.string.hdr."*[8]string"   p  0go.weak.type.**[8]string   €  type.[8]string   ş4go.string.hdr."crypto/tls"             
-          ,go.string."crypto/tls"   ş,go.string."crypto/tls"    crypto/tls  ş2go.importpath.crypto/tls.             
-          ,go.string."crypto/tls"   ş6go.string.hdr."crypto/x509"                       .go.string."crypto/x509"   ş.go.string."crypto/x509"    crypto/x509  ş4go.importpath.crypto/x509.                       .go.string."crypto/x509"   ş8go.string.hdr."encoding/pem"                       0go.string."encoding/pem"   ş0go.string."encoding/pem"    encoding/pem  ş6go.importpath.encoding/pem.                       0go.string."encoding/pem"   ş2go.string.hdr."io/ioutil"             	          *go.string."io/ioutil"   ş*go.string."io/ioutil"    io/ioutil  ş0go.importpath.io/ioutil.             	          *go.string."io/ioutil"   ş.type..hash.[8]stringÂ·f              (type..hash.[8]string   ş*type..eq.[8]stringÂ·f              $type..eq.[8]string   ÿÿgo13ld 
