@@ -16,8 +16,13 @@ struct MinMax {
     double max = -DBL_MAX;
 };
 
+struct FileInput {
+    std::string filename;
+    std::string flag; // v, a, d
+};
+
 /* Mapper: Read input file an add key-value to KV-store */
-void readFile(int itask, KeyValue *kv, void *ptr); // ptr to filename (char *)
+void readFile(int itask, KeyValue *kv, void *ptr); // ptr to FileInput
 
 /* Reducer: Calculate sum of multiple values of each unique key */
 void sum(char *key, int keybytes, char *multivalue, int nvalues, int *valuebytes, KeyValue *kv, void *ptr);
@@ -41,10 +46,16 @@ int main(int narg, char **args)
   MPI_Comm_rank(MPI_COMM_WORLD,&me);
   MPI_Comm_size(MPI_COMM_WORLD,&nprocs);
 
-  if (narg <= 1) {
-    if (me == 0) printf("Syntax: ./stock_histograms file\n");
+  if (narg <= 2) {
+    if (me == 0) printf("Syntax: ./stock_histograms [file] [flag]\n\tflags:\tv = Volume Traded (default)\n\t\ta = Adjusted Closing Price\n\t\td = Daily Differential (Closing Price - Opening Price)");
     MPI_Abort(MPI_COMM_WORLD,1);
   }
+    
+    std::string filename(args[1]);
+    std::string flag(args[2]);
+    FileInput fileInput;
+    fileInput.filename = filename;
+    fileInput.flag = flag;
 
   MapReduce *mr = new MapReduce(MPI_COMM_WORLD);
 //  mr->verbosity = 2;
@@ -55,7 +66,7 @@ int main(int narg, char **args)
   MPI_Barrier(MPI_COMM_WORLD);
     
     MinMax minMax;
-    int numEntries = mr->map(1, readFile, &args[1]); // Get file content
+    int numEntries = mr->map(1, readFile, &fileInput); // Get file content
     mr->collate(NULL); // KV -> KMV (value - 1)
     mr->reduce(sum, NULL); // KMV -> KV (value - # occurence of value)
     MPI_Barrier(MPI_COMM_WORLD);
@@ -97,6 +108,16 @@ void readFile(int itask, KeyValue *kv, void *ptr)
     kv->add((char*)&key,8,NULL,0);
     key = 100.879997;
     kv->add((char*)&key,8,NULL,0);
+    
+    FileInput *fileInput = (FileInput*) ptr;
+    // open file stream with fileInput.filename
+    if(fileInput->flag == "d"){
+        // Use columns (Closing Price - Opening Price)
+    } else if(fileInput->flag == "a") {
+        // Use column adjusted closing price
+    } else {
+        // Use volume (default)
+    }
 }
 
 void sum(char *key, int keybytes, char *multivalue, int nvalues, int *valuebytes, KeyValue *kv, void *ptr)
