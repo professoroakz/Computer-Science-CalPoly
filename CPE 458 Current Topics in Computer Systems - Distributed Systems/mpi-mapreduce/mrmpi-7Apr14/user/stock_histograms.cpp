@@ -33,9 +33,7 @@ struct FlagAndH {
 };
 
 /* Helper functions for readFile */
-
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
-
 std::vector<std::string> split(const std::string &s, char delim);
 
 /* Mapper: Read input file an add key-value to KV-store */
@@ -75,13 +73,9 @@ int main(int narg, char **args)
     fileInput.flag = flag;
 
     MapReduce *mr = new MapReduce(MPI_COMM_WORLD);
-//  mr->verbosity = 2;
     mr->timer = 1;
-//    mr->memsize = 1;
-//    mr->outofcore = 1;
 
     MPI_Barrier(MPI_COMM_WORLD);
-
     MinMax minMax;
     int numEntries = mr->map(1, readFile, &fileInput); // Get file content
     mr->collate(NULL); // KV -> KMV (value - 1)
@@ -179,7 +173,7 @@ void intervalSum(char *key, int keybytes, char *multivalue, int nvalues, int *va
     int bin = *(int *)key;
     int *vs = (int *) multivalue;
     FlagAndH fnh= *(FlagAndH*) ptr;
-    
+
     int sum = 0;
     for(int i = 0; i < nvalues; ++i)
         sum += vs[i];
