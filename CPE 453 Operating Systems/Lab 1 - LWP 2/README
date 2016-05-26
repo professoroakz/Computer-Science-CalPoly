@@ -1,6 +1,0 @@
-Adam Oktay Bahceci
-"How is this LWP diferent from a real thread management library? Name two ways this LWP library API could be improved."
-
-1. A better scheduling algorithm. Currently, I am using a round-robin algorithm for scheduling, which is far from optimal.
-2. Multithreading, management of more than one process at a time.
-3. Implementing a better way of controlling the threads. Array, not so smart. Queue that I was going to implement but didn't have time for - better.

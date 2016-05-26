@@ -180,7 +180,6 @@ void intervalSum(char *key, int keybytes, char *multivalue, int nvalues, int *va
 {
     int bin = *(int *)key;
     int *vs = (int *) multivalue;
-    
     int sum = 0;
     for(int i = 0; i < nvalues; ++i)
         sum += vs[i];
