@@ -8,7 +8,7 @@ We will use the processing capabilities of the MPAC Lab to analyze real stock da
 2. make -f Makefile.mpicc
 
 ## Run
-./stock_histrograms [file] [flag]
+mpirun ./stock_histrograms [file] [flag]
 flags:	v = Volume Traded (default)
 	a = Adjusted Closing Price
 	d = Daily Differential (Closing Price - Opening Price)
