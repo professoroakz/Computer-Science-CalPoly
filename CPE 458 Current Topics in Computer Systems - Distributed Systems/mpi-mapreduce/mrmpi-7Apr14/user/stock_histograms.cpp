@@ -23,6 +23,7 @@ struct MinMax
 {
     double min = DBL_MAX;
     double max = -DBL_MAX;
+    std::string flag;
 };
 
 /* Struct for input-filename and flag for selected column(s) */
@@ -42,21 +43,29 @@ struct FlagAndH
 std::vector<std::string> split(const std::string &s, char delim);
 
 /* Mapper: Read input file an add keys to KV-store */
+/* Key is double or unsigned int, value is NULL */
 void readFile(int itask, KeyValue *kv, void *ptr); // ptr to FileInput-struct
 
 /* Reducer: Calculate sum of multiple values of each unique key */
+/* Key stays the same, value is int */
 void sum(char *key, int keybytes, char *multivalue, int nvalues, int *valuebytes, KeyValue *kv, void *ptr); // ptr is not used
 
 /* Mapper: Map a key to it's interval with respect to 'h'. New key is interval-index */
-void toInterval(uint64_t itask, char *key, int keybytes, char *value, int valuebytes, KeyValue *kv, void *ptr); // ptr to h (int). h is bin width
+/* Key is unsigned long if FlagAndH->flag == "v", otherwise key is double. Value is int */
+/* Key type and value type stays the same */
+void toInterval(uint64_t itask, char *key, int keybytes, char *value, int valuebytes, KeyValue *kv, void *ptr); // ptr to FlagAndH-struct
 
 /* Mapper: Find min and max values */
+/* Key is unsigned long if minMax->flag == "v", otherwise key is double. Value does not care */
 void findMinMax(uint64_t itask, char *key, int keybytes, char *value, int valuebytes, KeyValue *kv, void *ptr); // ptr to MinMax-struct
 
 /* Reducer: Calucalte sum of multiple values of each unique key */
+/* Key is int, multivalue is int[] */
+/* Key stays int, value becomes int */
 void intervalSum(char *key, int keybytes, char *multivalue, int nvalues, int *valuebytes, KeyValue *kv, void *ptr); // ptr is not used
 
 /* Mapper: Prints the data */
+/* Key is unsigned long if FlagAndH->flag == "v", otherwise key is double. Value is int */
 void printData(uint64_t itask, char *key, int keybytes, char *value, int valuebytes, KeyValue *kv, void *ptr); // ptr to FlagAndH-struct
 
 /* ---------------------------------------------------------------------- */
@@ -90,23 +99,24 @@ int main(int narg, char **args)
     MapReduce *mr2 = new MapReduce(MPI_COMM_WORLD);
     // Find min and max values
     MinMax minMax;
+    minMax.flag = flag;
     mr2->map(mr, findMinMax, &minMax);
     delete mr2;
 
     // Calculate bin-width
     double h = (minMax.max - minMax.min) / (int)(2 * (pow(numEntries, 0.33)));
 
+    FlagAndH fnh;
+    fnh.h = h;
+    fnh.flag = flag;
     // Map each key with its value to a bin-index with respect to h
-    mr->map(mr, toInterval, &h);
+    mr->map(mr, toInterval, &fnh);
     mr->collate(NULL);
     // Calculate sum of values for each bin-index
     mr->reduce(intervalSum, NULL);
     mr->gather(1);
     // Sort bin-indicies (int) ascending
     mr->sort_keys(1);
-    FlagAndH fnh;
-    fnh.h = h;
-    fnh.flag = flag;
     // Print data
     mr->map(mr, printData, &fnh);
 
@@ -144,7 +154,7 @@ void readFile(int itask, KeyValue *kv, void *ptr)
         } else if(fileInput->flag == "a") { // Adjusted Closing Price
             key = std::stod(splitLine[6]);
         } else { // Volume Traded (default)
-            key = std::stoi(splitLine[5]);
+            key = std::stoul(splitLine[5]);
         }
 
         kv->add((char*)&key, sizeof(double), NULL, 0);
@@ -159,21 +169,36 @@ void sum(char *key, int keybytes, char *multivalue, int nvalues, int *valuebytes
 void findMinMax(uint64_t itask, char *key, int keybytes, char *value, int valuebytes, KeyValue *kv, void *ptr)
 {
     MinMax *minMax = (MinMax*) ptr;
-    double k = *(double *) key;
-    if(k < minMax->min)
-        minMax->min = k;
-    if(k > minMax->max)
-        minMax->max = k;
+    if(minMax->flag == "v")
+    {
+        unsigned long k = *(unsigned long *) key;
+        if(k < minMax->min)
+            minMax->min = k;
+        if(k > minMax->max)
+            minMax->max = k;
+    } else {
+        double k = *(double *) key;
+        if(k < minMax->min)
+            minMax->min = k;
+        if(k > minMax->max)
+            minMax->max = k;
+    }
 }
 
 void toInterval(uint64_t itask, char *key, int keybytes, char *value, int valuebytes, KeyValue *kv, void *ptr)
 {
-    double h = *(double *) ptr;
-    double k = *(double *) key;
+    FlagAndH fnh = *(FlagAndH *) ptr;
     int v = *(int *) value;
-
-    int bin = k / h;
-    kv->add((char*)&bin,4,(char*)&v,4);
+    
+    if(fnh.flag == "v"){
+        unsigned long k = *(unsigned long *) key;
+        int bin = k / fnh.h;
+        kv->add((char*)&bin,sizeof(int),(char*)&v,sizeof(int));
+    } else {
+        double k = *(double *) key;
+        int bin = k / fnh.h;
+        kv->add((char*)&bin,sizeof(int),(char*)&v,sizeof(int));
+    }
 }
 
 void intervalSum(char *key, int keybytes, char *multivalue, int nvalues, int *valuebytes, KeyValue *kv, void *ptr)
@@ -194,7 +219,7 @@ void printData(uint64_t itask, char *key, int keybytes, char *value, int valueby
     FlagAndH fnh= *(FlagAndH*) ptr;
     
     if(fnh.flag == "v"){
-        int binVal = bin * fnh.h;
+        unsigned long binVal = bin * fnh.h;
         std::cout << binVal << "," << v << std::endl;
     } else {
         double binVal = bin * fnh.h;
